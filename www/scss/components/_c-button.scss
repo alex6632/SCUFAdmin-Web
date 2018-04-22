@@ -1,0 +1,92 @@
+// _c-button.scss
+
+.button {
+  display: block;
+  font-family: font('primary');
+  font-size: 15px;
+  font-weight: 700;
+  padding: 10px 0;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: color('foreground');
+  background: color('primary');
+  border: 0;
+  appearance: none !important;
+  @include transition();
+
+  &--small {
+    max-width: 220px;
+    margin: auto;
+    font-size: 12px;
+  }
+
+  &--icon {
+    .icon {
+      margin-right: 6px;
+    }
+  }
+
+  &--red {
+    color: color('foreground', 'invert');
+    background-color: color('validation', 'no');
+  }
+
+  &--mg {
+    margin: 25px auto;
+  }
+
+  &--add {
+    display: inline-block;
+    padding: 8px 16px;
+    width: auto;
+    background-color: color('background', 'invert');
+    color: color('foreground', 'invert');
+    font-weight: 100;
+    font-style: italic;
+    font-size: 12px;
+    cursor: pointer;
+    @include transition();
+
+    &:hover {
+      color: color('foreground');
+      background-color: color('primary');
+      @include transition();
+    }
+
+    &#jsCloseFormAddUser,
+    &.hide {
+      display: none;
+
+      &.show {
+        display: inline-block;
+      }
+      &.hide {
+        display: none;
+      }
+    }
+    &.hide {
+      display: none;
+    }
+  }
+}
+
+/// Create themed btn version based on $colors variable map
+/// @variable {String} $color-name - Color's name
+/// @variable {List} $color-variant - Color's themed map
+/// @return {Mixed} .btn--color-name
+/// @require $colors
+@each $color-name, $color-variants in $colors {
+  .btn--#{$color-name} {
+    color: color($color-name, 'invert');
+    background: color($color-name);
+
+    @each $variant-name, $color-variant in $color-variants {
+      &-#{$variant-name} {
+        color: color($color-name, 'invert');
+        background: color($color-name, $variant-name);
+      }
+    }
+  }
+}

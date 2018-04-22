@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+        <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">-->
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" type="text/css" href="dist/css/app.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,700|Rajdhani:300,400,500,700" rel="stylesheet">
+        <title>SCUF Admin</title>
+    </head>
+    <body>
+        <div class="msg-flash"></div>
+
+        <!-- Page login -->
+        <div class="login hide">
+            <div class="login__top" id="jsShowConnectForm">
+                <div class="login__top__inner">
+                    <div class="login__head">
+                        <div class="icon icon-lock"></div>
+                        <div class="login__head__title">Connexion</div>
+                    </div>
+
+                    <div class="login__info-touch">Toucher pour vous connecter</div>
+
+                    <form action="" class="login__form">
+                        <div class="login__form__block">
+                            <label for="login-email" class="login__form__label">Email</label>
+                            <input type="text" class="login__form__input" id="login-email"/>
+                        </div>
+                        <div class="login__form__block">
+                            <label for="login-pwd" class="login__form__label">Mot de passe</label>
+                            <input type="password" class="login__form__input" id="login-pwd"/>
+                        </div>
+                        <button type="submit" class="button">Se connecter</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="logo">
+                <img src="images/logo.jpg" alt="">
+            </div>
+        </div>
+        <!-- /Page login -->
+
+        <!-- Page planning -->
+        <div class="routing" id="planning">
+            <header class="header">
+                <h1 class="title">Planning</h1>
+            </header>
+        </div>
+        <!-- /Page planning -->
+
+        <!-- Page validation -->
+        <div class="routing" id="validation">
+            <header class="header">
+                <h1 class="title">Validation</h1>
+            </header>
+            <h2 class="header-lvl2">
+                <span>semaine 54</span>Lundi 15 Janvier 2018
+                <div class="header-lvl2__arrow">
+                    <span class="icon icon-left-arrow"></span>
+                    <span class="icon icon-right-arrow"></span>
+                </div>
+            </h2>
+            <div class="routing__center">
+                <div class="validation-item border-ok">
+                    <div class="validation-item__title">Administratif, <span>Siège</span></div>
+                    <div class="validation-item__hours">14:30 - 16h30</div>
+                    <ul class="action__list">
+                        <li class="action__list__item">
+                            Validation
+                            <span class="validation-item__status">Fait</span>
+                            <div class="switch">
+                                <input type="radio" name="" class="stop">
+                                <label for="" class="label label--stop" data-status="stop"></label>
+                                <input type="radio" name="" class="ok" checked="checked">
+                                <label for="" class="label label--ok" data-status="ok"></label>
+                                <input type="radio" name="" class="no">
+                                <label for="" class="label label--no" data-status="no"></label>
+                                <div class="switch__btn ok">
+                                    <div class="switch__btn__bar"></div>
+                                    <div class="switch__btn__bar"></div>
+                                    <div class="switch__btn__bar"></div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="validation-item__justification jsJustificationNo">
+                        <ul class="action__list">
+                            <li class="action__list__item textarea"><textarea name="" id="" cols="30" rows="10" placeholder="Justification"></textarea></li>
+                        </ul>
+                    </div>
+                    <div class="validation-item__justification jsJustificationStop">
+                        <ul class="action__list">
+                            <li class="action__list__item"><input type="datetime-local"></li>
+                            <li class="action__list__item"><input type="time"></li>
+                        </ul>
+                        <ul class="action__list">
+                            <li class="action__list__item textarea"><textarea name="" id="" cols="30" rows="10" placeholder="Justification"></textarea></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="validation-item border-ok">
+                    <div class="validation-item__title">Terrain, <span>Vallerey</span></div>
+                    <div class="validation-item__hours">17:15 - 18h15</div>
+                    <ul class="action__list">
+                        <li class="action__list__item">
+                            Validation
+                            <span class="validation-item__status">Non Fait</span>
+                            <div class="switch">
+                                <input type="radio" id="" name="" class="stop">
+                                <label for="" class="label label--stop" data-status="stop"></label>
+                                <input type="radio" id="" name="" class="ok" checked="checked">
+                                <label for="" class="label label--ok" data-status="ok"></label>
+                                <input type="radio" id="" name="" class="no">
+                                <label for="" class="label label--no" data-status="no"></label>
+                                <div class="switch__btn ok">
+                                    <div class="switch__btn__bar"></div>
+                                    <div class="switch__btn__bar"></div>
+                                    <div class="switch__btn__bar"></div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="validation-item__justification jsJustificationNo">
+                        <ul class="action__list">
+                            <li class="action__list__item textarea"><textarea name="" id="" cols="30" rows="10" placeholder="Justification"></textarea></li>
+                        </ul>
+                    </div>
+                    <div class="validation-item__justification jsJustificationStop">
+                        <ul class="action__list">
+                            <li class="action__list__item"><input type="datetime-local"></li>
+                            <li class="action__list__item"><input type="time"></li>
+                        </ul>
+                        <ul class="action__list">
+                            <li class="action__list__item textarea"><textarea name="" id="" cols="30" rows="10" placeholder="Justification"></textarea></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- /Page validation -->
+
+        <!-- Page actions -->
+        <div class="routing show" id="actions">
+            <header class="header">
+                <div class="header__link jsGoLevel1">Retour</div>
+                <h1 class="title">Actions <span>&nbsp;</span></h1>
+            </header>
+
+            <div class="routing__center">
+                <div class="action level1">
+                    <ul class="action__list">
+                        <li class="action__list__item arrow rest">Demande de repos compensatoire</li>
+                        <li class="action__list__item arrow leave">Demande de congés</li>
+                        <!--<li class="action__list__item">Demande de remplacement</li>-->
+                    </ul>
+
+
+                    <ul class="action__list">
+                        <li class="action__list__item arrow hours">Demande d'heures supplémentaires</li>
+                        <li class="action__list__item arrow edit">Editer un planning</li>
+                    </ul>
+
+                    <!-- SUPER ADMIN -->
+                    <ul class="action__list">
+                        <li class="action__list__item arrow addAccess">Droits</li>
+                        <li class="action__list__item arrow addSetting">Réglages</li>
+                        <li class="action__list__item arrow addUser">Gestion des utilisateurs</li>
+                    </ul>
+                </div>
+
+                <!-- Repos -->
+                <div class="level2" id="rest">
+                    <div class="action">
+                        <span class="action__info">Remarque : la date doit être identique</span>
+                        <ul class="action__list">
+                            <li class="action__list__item"><input type="datetime-local"></li>
+                            <li class="action__list__item"><input type="time"></li>
+                        </ul>
+                        <ul class="action__list">
+                            <li class="action__list__item textarea"><textarea name="" id="" cols="30" rows="10" placeholder="Justification"></textarea></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Congés -->
+                <div class="level2" id="leave">
+                    <div class="action">
+                        <ul class="action__list">
+                            <li class="action__list__item"><input type="datetime-local"></li>
+                            <li class="action__list__item"><input type="datetime-local"></li>
+                        </ul>
+                        <ul class="action__list">
+                            <li class="action__list__item textarea"><textarea name="" id="" cols="30" rows="10" placeholder="Justification"></textarea></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Heures supp -->
+                <div class="level2" id="hours">
+                    <div class="action">
+                        <ul class="action__list">
+                            <li class="action__list__item">
+                                <select name="" id="">
+                                    <option value="">Alexandre Simonin</option>
+                                    <option value="">Jonathan Guillemot</option>
+                                </select>
+                            </li>
+                        </ul>
+                        <span class="action__info">Remarque : la date doit être identique</span>
+                        <ul class="action__list">
+                            <li class="action__list__item"><input type="date"></li>
+                            <li class="action__list__item"><input type="time"></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- User -->
+                <div class="level2" id="addUser">
+                    <div class="action">
+                        <div class="button button--add" id="jsFormAddUser">+ Ajouter</div>
+                        <div class="button button--add" id="jsCloseFormAddUser">- Fermer</div>
+                        <form action="" class="form form--add jsFormAddUser">
+                            <span class="action__info action__info--left">Général</span>
+                            <ul class="action__list">
+                                <li class="action__list__item input">
+                                    <input type="text" name="username" class="input-text" placeholder="Nom d'utilisateur">
+                                </li>
+                                <li class="action__list__item input">
+                                    <input type="password" name="password" class="input-text" placeholder="*******">
+                                </li>
+                                <li class="action__list__item input">
+                                    <input type="text" name="lastname" class="input-text" placeholder="Nom">
+                                </li>
+                                <li class="action__list__item input">
+                                    <input type="text" name="firstname" class="input-text" placeholder="Prénom">
+                                </li>
+                                <li class="action__list__item input">
+                                    <input type="text" name="hours_planified" class="input-text"
+                                           placeholder="Nombre d'heures à faire (total annuel)">
+                                </li>
+                            </ul>
+                            <span class="action__info action__info--left">Rôle</span>
+                            <ul class="action__list">
+                                <li class="action__list__item">
+                                    <select name="role">
+                                        <option value="4">Administrateur</option>
+                                        <option value="3">Superviseur</option>
+                                        <option value="2">Manager</option>
+                                        <option value="1">Salarié</option>
+                                    </select>
+                                </li>
+                            </ul>
+                            <span class="action__info action__info--left">Droits</span>
+                            <ul class="action__list">
+                                <li class="action__list__item list"></li>
+                            </ul>
+                            <span class="action__info action__info--left">Supérieur en charge</span>
+                            <ul class="action__list">
+                                <li class="action__list__item input">
+                                    <input type="text" name="superior" class="input-text" placeholder="Entrer l'identifiant de l'utilisateur">
+                                </li>
+                            </ul>
+                            <input type="submit" class="button button--small button--mg" value="Ajouter">
+                        </form>
+                    </div>
+                    <div class="title">Liste des utilisateurs</div>
+                    <table class="list user-list">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Prénom</th>
+                            <th>Nom</th>
+                            <th>Nom utilisateur</th>
+                            <th>Rôle</th>
+                            <th>Supérieur (Id)</th>
+                            <th>Droits</th>
+                            <th>Heures planifiées</th>
+                            <th class="action">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- Access -->
+                <div class="level2" id="addAccess">
+                    <div class="action">
+                        <form action="" class="jsFormAddAccess">
+                            <ul class="action__list">
+                                <li class="action__list__item input">
+                                    <input type="text" name="title" class="input-text" placeholder="Nouveau droit">
+                                </li>
+                                <li class="action__list__item input">
+                                    <input type="text" name="slug" class="input-text" placeholder="Identifiant, en minuscuse, sans accent et sans espaces">
+                                </li>
+                            </ul>
+                            <span class="action__info">Attention : l'identifiant est unique et ne pourra pas être modifié !</span>
+                            <input type="submit" class="button button--small button--mg" value="Ajouter">
+                        </form>
+                    </div>
+                    <div class="title">Liste des droits</div>
+                    <ul class="list access-list"></ul>
+                </div>
+
+                <!-- Setting -->
+                <div class="level2" id="addSetting">
+                    <div class="action">
+                        <!--<form action="" class="jsFormAddSetting">-->
+                            <!--<ul class="action__list">-->
+                                <!--<li class="action__list__item input">-->
+                                    <!--<input type="text" class="input-text" placeholder="Nom du réglage">-->
+                                <!--</li>-->
+                                <!--<li class="action__list__item input">-->
+                                    <!--<input type="text" class="input-text" placeholder="Valeur du réglage">-->
+                                <!--</li>-->
+                                <!--<li class="action__list__item">-->
+                                    <!--<input type="checkbox" id="is_int" value="nb"><label for="is_int">Cocher si la valeur est un nombre</label>-->
+                                <!--</li>-->
+                            <!--</ul>-->
+                            <!--<input type="submit" class="button button&#45;&#45;small button&#45;&#45;mg" value="Ajouter">-->
+                        <!--</form>-->
+                    </div>
+                    <div class="title">Liste des réglages</div>
+                    <ul class="list setting-list"></ul>
+                </div>
+            </div>
+        </div>
+        <!-- /Page actions -->
+
+        <!-- Page profil -->
+        <div class="routing" id="profile">
+            <header class="header">
+                <h1 class="title">Votre profil</h1>
+            </header>
+
+            <div class="routing__center">
+
+                <div class="profile-page">
+                    <span class="icon icon-profile"></span>
+                    <div class="profile-page__name">Jonathan Guillemot</div>
+                    <div class="profile-page__status">Salarié</div>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-bar__top">
+                        <div class="progress-bar__title">Cette semaine</div>
+                        <div class="progress-bar__ratio"><span class="ratio-ok">14</span>/25<span>H</span></div>
+                    </div>
+                    <div class="progress-bar__bar">
+                        <div class="progress-bar__bar__text">56%</div>
+                        <div class="progress-bar__bar__wip" style="width: 56%;"><span>56%</span></div>
+                    </div>
+                </div>
+                <div class="profile-page profile-page--dark">
+                    <div class="profile-page__col">
+                        <div class="profile-page__col__nb profile-page__col__nb--ok">14</div><span>h</span>
+                        <div>effectuées</div>
+                    </div>
+                    <div class="profile-page__sep"></div>
+                    <div class="profile-page__col">
+                        <div class="profile-page__col__nb profile-page__col__nb--no">11</div><span>h</span>
+                        <div>non validées</div>
+                    </div>
+                </div>
+
+                <div class="progress-bar progress-bar--mg">
+                    <div class="progress-bar__top">
+                        <div class="progress-bar__title">Total h. validées</div>
+                        <div class="progress-bar__ratio"><span class="ratio-ok">202</span>/1607<span>H</span></div>
+                    </div>
+                    <div class="progress-bar__bar">
+                        <div class="progress-bar__bar__text">13%</div>
+                        <div class="progress-bar__bar__wip" style="width: 13%;"><span>13%</span></div>
+                    </div>
+                </div>
+                <div class="progress-bar progress-bar--mg">
+                    <div class="progress-bar__top">
+                        <div class="progress-bar__title">Total h. planifiées</div>
+                        <div class="progress-bar__ratio"><span class="ratio-ok">283</span>/707<span>H</span></div>
+                    </div>
+                    <div class="progress-bar__bar">
+                        <div class="progress-bar__bar__text">40%</div>
+                        <div class="progress-bar__bar__wip" style="width: 40%;"><span>40%</span></div>
+                    </div>
+                </div>
+
+                <div class="profile-page__info-hours profile-page__info-hours--mg">
+                    <div class="profile-page__info-hours__title">Total H. supplémentaires</div>
+                    <div class="profile-page__info-hours__nb">6<span>H</span></div>
+                </div>
+                <div class="profile-page__info-hours">
+                    <div class="profile-page__info-hours__title">Repos compensatoire (h)</div>
+                    <div class="profile-page__info-hours__nb">4,5<span>H</span></div>
+                </div>
+
+            </div>
+
+            <!--<div class="button button&#45;&#45;small button&#45;&#45;icon button&#45;&#45;red button&#45;&#45;mg jsLogout"><span class="icon icon-logout"></span>Se déconnecter</div>-->
+
+        </div>
+        <!-- /Page profil -->
+
+        <!-- Page recherche -->
+        <div class="search" id="jsSearch">
+            <header class="header">
+                <h1 class="title">Rechercher un salarié</h1>
+            </header>
+            <div class="action">
+                <ul class="action__list">
+                    <li class="action__list__item input">
+                        <input type="text" class="input-text" value="Jo">
+                    </li>
+                </ul>
+            </div>
+            <ul class="search__list">
+                <li class="search__list__item">Jonathan Guillemot</li>
+                <li class="search__list__item">Jordan Martin</li>
+            </ul>
+        </div>
+        <!-- /Page recherche -->
+
+        <!-- Page notification -->
+        <div class="notification" id="jsNotifications">
+            <div class="notification__wait">3 en attente de traitement</div>
+            <ul class="notification__list">
+                <li class="notification__list__item">
+                    <div class="notification__author">De Alexandre Simonin</div>
+                    <div>Demande de repos compensatoire</div>
+                    <div>Le 03/04/2018 de 08h00 à 17h00</div>
+                    <div class="notification__justification">Ayant atteint 12 heures supplémentaires, je souhaiterais prendre un repos compensatoire ce mardi 3 avril. Je vous remercie par avance.</div>
+                    <div class="options">
+                        <div class="options__inner options__inner--approve jsApproveAction"><span>Accepter</span></div>
+                        <div class="options__inner options__inner--decline jsADeclineAction"><span>Décliner</span></div>
+                    </div>
+                </li>
+
+                <li class="notification__list__item">
+                    <div class="notification__author">De Jonathan Guillemot</div>
+                    <div>Demande d'heures supplémentaires : 2h</div>
+                    <div>Le 22/02/2018 de 14h00 à 16h00</div>
+                    <div class="notification__motivation">
+                        Acceptez ! <br>
+                        Les heures supplémentaires vous seront bientôt récompensées par un repos compensatoire !</div>
+                    <div class="options">
+                        <div class="options__inner options__inner--approve jsApproveAction"><span>Accepter</span></div>
+                        <div class="options__inner options__inner--decline jsADeclineAction"><span>Décliner</span></div>
+                    </div>
+                </li>
+
+                <li class="notification__list__item">
+                    <div class="notification__author">De Alexandre Simonin</div>
+                    <div>Demande de congés</div>
+                    <div>Du 07/05/2018 au 11/05/2018</div>
+                    <div class="options">
+                        <div class="options__inner options__inner--approve jsApproveAction"><span>Accepter</span></div>
+                        <div class="options__inner options__inner--decline jsADeclineAction"><span>Décliner</span></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- /Page notification -->
+
+        <div class="tab-bar">
+            <div class="tab-bar__overlay"></div>
+            <div class="tab-bar__item logout jsLogout">
+                <div>
+                    <div class="icon icon-logout"></div>
+                    <div class="tab-bar__item__text">Déconnexion</div>
+                </div>
+            </div>
+            <div class="tab-bar__item jsNotifications">
+                <div>
+                    <div class="icon icon-notification"></div>
+                    <div class="push">3</div>
+                    <div class="tab-bar__item__text">Notifications</div>
+                </div>
+            </div>
+            <div class="tab-bar__item planning" data-routing="planning">
+                <div>
+                    <div class="icon icon-calendar"></div>
+                    <div class="tab-bar__item__text">Planning</div>
+                </div>
+            </div>
+            <div class="tab-bar__item validation" data-routing="validation">
+                <div>
+                    <div class="icon icon-list"></div>
+                    <div class="tab-bar__item__text">Validations</div>
+                </div>
+            </div>
+            <div class="tab-bar__item actions current" data-routing="actions">
+                <div>
+                    <div class="icon icon-flash"></div>
+                    <div class="tab-bar__item__text">Actions</div>
+                </div>
+            </div>
+            <div class="tab-bar__item profile" data-routing="profile">
+                <div>
+                    <div class="icon icon-profile"></div>
+                    <div class="tab-bar__item__text">Profil</div>
+                </div>
+            </div>
+            <div class="tab-bar__item jsSearch">
+                <div>
+                    <div class="icon icon-magnify"></div>
+                    <div class="tab-bar__item__text">Recherche</div>
+                </div>
+            </div>
+        </div>
+
+        <!--<script type="text/javascript" src="cordova.js"></script>-->
+        <script
+          src="https://code.jquery.com/jquery-3.3.1.min.js"
+          integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+          crossorigin="anonymous"></script>
+        <script type="text/javascript" src="dist/js/app.js"></script>
+    </body>
+</html>

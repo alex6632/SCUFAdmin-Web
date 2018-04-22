@@ -1,0 +1,9 @@
+// _c-input.scss
+
+input {
+  &:disabled {
+    padding: 2px 6px;
+    border: 1px solid color('gray', 'light');
+    background-color: color('gray', 'extra-light');
+  }
+}
