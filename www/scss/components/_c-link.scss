@@ -19,3 +19,13 @@
     display: inline-block;
   }
 }
+.link-table {
+  &.hide,
+  &.edit,
+  &.editCanceled {
+    display: none;
+  }
+  &.show {
+    display: inline-block;
+  }
+}

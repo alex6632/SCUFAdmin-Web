@@ -34,6 +34,7 @@ var me = {
           me.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user');
           me.ajaxAdd('jsFormAddUser', 'user');
           me.ajaxRemove('.user-list', '.user-list #deleteUser', 'user');
+          me.ajaxEditUser();
           break;
       }
       var content = $(this).text();
@@ -61,7 +62,7 @@ var me = {
       $(this).addClass('hide');
       $('#jsCloseFormAddUser').addClass('show');
       elt.slideDown();
-      me.ajaxGet('access');
+      me.ajaxGet('access', 'all');
     });
     $('#jsCloseFormAddUser').on('click', function () {
       $(this).removeClass('show');
@@ -168,6 +169,19 @@ var me = {
         break;
     }
   },
+  emptyForm: function (type) {
+    switch(type) {
+      case "access":
+        $('.jsFormAddAccess input:text').val('');
+        break;
+      case "user":
+        $('.jsFormAddUser input:text').val('');
+        $('.jsFormAddUser input:password').val('');
+        $('.jsFormAddUser select').prop('selectedIndex', 0);
+        $('.jsFormAddUser input:checkbox').removeAttr('checked');
+        break;
+    }
+  },
 
   /*
    * LOGIN
@@ -196,24 +210,44 @@ var me = {
   /*
    * GET ACCESS
    */
-  ajaxGet: function (element) {
+  ajaxGet: function (element, type) {
     var api = "http://127.0.0.1:8000/" + element;
     $.ajax({
       url: api,
       type: 'GET',
       success: function(response) {
-        for(var i=0; i<response.length; i++) {
-          $('.action__list__item.list').append(
-            '<div>' +
-            '<input type="checkbox" name="access[]" value="' + response[i].id + '" id="' + response[i].slug + '"><label for="' + response[i].slug + '">' + response[i].title + '</label>' +
-            '</div>'
-          );
+        //console.log(response);
+        if(type == 'checked') {
+          //*****************
+          console.log(response);
+          me.parseCheckAccess(response);
+          //****************
+        } else {
+          for(var j=0; j<response.length; j++) {
+            $('.action__list__item.list').append(
+              '<div>' +
+              '<input type="checkbox" name="access[]" value="' + response[j].id + '" id="' + response[j].slug + '"><label for="' + response[j].slug + '">' + response[j].title + '</label>' +
+              '</div>'
+            );
+          }
         }
       },
       error: function(response) {
         console.log(response);
       }
-    })
+    });
+  },
+
+  parseCheckAccess: function(response) {
+    console.log(response);
+    var allListAccess = '';
+    for(var i=0; i<response.length; i++) {
+      allListAccess += '' +
+        '<div>' +
+        '<input type="checkbox" name="access[]" value="' + response[i].id + '" id="' + response[i].slug + '"><label for="' + response[i].slug + '">' + response[i].title + '</label>' +
+        '</div>';
+    }
+    console.log(allListAccess);
   },
 
   /*
@@ -224,8 +258,6 @@ var me = {
       e.preventDefault();
       $('form.' + element + ' button').prop( "disabled", true );
       var api = "http://127.0.0.1:8000/" + type + "/create";
-      console.log($(this));
-      console.log($(this).serialize());
       $.ajax({
         url: api,
         type: 'POST',
@@ -239,6 +271,7 @@ var me = {
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.msg + '</div>');
                 me.ajaxSimpleList('http://127.0.0.1:8000/access', $('.access-list'), 'access');
+                me.emptyForm('access');
               } else {
                 console.log(response);
                 $('.msg-flash .alert').remove();
@@ -252,6 +285,12 @@ var me = {
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.msg + '</div>');
                 me.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user');
+                me.emptyForm('user');
+                // Close form
+                $('#jsCloseFormAddUser').removeClass('show');
+                $('#jsFormAddUser').removeClass('hide');
+                $('.jsFormAddUser').slideUp();
+                $('.action__list__item.list div').remove();
               } else {
                 console.log(response);
                 $('.msg-flash .alert').remove();
@@ -306,37 +345,63 @@ var me = {
           case "user":
             for(var i=0; i<response.length; i++) {
               var superior = "",
-                  role = "",
+                  role = '',
                   access = [];
               if(response[i].superior !== null) {
-                superior = "<a href='#user" + response[i].superior.id + "'>" + response[i].superior.id + "</a>";
+                superior = response[i].superior.id;
               } else {
                 superior = "Aucun";
               }
               switch (response[i].role) {
                 case 1:
-                  role = "Salarié";
+                  role = '' +
+                    '<select name="role" disabled>' +
+                    '<option value="4">Administrateur</option>' +
+                    '<option value="3">Superviseur</option>' +
+                    '<option value="2">Manager</option>' +
+                    '<option value="1" selected>Salarié</option>' +
+                    '</select>';
                   break;
                 case 2:
-                  role = "Manager";
+                  role = '' +
+                    '<select name="role" disabled>' +
+                    '<option value="4">Administrateur</option>' +
+                    '<option value="3">Superviseur</option>' +
+                    '<option value="2" selected>Manager</option>' +
+                    '<option value="1">Salarié</option>' +
+                    '</select>';
                   break;
                 case 3:
-                  role = "Responsable";
+                  role = '' +
+                    '<select name="role" disabled>' +
+                    '<option value="4">Administrateur</option>' +
+                    '<option value="3" selected>Superviseur</option>' +
+                    '<option value="2">Manager</option>' +
+                    '<option value="1">Salarié</option>' +
+                    '</select>';
                   break;
                 case 4:
-                  role = "Admin";
+                  role = '' +
+                    '<select name="role" disabled>' +
+                    '<option value="4" selected>Administrateur</option>' +
+                    '<option value="3">Superviseur</option>' +
+                    '<option value="2">Manager</option>' +
+                    '<option value="1">Salarié</option>' +
+                    '</select>';
                   break;
                 default:
                   role = "Aucun";
               }
+
               if(response[i].access.length > 0) {
                 var listAccess = '';
                 for(var j=0; j<response[i].access.length; j++) {
-                  if (j != response[i].access.length - 1) {
-                    listAccess += response[i].access[j].title + ', ';
-                  } else {
-                    listAccess += response[i].access[j].title;
-                  }
+
+                  listAccess += '' +
+                    '<div>' +
+                    '<input type="checkbox" name="access[]" value="' + response[i].access[j].id + '" id="' + response[i].access[j].slug + '" checked disabled>' +
+                    '<label for="' + response[i].access[j].slug + '">' + response[i].access[j].title + '</label>' +
+                    '</div>';
                 }
               } else {
                 listAccess = "Aucun"
@@ -344,19 +409,20 @@ var me = {
               $(element).append(
                 '<tr id="user' + response[i].id + '">' +
                   '<td>' + response[i].id + '</td>' +
-                  '<td>' + response[i].firstname + '</td>' +
-                  '<td>' + response[i].lastname + '</td>' +
-                  '<td>' + response[i].username + '</td>' +
-                  '<td>' + role + '</td>' +
-                  '<td>' + superior + '</td>' +
-                  '<td class="user-access-list">' + listAccess + '</td>' +
-                  '<td>' + response[i].hoursPlanified + '</td>' +
+                  '<td><input type="text" name="firstname" value="' + response[i].firstname + '" disabled></td>' +
+                  '<td><input type="text" name="lastname" value="' + response[i].lastname + '" disabled></td>' +
+                  '<td><input type="text" name="username" value="' + response[i].username + '" disabled></td>' +
                   '<td>' +
-                    '<span class="link-table delete" id="deleteUser' + response[i].id + '">Supprimer</span>' +
+                    role +
+                  '</td>' +
+                  '<td><input type="text" name="superior" value="' + superior + '" disabled></td>' +
+                  '<td class="user-access-list">' + listAccess + '</td>' +
+                  '<td><input type="text" name="hours_planified" value="' + response[i].hoursPlanified + '" disabled></td>' +
+                  '<td>' +
                     '<span class="link-table editEnabled">Editer</span>' +
-                    // '<span class="link-table editEnabled">Editer</span>' +
-                    // '<span class="link-table edit" id="editUser' + response[i].id + '">Valider</span>' +
-                    // '<span class="link-table editCanceled">Annuler</span>' +
+                    '<span class="link-table edit" id="editUser' + response[i].id + '">Valider</span>' +
+                    '<span class="link-table editCanceled">Annuler</span>' +
+                    '<span class="link-table delete" id="deleteUser' + response[i].id + '">Supprimer</span>' +
                   '</td>' +
                 '</tr>'
               );
@@ -447,6 +513,22 @@ var me = {
           $('.msg-flash').append('<div class="alert alert--error" role="alert">Erreur lors de l\'édition</div>');
         }
       })
+    });
+  },
+  ajaxEditUser: function() {
+    $('.user-list').on('click', 'tr .editEnabled', function() {
+      $(this).parents('tr').find('input').prop('disabled', false);
+      $(this).parents('tr').find('select').prop('disabled', false);
+      $(this).addClass('hide');
+      $(this).parents('tr').find('.editCanceled').addClass('show');
+      $(this).parents('tr').find('.edit').addClass('show');
+    });
+    $('.user-list').on('click', 'tr .editCanceled', function() {
+      $(this).parents('tr').find('input').prop('disabled', true);
+      $(this).parents('tr').find('select').prop('disabled', true);
+      $(this).removeClass('show');
+      $(this).parents('tr').find('.edit').removeClass('show');
+      $(this).parents('tr').find('.editEnabled').removeClass('hide');
     });
   },
 
