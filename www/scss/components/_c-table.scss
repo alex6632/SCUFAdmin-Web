@@ -19,11 +19,17 @@ table {
     }
   }
   tbody {
-    tr {
+    .tr {
+      display: table-row;
+    }
+    .td {
+      display: table-cell;
+    }
+    tr, .tr {
       &:nth-child(odd) {
         background-color: rgba(color('validation','stop'),.1);
       }
-      td {
+      td, .td {
         padding: 5px 10px;
 
         &.description {
