@@ -62,6 +62,9 @@ var me = {
 
     // SHOW ADD FORM
     me.showForm('jsFormAddUser');
+
+    // SEARCH USER - AUTOCOMPLETE -
+    me.ajaxSearchUser();
   },
 
   routing: function (element) {
@@ -733,9 +736,9 @@ var me = {
    * SEARCH USER
    */
   ajaxSearchUser: function () {
-    $('').on('submit', function () {
-
-    })
+    
+    // TODO...
+  
   }
 };
 
