@@ -64,7 +64,7 @@ var me = {
     me.showForm('jsFormAddUser');
 
     // SEARCH USER - AUTOCOMPLETE -
-    me.ajaxSearchUser();
+    me.ajaxSearchUser('jsSearchUser');
   },
 
   routing: function (element) {
@@ -735,9 +735,18 @@ var me = {
   /*
    * SEARCH USER
    */
-  ajaxSearchUser: function () {
+  ajaxSearchUser: function (element) {
     
-    // TODO...
+    $('#searchForm').on('submit', function(e) {
+      e.preventDefault();
+    });
+
+    $('#' + element).instantSearch({
+      minQueryLength: 3,
+      noItemsFoundMessage: 'Aucun utilisateur trouvé',
+      previewDelay: 200
+    });
+    //lowercase, asciifolding
   
   }
 };

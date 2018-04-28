@@ -58,6 +58,16 @@
       border-bottom: solid 1px color('gray', 'light');
       @include transition();
 
+      &.search-response {
+        padding: 0 20px;
+        line-height: 25px;
+        border-top: 0;
+        padding-bottom: 20px;
+        text-transform: uppercase;
+      }
+      &.small-padding {
+        padding: 0 20px;
+      }
       &.swipe {
         transform: translateX(-120px);
         @include transition();
@@ -74,6 +84,11 @@
     &__item {
       &:first-child {
         border-top: solid 1px color('gray', 'light');
+      }
+      &.search-response {
+        &:first-child {
+          border-top: 0;
+        }
       }
     }
   }
