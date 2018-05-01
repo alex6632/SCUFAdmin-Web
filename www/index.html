@@ -13,34 +13,7 @@
         <div class="msg-flash"></div>
 
         <!-- Page login -->
-        <div class="login hide">
-            <div class="login__top" id="jsShowConnectForm">
-                <div class="login__top__inner">
-                    <div class="login__head">
-                        <div class="icon icon-lock"></div>
-                        <div class="login__head__title">Connexion</div>
-                    </div>
-
-                    <div class="login__info-touch">Toucher pour vous connecter</div>
-
-                    <form action="" class="login__form">
-                        <div class="login__form__block">
-                            <label for="login-email" class="login__form__label">Email</label>
-                            <input type="text" class="login__form__input" id="login-email"/>
-                        </div>
-                        <div class="login__form__block">
-                            <label for="login-pwd" class="login__form__label">Mot de passe</label>
-                            <input type="password" class="login__form__input" id="login-pwd"/>
-                        </div>
-                        <button type="submit" class="button">Se connecter</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="logo">
-                <img src="images/logo.jpg" alt="">
-            </div>
-        </div>
+        <div class="loginTrigger"></div>
         <!-- /Page login -->
 
         <!-- Page planning -->
@@ -237,7 +210,7 @@
                                     <input type="text" name="username" class="input-text" placeholder="Nom d'utilisateur">
                                 </li>
                                 <li class="action__list__item input">
-                                    <input type="password" name="password" class="input-text" placeholder="*******">
+                                    <input type="text" name="plain_password" class="input-text" placeholder="*******">
                                 </li>
                                 <li class="action__list__item input">
                                     <input type="text" name="hours_planified" class="input-text" placeholder="Nombre d'heures à faire (total annuel)">

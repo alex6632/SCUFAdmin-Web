@@ -34,6 +34,16 @@ var me = {
 
 
   init: function () {
+
+    
+    
+
+    // CONNECT
+    me.ajaxLogin();
+
+    // DISCONNECT
+    me.ajaxLogout();
+
     // ROUTING
     me.routing('planning');
     me.routing('validation');
@@ -46,7 +56,7 @@ var me = {
     me.fadeInPage('jsSearch');
 
     // LOGIN PAGE
-    me.login();
+    me.loginPage();
     me.input('login-email');
     me.input('login-pwd');
 
@@ -67,6 +77,112 @@ var me = {
     me.ajaxSearchUser('jsSearchUser');
   },
 
+  /*
+   * LOGIN
+   */
+  loginPage: function () {
+    if(localStorage.getItem('authTokenID') === null) {
+      var loginHTMLPage = '' +
+        '<div class="login">' +
+          '<div class="login__top" id="jsShowConnectForm">' +
+            '<div class="login__top__inner">' +
+              '<div class="login__head">' +
+                  '<div class="icon icon-lock"></div>' +
+                  '<div class="login__head__title">Connexion</div>' +
+              '</div>' +
+              '<div class="login__info-touch">Toucher pour vous connecter</div>' +
+              '<form action="" class="login__form">' +
+                  '<div class="login__form__block">' +
+                      '<label for="login-email" class="login__form__label">Nom utilisateur</label>' +
+                      '<input type="text" class="login__form__input" id="login-email" name="login" autocomplete="off"/>' +
+                  '</div>' +
+                  '<div class="login__form__block">' +
+                      '<label for="login-pwd" class="login__form__label">Mot de passe</label>' +
+                      '<input type="password" class="login__form__input" id="login-pwd" name="password" autocomplete="off"/>' +
+                  '</div>' +
+                  '<button type="submit" class="button">Se connecter</button>' +
+              '</form>' +
+            '</div>' +
+          '</div>' +
+          '<div class="logo">' +
+              '<img src="images/logo.jpg" alt="">' +
+          '</div>' +
+        '</div>';
+
+      $('.loginTrigger').append(loginHTMLPage);
+      
+      $('.loginTrigger').on('click', '#jsShowConnectForm', function () {
+        $(this).parents('.login').addClass('step2');
+        $(this).find('.login__info-touch').fadeOut();
+        $(this).find('.login__form').delay(800).fadeIn();
+      });
+    } else {
+      $('.loginTrigger .login').remove();
+    }
+  },
+
+  ajaxLogin: function () {
+    $('.loginTrigger').on('submit', '.login__form', function (e) {
+      e.preventDefault();
+      var api = "http://127.0.0.1:8000/auth-tokens";
+      $.ajax({
+        url: api,
+        data: $(this).serialize(),
+        type: 'POST',
+        success: function (response) {
+            console.log(response);
+            $('.msg-flash .alert').remove();
+            localStorage.setItem('authTokenID', response.id);
+            localStorage.setItem('authTokenVALUE', response.value);
+            localStorage.setItem('authTokenCREATED', response.created);
+            localStorage.setItem('userID', response.user.id);
+            me.loginPage();
+        },
+        error: function (response) {
+          console.log(response);
+          var error = response.responseJSON.code + " : " + response.responseJSON.message;
+          $('.msg-flash .alert').remove();
+          $('.msg-flash').append('<div class="alert alert--error" role="alert">' + error + '</div>');
+        }
+      });
+    });
+  },
+
+  /*
+   * LOGOUT ACTION
+   */
+  ajaxLogout: function () {
+    $('.jsLogout').on('click', function () {
+      // API...
+      var authTokenID = localStorage.getItem('authTokenID');
+      var authTokenVALUE = localStorage.getItem('authTokenVALUE');
+      var api = "http://127.0.0.1:8000/auth-tokens/" + authTokenID;
+      $.ajax({
+        url: api,
+        type: 'DELETE',
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+        },
+        success: function () {
+            localStorage.removeItem('authTokenID');
+            localStorage.removeItem('authTokenVALUE');
+            localStorage.removeItem('authTokenCREATED');
+            localStorage.removeItem('userID');
+            me.loginPage();
+        },
+        error: function (response) {
+          console.log(response);
+          var error = response.responseJSON.code + " : " + response.responseJSON.message;
+          $('.msg-flash .alert').remove();
+          $('.msg-flash').append('<div class="alert alert--error" role="alert">' + error + '</div>');
+        }
+      });
+    });
+  },
+
+  /*
+   * ROUTING ACTION
+   */
   routing: function (element) {
     $('.' + element).on('click', function () {
       // Tab bar
@@ -159,14 +275,6 @@ var me = {
         $('.tab-bar__overlay').fadeOut();
       }
     })
-  },
-
-  login: function () {
-    $('#jsShowConnectForm').on('click', function () {
-      $(this).parents('.login').addClass('step2');
-      $('.login__info-touch').fadeOut();
-      $('.login__form').delay(800).fadeIn();
-    });
   },
 
   input: function (element) {
@@ -285,36 +393,13 @@ var me = {
     }
   },
 
-  /*
-   * LOGIN
-   */
-  ajaxLogin: function () {
-    $('.login__form').on('submit', function (e) {
-      e.preventDefault();
-      // 1. Call API to check credentials
-      //...
-      // 2. Open APP profile page
-      $('.login').addClass('hide');
-    });
-  },
-
-  /*
-   * LOGOUT
-   */
-  ajaxLogout: function () {
-    $('.jsLogout').on('click', function () {
-      // 1. Call API to remove Session variable
-      //...
-      // 2. Show connect page
-      $('.login').removeClass('hide');
-    });
-  },
+  
   /*
    * GET ACCESS
    */
   getAccess: function() {
     var api = "http://127.0.0.1:8000/" + element;
-    var jqXHR = $.ajax({
+    $.ajax({
       url: api,
       type: 'GET',
       success: function (response) {
@@ -327,7 +412,6 @@ var me = {
         console.log(response);
       }
     });
-    console.log(jqXHR.responseText);
   },
   ajaxGet: function (element, type) {
     var api = "http://127.0.0.1:8000/" + element;
@@ -391,13 +475,13 @@ var me = {
                 me.removeHTML("level2Access");
                 $('form.' + element + ' button').prop("disabled", true);
                 $('.msg-flash .alert').remove();
-                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.msg + '</div>');
+                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
                 me.ajaxSimpleList('http://127.0.0.1:8000/access', $('.access-list'), 'access');
                 me.emptyForm('access');
               } else {
                 console.log(response);
                 $('.msg-flash .alert').remove();
-                $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.msg + '</div>');
+                $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.message + '</div>');
               }
               break;
             case 'user':
@@ -405,7 +489,7 @@ var me = {
                 me.removeHTML("level2User");
                 $('form.' + element + ' button').prop("disabled", true);
                 $('.msg-flash .alert').remove();
-                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.msg + '</div>');
+                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
                 me.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user');
                 me.emptyForm('user');
                 // Close form
@@ -416,7 +500,7 @@ var me = {
               } else {
                 console.log(response);
                 $('.msg-flash .alert').remove();
-                $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.msg + '</div>');
+                $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.message + '</div>');
               }
               break;
           }
@@ -553,9 +637,9 @@ var me = {
         }
       },
       error: function (response) {
-        console.log(response);
         $('.msg-flash .alert').remove();
-        $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.msg + '</div>');
+        var error = response.responseJSON.code !== "" ? response.responseJSON.code + " : " + response.responseJSON.message : response.message;
+        $('.msg-flash').append('<div class="alert alert--error" role="alert">' + error + '</div>');
       }
     })
   },
@@ -600,7 +684,7 @@ var me = {
             case "access":
               if (response.type == 'success') {
                 $('.msg-flash .alert').remove();
-                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.msg + '</div>');
+                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
                 $(element + '' + response.id).parents('li').html(
                   '<input type="text" name="title" value="' + response.title + '" disabled>' +
                   '<span class="link editEnabled">Editer</span>' +
@@ -611,13 +695,13 @@ var me = {
               } else {
                 console.log(response);
                 $('.msg-flash .alert').remove();
-                $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.msg + '</div>');
+                $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.message + '</div>');
               }
               break;
             case "setting":
               if (response.type == 'success') {
                 $('.msg-flash .alert').remove();
-                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.msg + '</div>');
+                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
                 $(element + '' + response.id).parents('li').html(
                   '<span>' + response.title + '</span> : <input type="text" name="value" value="' + response.value + '" disabled>' +
                   '<span class="link editEnabled">Editer</span>' +
@@ -667,12 +751,12 @@ var me = {
           if (response.type == 'success') {
             me.removeHTML("level2User");
             $('.msg-flash .alert').remove();
-            $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.msg + '</div>');
+            $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
             me.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user');
           } else {
             console.log(response);
             $('.msg-flash .alert').remove();
-            $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.msg + '</div>');
+            $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.message + '</div>');
           }
         },
         error: function (response) {
@@ -702,21 +786,21 @@ var me = {
               case "access":
                 if (response.type == 'success') {
                   $('.msg-flash .alert').remove();
-                  $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.msg + '</div>');
+                  $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
                   $(element + '' + response.id).parent().remove();
                 }
                 break;
               case "setting":
                 if (response.type == 'success') {
                   $('.msg-flash .alert').remove();
-                  $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.msg + '</div>');
+                  $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
                   $(element + '' + response.id).parent().remove();
                 }
                 break;
               case "user":
                 if (response.type == 'success') {
                   $('.msg-flash .alert').remove();
-                  $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.msg + '</div>');
+                  $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
                   $(element + '' + response.id).parents('#formUser' + response.id).remove();
                 }
                 break;
