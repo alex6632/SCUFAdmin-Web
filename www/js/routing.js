@@ -1,10 +1,8 @@
-/*
- * ROUTING PAGES
- */
 var routing = {
+  
   level1: function (element) {
     $('.' + element).on('click', function () {
-      if(me.isValidToken()) {
+      if (utils.isValidToken()) {
         console.log('Connexion succeded')
         // Tab bar
         $('.tab-bar__item').removeClass('current');
@@ -25,23 +23,23 @@ var routing = {
       switch (element) {
         case "addAccess":
           jsGoLevel1.attr('id', 'level2Access');
-          me.ajaxSimpleList('http://127.0.0.1:8000/access', $('.access-list'), 'access');
-          me.ajaxAdd('jsFormAddAccess', 'access');
-          me.ajaxRemove('.access-list', '.access-list #deleteAccess', 'access');
-          me.ajaxEdit('.access-list', '.access-list #editAccess', 'access');
+          crud.ajaxSimpleList('http://127.0.0.1:8000/access', $('.access-list'), 'access');
+          crud.ajaxAdd('jsFormAddAccess', 'access');
+          crud.ajaxRemove('.access-list', '.access-list #deleteAccess', 'access');
+          crud.ajaxEdit('.access-list', '.access-list #editAccess', 'access');
           break;
         case "addSetting":
           jsGoLevel1.attr('id', 'level2Setting');
-          me.ajaxSimpleList('http://127.0.0.1:8000/settings', $('.setting-list'), 'setting');
-          me.ajaxRemove('.setting-list', '.setting-list #deleteSetting', 'setting');
-          me.ajaxEdit('.setting-list', '.setting-list #editSetting', 'setting');
+          crud.ajaxSimpleList('http://127.0.0.1:8000/settings', $('.setting-list'), 'setting');
+          crud.ajaxRemove('.setting-list', '.setting-list #deleteSetting', 'setting');
+          crud.ajaxEdit('.setting-list', '.setting-list #editSetting', 'setting');
           break;
         case "addUser":
           jsGoLevel1.attr('id', 'level2User');
-          me.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user');
-          me.ajaxAdd('jsFormAddUser', 'user');
-          me.ajaxRemove('.user-list', '.user-list #deleteUser', 'user');
-          me.ajaxEditUser();
+          crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user');
+          crud.ajaxAdd('jsFormAddUser', 'user');
+          crud.ajaxRemove('.user-list', '.user-list #deleteUser', 'user');
+          crud.ajaxEditUser();
           break;
       }
       var content = $(this).text();
@@ -55,9 +53,9 @@ var routing = {
     // Back level 1
     $('.jsGoLevel1').on('click', function () {
       var id = $(this).attr('id');
-      me.removeHTML(id);
-      me.removeEventHandlers(id);
-      
+      utils.removeHTML(id);
+      utils.removeEventHandlers(id);
+
       $(this).removeClass('show');
       $(this).removeAttr('id');
       $(this).prev().removeClass('hide');
