@@ -213,7 +213,7 @@
                                     <input type="text" name="plain_password" class="input-text" placeholder="*******">
                                 </li>
                                 <li class="action__list__item input">
-                                    <input type="text" name="hours_planified" class="input-text" placeholder="Nombre d'heures à faire (total annuel)">
+                                    <input type="text" name="hours_todo" class="input-text" placeholder="Nombre d'heures à faire (total annuel)">
                                 </li>
                             </ul>
                             <span class="action__info action__info--left">Rôle</span>
@@ -315,7 +315,7 @@
                 <div class="profile-page">
                     <span class="icon icon-profile"></span>
                     <div class="profile-page__name"></div>
-                    <div class="profile-page__status">Salarié</div>
+                    <div class="profile-page__status"></div>
                 </div>
 
                 <div class="progress-bar">
@@ -340,34 +340,34 @@
                     </div>
                 </div>
 
-                <div class="progress-bar progress-bar--mg">
+                <div class="progress-bar progress-bar--mg" id="jsHoursTodo">
                     <div class="progress-bar__top">
                         <div class="progress-bar__title">Total h. validées</div>
-                        <div class="progress-bar__ratio"><span class="ratio-ok">202</span>/1607<span>H</span></div>
+                        <div class="progress-bar__ratio"></div>
                     </div>
                     <div class="progress-bar__bar">
-                        <div class="progress-bar__bar__text">13%</div>
-                        <div class="progress-bar__bar__wip" style="width: 13%;"><span>13%</span></div>
+                        <div class="progress-bar__bar__text"></div>
+                        <div class="progress-bar__bar__wip" style="width: 0;"><span></span></div>
                     </div>
                 </div>
-                <div class="progress-bar progress-bar--mg">
+                <div class="progress-bar progress-bar--mg" id="jsHoursPlanified">
                     <div class="progress-bar__top">
                         <div class="progress-bar__title">Total h. planifiées</div>
-                        <div class="progress-bar__ratio"><span class="ratio-ok">283</span>/707<span>H</span></div>
+                        <div class="progress-bar__ratio"></div>
                     </div>
                     <div class="progress-bar__bar">
-                        <div class="progress-bar__bar__text">40%</div>
-                        <div class="progress-bar__bar__wip" style="width: 40%;"><span>40%</span></div>
+                        <div class="progress-bar__bar__text"></div>
+                        <div class="progress-bar__bar__wip" style="width: 0;"><span></span></div>
                     </div>
                 </div>
 
-                <div class="profile-page__info-hours profile-page__info-hours--mg">
+                <!-- <div class="profile-page__info-hours profile-page__info-hours--mg">
                     <div class="profile-page__info-hours__title">Total H. supplémentaires</div>
                     <div class="profile-page__info-hours__nb">6<span>H</span></div>
-                </div>
+                </div> -->
                 <div class="profile-page__info-hours">
                     <div class="profile-page__info-hours__title">Repos compensatoire (h)</div>
-                    <div class="profile-page__info-hours__nb">4,5<span>H</span></div>
+                    <div class="profile-page__info-hours__nb"></div>
                 </div>
 
             </div>
