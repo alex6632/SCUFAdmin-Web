@@ -35,46 +35,52 @@ var me = {
 
   init: function () {
 
-    
-    
-
     // CONNECT
+    me.loginPage();
     me.ajaxLogin();
 
-    // DISCONNECT
-    me.ajaxLogout();
+    // CHECK IF TOKEN IS VALID ?
+    var isConnected = me.isValidToken();
 
-    // ROUTING
-    me.routing('planning');
-    me.routing('validation');
-    me.routing('actions');
-    me.routing('profile');
-    me.routingLevel2();
+    if(isConnected) {
+      var authTokenID = localStorage.getItem('authTokenID'),
+          authTokenVALUE = localStorage.getItem('authTokenVALUE'),
+          userID = localStorage.getItem('userID');
 
-    // SPECIAL PAGES
-    me.fadeInPage('jsNotifications');
-    me.fadeInPage('jsSearch');
+      // DISCONNECT
+      me.ajaxLogout(authTokenVALUE, authTokenID);
 
-    // LOGIN PAGE
-    me.loginPage();
-    me.input('login-email');
-    me.input('login-pwd');
+      // ROUTING
+      me.routing('planning');
+      me.routing('validation');
+      me.routing('actions');
+      me.routing('profile');
+      me.routingLevel2();
 
-    // OTHER EVENTS
-    me.swipe('notification__list__item');
-    me.switch('stop');
-    me.switch('ok');
-    me.switch('no');
-    me.switch('label--stop');
-    me.switch('label--ok');
-    me.switch('label--no');
-    me.progressBar();
+      // SPECIAL PAGES
+      me.fadeInPage('jsNotifications');
+      me.fadeInPage('jsSearch');
 
-    // SHOW ADD FORM
-    me.showForm('jsFormAddUser');
+      // PAGES
+      me.profile(authTokenVALUE, userID);
 
-    // SEARCH USER - AUTOCOMPLETE -
-    me.ajaxSearchUser('jsSearchUser');
+      // OTHER EVENTS
+      me.swipe('notification__list__item');
+      me.switch('stop');
+      me.switch('ok');
+      me.switch('no');
+      me.switch('label--stop');
+      me.switch('label--ok');
+      me.switch('label--no');
+      me.progressBar();
+
+      // SHOW ADD FORM
+      me.showForm('jsFormAddUser');
+
+      // SEARCH USER - AUTOCOMPLETE -
+      me.ajaxSearchUser('jsSearchUser');
+    }
+
   },
 
   /*
@@ -82,6 +88,7 @@ var me = {
    */
   loginPage: function () {
     if(localStorage.getItem('authTokenID') === null) {
+      $('.loginTrigger').removeClass('hide');
       var loginHTMLPage = '' +
         '<div class="login">' +
           '<div class="login__top" id="jsShowConnectForm">' +
@@ -116,8 +123,12 @@ var me = {
         $(this).find('.login__info-touch').fadeOut();
         $(this).find('.login__form').delay(800).fadeIn();
       });
+      me.input('login-email');
+      me.input('login-pwd');
+
     } else {
       $('.loginTrigger .login').remove();
+      $('.loginTrigger').addClass('hide');
     }
   },
 
@@ -132,10 +143,11 @@ var me = {
         success: function (response) {
             console.log(response);
             $('.msg-flash .alert').remove();
-            localStorage.setItem('authTokenID', response.id);
-            localStorage.setItem('authTokenVALUE', response.value);
-            localStorage.setItem('authTokenCREATED', response.created);
-            localStorage.setItem('userID', response.user.id);
+            localStorage.setItem('authTokenID', response.authToken.id);
+            localStorage.setItem('authTokenVALUE', response.authToken.value);
+            localStorage.setItem('userID', response.authToken.user.id);
+            localStorage.setItem('authTokenCREATED', response.createdTime);
+            localStorage.setItem('tokenValidityDuration', response.tokenValidityDuration);
             me.loginPage();
         },
         error: function (response) {
@@ -151,11 +163,8 @@ var me = {
   /*
    * LOGOUT ACTION
    */
-  ajaxLogout: function () {
+  ajaxLogout: function (authTokenVALUE, authTokenID) {
     $('.jsLogout').on('click', function () {
-      // API...
-      var authTokenID = localStorage.getItem('authTokenID');
-      var authTokenVALUE = localStorage.getItem('authTokenVALUE');
       var api = "http://127.0.0.1:8000/auth-tokens/" + authTokenID;
       $.ajax({
         url: api,
@@ -166,17 +175,69 @@ var me = {
         success: function () {
             localStorage.removeItem('authTokenID');
             localStorage.removeItem('authTokenVALUE');
-            localStorage.removeItem('authTokenCREATED');
             localStorage.removeItem('userID');
+            localStorage.removeItem('authTokenCREATED');
+            localStorage.removeItem('tokenValidityDuration');
             me.loginPage();
         },
         error: function (response) {
           console.log(response);
-          var error = response.responseJSON.code + " : " + response.responseJSON.message;
-          $('.msg-flash .alert').remove();
-          $('.msg-flash').append('<div class="alert alert--error" role="alert">' + error + '</div>');
+          //var error = response.responseJSON.code + " : " + response.responseJSON.message;
+          //$('.msg-flash .alert').remove();
+          //$('.msg-flash').append('<div class="alert alert--error" role="alert">' + error + '</div>');
         }
       });
+    });
+  },
+
+  /*
+   * IS TOKEN VALID ?
+   */
+  isValidToken: function() {
+    console.log('Check if token is valid....');
+
+    var authTokenCREATED = localStorage.getItem('authTokenCREATED'),
+        isConnected = false;
+
+    if(authTokenCREATED !== null) {
+      var date = Math.trunc(Date.now() / 1000),
+          tokenValidityDuration = localStorage.getItem('tokenValidityDuration');
+
+      if(date - authTokenCREATED < tokenValidityDuration) {
+        isConnected = true;
+      } else {
+        localStorage.removeItem('authTokenID');
+        localStorage.removeItem('authTokenVALUE');
+        localStorage.removeItem('userID');
+        localStorage.removeItem('authTokenCREATED');
+        localStorage.removeItem('tokenValidityDuration');
+        me.loginPage();
+      }
+    }
+    return isConnected;
+  },
+
+  /*
+   * PROFIL PAGE
+   */
+  profile: function (authTokenVALUE, userID) {
+    var api = "http://127.0.0.1:8000/user/" + userID;
+    $.ajax({
+      url: api,
+      type: 'GET',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+      },
+      success: function (response) {
+        console.log("Profile response : ",response);
+        $('.profile-page__name').text(response.firstname + " " + response.lastname);
+      },
+      error: function (response) {
+        console.log(response);
+        var error = response.responseJSON.code + " : " + response.responseJSON.message;
+        $('.msg-flash .alert').remove();
+        $('.msg-flash').append('<div class="alert alert--error" role="alert">' + error + '</div>');
+      }
     });
   },
 
@@ -185,14 +246,17 @@ var me = {
    */
   routing: function (element) {
     $('.' + element).on('click', function () {
-      // Tab bar
-      $('.tab-bar__item').removeClass('current');
-      $(this).addClass('current');
+      if(me.isValidToken()) {
+        console.log('Connexion succeded')
+        // Tab bar
+        $('.tab-bar__item').removeClass('current');
+        $(this).addClass('current');
 
-      // Pages
-      $('.routing').removeClass('show');
-      var current = $(this).attr('data-routing');
-      $('.routing#' + current).addClass('show');
+        // Pages
+        $('.routing').removeClass('show');
+        var current = $(this).attr('data-routing');
+        $('.routing#' + current).addClass('show');
+      }
     });
   },
 

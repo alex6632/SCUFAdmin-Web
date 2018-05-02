@@ -1,6 +1,7 @@
 // _l-login.scss
 
-.login {
+.login,
+.loginTrigger {
   position: relative;
   background-color: color('background', 'invert');
   height: 100vh;
