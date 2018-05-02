@@ -1,35 +1,3 @@
-
-//var form = new FormData(document.getElementById('login-form'));
-var fetchInit = { 
-  method: 'GET',
-  //body: form
-};
-// var api = "http://127.0.0.1:8000/access";
-
-// var myRequest = new Request(api, fetchInit);
-
-// const Access = fetch(myRequest,fetchInit)
-// .then(handleErrors)
-// .then(function(response) {
-//   console.log('ok');
-//   console.log(response);
-// })
-// .catch(function(error) {
-//   console.log(error);
-// })
-
-// function handleErrors(response) {
-//   if (!response.ok) {
-//       throw Error(response.statusText);
-//   }
-//   return response;
-// }
-
-//console.log('access', Access);
-/*const Acss = (function () {
-  fetch
-})*/
-
 var me = {
 
 
@@ -51,11 +19,11 @@ var me = {
       me.ajaxLogout(authTokenVALUE, authTokenID);
 
       // ROUTING
-      me.routing('planning');
-      me.routing('validation');
-      me.routing('actions');
-      me.routing('profile');
-      me.routingLevel2();
+      routing.level1('planning');
+      routing.level1('validation');
+      routing.level1('actions');
+      routing.level1('profile');
+      routing.level2();
 
       // SPECIAL PAGES
       me.fadeInPage('jsNotifications');
@@ -292,73 +260,8 @@ var me = {
     });
   },
 
-  /*
-   * ROUTING ACTION
-   */
-  routing: function (element) {
-    $('.' + element).on('click', function () {
-      if(me.isValidToken()) {
-        console.log('Connexion succeded')
-        // Tab bar
-        $('.tab-bar__item').removeClass('current');
-        $(this).addClass('current');
+  
 
-        // Pages
-        $('.routing').removeClass('show');
-        var current = $(this).attr('data-routing');
-        $('.routing#' + current).addClass('show');
-      }
-    });
-  },
-
-  routingLevel2: function () {
-    $('.jsGoLevel2').on('click', function () {
-      var element = $(this).attr('data-routing');
-      var jsGoLevel1 = $(this).parents('.routing').find('.jsGoLevel1');
-      switch (element) {
-        case "addAccess":
-          jsGoLevel1.attr('id', 'level2Access');
-          me.ajaxSimpleList('http://127.0.0.1:8000/access', $('.access-list'), 'access');
-          me.ajaxAdd('jsFormAddAccess', 'access');
-          me.ajaxRemove('.access-list', '.access-list #deleteAccess', 'access');
-          me.ajaxEdit('.access-list', '.access-list #editAccess', 'access');
-          break;
-        case "addSetting":
-          jsGoLevel1.attr('id', 'level2Setting');
-          me.ajaxSimpleList('http://127.0.0.1:8000/settings', $('.setting-list'), 'setting');
-          me.ajaxRemove('.setting-list', '.setting-list #deleteSetting', 'setting');
-          me.ajaxEdit('.setting-list', '.setting-list #editSetting', 'setting');
-          break;
-        case "addUser":
-          jsGoLevel1.attr('id', 'level2User');
-          me.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user');
-          me.ajaxAdd('jsFormAddUser', 'user');
-          me.ajaxRemove('.user-list', '.user-list #deleteUser', 'user');
-          me.ajaxEditUser();
-          break;
-      }
-      var content = $(this).text();
-      $(this).parents('.level1').addClass('swipe');
-      $('#' + element).addClass('show');
-      jsGoLevel1.addClass('show');
-      $(this).parents('.routing').find('.jsSearch').addClass('hide');
-      $(this).parents('.routing').find('.title span').text("/ " + content);
-    });
-
-    // Back level 1
-    $('.jsGoLevel1').on('click', function () {
-      var id = $(this).attr('id');
-      me.removeHTML(id);
-      me.removeEventHandlers(id);
-      
-      $(this).removeClass('show');
-      $(this).removeAttr('id');
-      $(this).prev().removeClass('hide');
-      $(this).parents('.routing').find('.level1').removeClass('swipe');
-      $(this).parents('.routing').find('.level2').removeClass('show');
-      $(this).parents('.routing').find('.title span').text('');
-    });
-  },
 
   showForm: function (element) {
     var elt = $('.' + element);
