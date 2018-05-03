@@ -2,7 +2,7 @@ var crud = {
     /**
      * ADD AN ELEMENT
      */
-    ajaxAdd: function (element, type) {
+    ajaxAdd: function (element, type, authTokenVALUE) {
         $('.' + element).on('submit', function (e) {
             e.preventDefault();
             $('form.' + element + ' button').prop("disabled", true);
@@ -11,6 +11,9 @@ var crud = {
                 url: api,
                 type: 'POST',
                 data: $(this).serialize(),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+                },
                 success: function (response) {
                     switch (type) {
                         case 'access':
@@ -19,7 +22,7 @@ var crud = {
                                 $('form.' + element + ' button').prop("disabled", true);
                                 $('.msg-flash .alert').remove();
                                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                                crud.ajaxSimpleList('http://127.0.0.1:8000/access', $('.access-list'), 'access');
+                                crud.ajaxSimpleList('http://127.0.0.1:8000/access', $('.access-list'), 'access', authTokenVALUE);
                                 utils.emptyForm('access');
                             } else {
                                 console.log(response);
@@ -33,7 +36,7 @@ var crud = {
                                 $('form.' + element + ' button').prop("disabled", true);
                                 $('.msg-flash .alert').remove();
                                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                                crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user');
+                                crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user', authTokenVALUE);
                                 utils.emptyForm('user');
                                 // Close form
                                 $('#jsCloseFormAddUser').removeClass('show');
@@ -58,10 +61,13 @@ var crud = {
     /**
      * SHOW SIMPLE LIST
      */
-    ajaxSimpleList: function (api, element, type) {
+    ajaxSimpleList: function (api, element, type, authTokenVALUE) {
         $.ajax({
             url: api,
             type: 'GET',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+            },
             success: function (response) {
                 switch (type) {
                     case "access":
@@ -156,22 +162,20 @@ var crud = {
                             }
                             $(element).append(
                                 '<form action="" id="formUser' + response[i].id + '" class="tr">' +
-                                '<div class="td">' + response[i].id + '</div>' +
-                                '<div class="td"><input type="text" name="firstname" value="' + response[i].firstname + '" disabled></div>' +
-                                '<div class="td"><input type="text" name="lastname" value="' + response[i].lastname + '" disabled></div>' +
-                                '<div class="td"><input type="text" name="username" value="' + response[i].username + '" disabled></div>' +
-                                '<div class="td">' +
-                                role +
-                                '</div>' +
-                                '<div class="td"><input type="text" name="superior" value="' + superior + '" disabled></div>' +
-                                '<div class="td user-access-list">' + listAccess + '</div>' +
-                                '<div class="td"><input type="text" name="hours_planified" value="' + response[i].hoursPlanified + '" disabled></div>' +
-                                '<div class="td">' +
-                                '<span class="link-table editEnabled">Editer</span>' +
-                                '<span class="link-table edit" id="editUser' + response[i].id + '">Valider</span>' +
-                                '<span class="link-table editCanceled">Annuler</span>' +
-                                '<span class="link-table delete" id="deleteUser' + response[i].id + '">Supprimer</span>' +
-                                '</div>' +
+                                    '<div class="td">' + response[i].id + '</div>' +
+                                    '<div class="td"><input type="text" name="firstname" value="' + response[i].firstname + '" disabled></div>' +
+                                    '<div class="td"><input type="text" name="lastname" value="' + response[i].lastname + '" disabled></div>' +
+                                    '<div class="td"><input type="text" name="username" value="' + response[i].username + '" disabled></div>' +
+                                    '<div class="td">' + role +'</div>' +
+                                    '<div class="td"><input type="text" name="superior" value="' + superior + '" disabled></div>' +
+                                    '<div class="td user-access-list">' + listAccess + '</div>' +
+                                    '<div class="td"><input type="text" name="hours_todo" value="' + response[i].hoursTodo + '" disabled></div>' +
+                                    '<div class="td">' +
+                                    '<span class="link-table editEnabled">Editer</span>' +
+                                    '<span class="link-table edit" id="editUser' + response[i].id + '">Valider</span>' +
+                                    '<span class="link-table editCanceled">Annuler</span>' +
+                                    '<span class="link-table delete" id="deleteUser' + response[i].id + '">Supprimer</span>' +
+                                    '</div>' +
                                 '</form>'
                             );
                         }
@@ -188,7 +192,7 @@ var crud = {
     /**
      * EDIT AN ELEMENT
      */
-    ajaxEdit: function (click, element, type) {
+    ajaxEdit: function (click, element, type, authTokenVALUE) {
         $(click).on('click', 'li .editEnabled', function () {
             $(this).parents('li').find('input').prop('disabled', false);
             $(this).addClass('hide');
@@ -220,6 +224,9 @@ var crud = {
                 url: api,
                 type: 'PATCH',
                 data: data,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+                },
                 success: function (response) {
                     switch (type) {
                         case "access":
@@ -265,7 +272,7 @@ var crud = {
     /**
      * EDIT USER (SPECIFIC)
      */
-    ajaxEditUser: function () {
+    ajaxEditUser: function (authTokenVALUE) {
         $('.user-list').on('click', 'form .editEnabled', function () {
             $(this).parents('form').find('input').prop('disabled', false);
             $(this).parents('form').find('select').prop('disabled', false);
@@ -291,12 +298,15 @@ var crud = {
                 url: api,
                 type: 'PATCH',
                 data: form.serialize(),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+                },
                 success: function (response) {
                     if (response.type == 'success') {
                         utils.removeHTML("level2User");
                         $('.msg-flash .alert').remove();
                         $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                        crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user');
+                        crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user', authTokenVALUE);
                     } else {
                         console.log(response);
                         $('.msg-flash .alert').remove();
@@ -314,7 +324,7 @@ var crud = {
     /**
      * REMOVE AN ELEMENT
      */
-    ajaxRemove: function (click, element, type) {
+    ajaxRemove: function (click, element, type, authTokenVALUE) {
         $(click).on('click', '.delete', function () {
             if (confirm("Cette action sera irréversible.")) {
                 var idStr = $(this).attr('id');
@@ -324,6 +334,9 @@ var crud = {
                 $.ajax({
                     url: api,
                     type: 'DELETE',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+                    },
                     success: function (response) {
                         switch (type) {
                             case "access":

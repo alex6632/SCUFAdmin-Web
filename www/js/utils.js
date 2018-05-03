@@ -80,11 +80,14 @@ var utils = {
         return isConnected;
     },
 
-    ajaxGet: function (element, type) {
+    ajaxGet: function (element, type, authTokenVALUE) {
         var api = "http://127.0.0.1:8000/" + element;
         $.ajax({
             url: api,
             type: 'GET',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+            },
             success: function (response) {
                 //console.log(response);
                 if (type == 'checked') {

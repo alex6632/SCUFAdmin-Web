@@ -1,11 +1,11 @@
 var anim = {
-    showForm: function (element) {
+    showForm: function (element, authTokenVALUE) {
         var elt = $('.' + element);
         $('#' + element).on('click', function () {
             $(this).addClass('hide');
             $('#jsCloseFormAddUser').addClass('show');
             elt.slideDown();
-            utils.ajaxGet('access', 'all');
+            utils.ajaxGet('access', 'all', authTokenVALUE);
         });
         $('#jsCloseFormAddUser').on('click', function () {
             $(this).removeClass('show');

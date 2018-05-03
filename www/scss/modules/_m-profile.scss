@@ -1,8 +1,18 @@
 // _m-profile.scss
 
 .profile-page {
-  text-align: center;
+  position: relative;
   margin: 20px 0;
+  background-color: color('background', 'invert');
+  padding: 25px 0 25px 50px;
+  color: color('foreground', 'invert');
+  
+  &--recap {
+    width: 50%;
+    min-width: 500px;
+    border: solid 2px color('primary');
+    font-size: 14px;
+  }
 
   &--dark {
     display: flex;
@@ -15,8 +25,28 @@
     overflow: hidden;
   }
 
+  &__edit {
+
+    &__text {
+      display: block;
+      overflow: hidden;
+      margin: 4px 0;
+    }
+
+    &__span {
+      font-style: italic;
+      float: left;
+      width: 140px;
+    }
+  }
+
   .icon {
-    font-size: 35px;
+    font-size: 50px;
+    @include center-v(absolute);
+    right: 50px;
+    border: 1px solid color('background');
+    border-radius: 50%;
+    padding: 30px;
   }
   &__name {
     font-weight: 700;
