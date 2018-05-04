@@ -15,6 +15,9 @@ var me = {
                 authTokenVALUE = localStorage.getItem('authTokenVALUE'),
                 userID = localStorage.getItem('userID');
 
+            // FIND ACTIVE PAGE
+            utils.loadActivePage(authTokenVALUE, userID);
+
             // DISCONNECT
             logout.ajaxLogout(authTokenVALUE, authTokenID);
 
@@ -23,7 +26,7 @@ var me = {
             routing.level1('validation', authTokenVALUE);
             routing.level1('actions', authTokenVALUE);
             routing.level1('profile', authTokenVALUE);
-            routing.level2(authTokenVALUE);
+            routing.level2(authTokenVALUE, userID);
 
             // SPECIAL PAGES
             anim.fadeInPage('jsNotifications');

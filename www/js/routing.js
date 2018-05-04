@@ -9,22 +9,6 @@ var routing = {
     level1: function (element, authTokenVALUE) {
         $('.' + element).on('click', function () {
             if (utils.isValidToken()) {
-                switch (element) {
-                    case "planning":
-                        
-                    break;
-                    case "validation":
-
-                    break;
-                    case "actions":
-
-                    break;
-                    case "profile":
-                        var userID = localStorage.getItem('userID');
-                        page.profile(authTokenVALUE, userID);
-                    break;
-                }
-                console.log('Connexion succeded')
                 // Tab bar
                 $('.tab-bar__item').removeClass('current');
                 $(this).addClass('current');
@@ -46,7 +30,7 @@ var routing = {
      * -- Réglages
      * -- Gestion des utilisateurs
      */
-    level2: function (authTokenVALUE) {
+    level2: function (authTokenVALUE, userID) {
         $('.jsGoLevel2').on('click', function () {
             var element = $(this).attr('data-routing');
             var jsGoLevel1 = $(this).parents('.routing').find('.jsGoLevel1');
@@ -70,6 +54,15 @@ var routing = {
                     crud.ajaxAdd('jsFormAddUser', 'user', authTokenVALUE);
                     crud.ajaxRemove('.user-list', '.user-list #deleteUser', 'user', authTokenVALUE);
                     crud.ajaxEditUser(authTokenVALUE);
+                    break;
+                case "rest":
+                    break;
+                case "leave":
+                    crud.addAction('leave', authTokenVALUE, userID);
+                    break;
+                case "hours":
+                    break;
+                case "edit":
                     break;
             }
             var content = $(this).text();

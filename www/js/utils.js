@@ -56,6 +56,28 @@ var utils = {
         }
     },
 
+    loadActivePage: function (authTokenVALUE, userID) {
+        var activePage = $('.tab-bar').find('.current').attr('data-routing');
+        switch (activePage) {
+            case "notification":
+                
+            break;
+            case "planning":
+                
+            break;
+            case "validation":
+
+            break;
+            case "actions":
+
+            break;
+            case "profile":
+                page.getSetting('coeff', authTokenVALUE);
+                page.profile(authTokenVALUE, userID);
+            break;
+        }
+    },
+
     isValidToken: function () {
         console.log('Check if token is valid....');
 
@@ -67,8 +89,10 @@ var utils = {
                 tokenValidityDuration = localStorage.getItem('tokenValidityDuration');
 
             if (date - authTokenCREATED < tokenValidityDuration) {
+                console.log('....token OK :-)');
                 isConnected = true;
             } else {
+                console.log('....token expired, please login again :-)');
                 localStorage.removeItem('authTokenID');
                 localStorage.removeItem('authTokenVALUE');
                 localStorage.removeItem('userID');

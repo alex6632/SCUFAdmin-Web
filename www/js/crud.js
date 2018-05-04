@@ -371,4 +371,51 @@ var crud = {
             }
         });
     },
+
+    addAction: function (type, authTokenVALUE, userID) {
+        $('.form-add-' + type).on('submit', function (e) {
+            e.preventDefault();
+            /**
+             * TODO :
+             * 
+             * - Create Route on API
+             * -- Get type / start / end / justification / user_id
+             * -- Set created (now) / status (0: declined / 1: accepted / 2: in progress) / view (0)
+             * -- Persist & Flush
+             * 
+             * - Show confirm message : Demande bien enregistré et visible dans les notifications et/ou profil (3 dernières)
+             * - Show history on this page
+             */
+
+            var api = "http://127.0.0.1:8000/action/create/" + userID;
+            $.ajax({
+                url: api,
+                type: 'POST',
+                data: $(this).serialize(),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+                },
+                success: function (response) {
+                    switch (type) {
+                        case "leave":
+                            $('.msg-flash .alert').remove();
+                            $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+                            console.log(response);
+                            break;
+                        case "rest":
+                            
+                            break;
+                        case "hours":
+                            
+                            break;
+                    }
+                },
+                error: function (response) {
+                    console.log(response);
+                    $('.msg-flash .alert').remove();
+                    $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.responseJSON.message + '</div>');
+                }
+            })
+        });
+    },
 };

@@ -33,6 +33,14 @@
       transform: rotate(-180deg);
       margin-right: 2px;
     }
+
+    &--icon {
+      opacity: 1; 
+
+      &::before {
+        display: none;
+      }
+    }
   }
 
   .title {

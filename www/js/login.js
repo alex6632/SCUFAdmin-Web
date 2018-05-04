@@ -45,7 +45,6 @@ var login = {
         } else {
             $('.loginTrigger .login').remove();
             $('.loginTrigger').addClass('hide');
-            page.getSetting('coeff', localStorage.getItem('authTokenVALUE'));
         }
     },
 
