@@ -324,7 +324,10 @@
                                 <input type="text" name="username" class="input-text" placeholder="Nom d'utilisateur">
                             </li>
                             <li class="action__list__item input">
-                                <input type="text" name="plain_password" class="input-text" placeholder="*******">
+                                <input type="password" name="plain_password" class="input-text" placeholder="Mot de passe">
+                            </li>
+                            <li class="action__list__item input">
+                              <input type="password" name="confirm_password" class="input-text" placeholder="Confirmer le mot de passe">
                             </li>
                             <li class="action__list__item input">
                                 <input type="text" name="hours_todo" class="input-text" placeholder="Nombre d'heures à faire (total annuel)">
@@ -435,6 +438,16 @@
                 <div class="profile-page__edit__text"><span class="profile-page__edit__span">Rôle: </span><span id="profile-role"></span></div>
                 <div class="profile-page__edit__text"><span class="profile-page__edit__span">Supérieur: </span><span id="profile-superior"></span></div>
                 <div class="profile-page__edit__text"><span class="profile-page__edit__span">Liste des accès: </span><span id="profile-access"></span></div>
+                <div class="profile-page__edit__text profile-page__edit__text--update-pwd">
+                  <span class="profile-page__edit__span" id="profile-update-password">Modifier mon mot de passe</span>
+                  <span class="profile-page__edit__span" id="profile-cancel-password">Annuler</span>
+                  <div class="container-update-pwd">
+                    <input type="password" name="previous_password" id="previous_password" placeholder="Ancien mot de passe">
+                    <input type="password" name="plain_password" id="new_password" placeholder="Nouveau mot de passe">
+                    <input type="password" name="confirm_password" id="confirm_new_password" placeholder="Confirmer nouveau mot de passe">
+                    <div class="button button--small button--mg" id="jsUpdatePassword">Confirmer</div>
+                  </div>
+                </div>
             </div>
 
             <div class="progress-bar">
@@ -515,7 +528,8 @@
         <div class="action">
             <ul class="action__list">
                 <li class="action__list__item input">
-                    <form method="GET" action="http://127.0.0.1:8000/search" id="searchForm">
+                    <!-- <form method="GET" action="http://127.0.0.1:8000/search" id="searchForm"> -->
+                    <form>
                         <input type="text" class="input-text" id="jsSearchUser" name="search" placeholder="Rechercher un utilisateur" autocomplete="off">
                     </form>
                 </li>
