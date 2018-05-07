@@ -171,11 +171,101 @@ var crud = {
                                     '<div class="td user-access-list">' + listAccess + '</div>' +
                                     '<div class="td"><input type="text" name="hours_todo" value="' + response[i].hoursTodo + '" disabled></div>' +
                                     '<div class="td">' +
-                                    '<span class="link-table editEnabled">Editer</span>' +
-                                    '<span class="link-table edit" id="editUser' + response[i].id + '">Valider</span>' +
-                                    '<span class="link-table editCanceled">Annuler</span>' +
-                                    '<span class="link-table delete" id="deleteUser' + response[i].id + '">Supprimer</span>' +
+                                        '<span class="link-table editEnabled">Editer</span>' +
+                                        '<span class="link-table edit" id="editUser' + response[i].id + '">Valider</span>' +
+                                        '<span class="link-table editCanceled">Annuler</span>' +
+                                        '<span class="link-table delete" id="deleteUser' + response[i].id + '">Supprimer</span>' +
                                     '</div>' +
+                                '</form>'
+                            );
+                        }
+                        break;
+                    case "leave":
+                        var status = 'En attente';
+                        var css = 'progress';
+                        var action = '';
+                        console.log(response);
+                        for (var i = 0; i < response.length; i++) {
+                            switch(response[i].status) {
+                                case 0:
+                                    status = 'Refusé';
+                                    css = 'refused';
+                                    break;
+                                case 1:
+                                    status = 'Accepté';
+                                    css = 'accepted';
+                                    break;
+                                case 2:
+                                    status = 'En attente';
+                                    css = 'progress';
+                                    break;
+                                default:
+                                    status = 'En attente';
+                                    css = 'progress';
+                            }
+                            if(response[i].status == 2) {
+                                action = ''+
+                                '<span class="link-table editEnabled">Editer</span>' +
+                                '<span class="link-table edit" id="editLeave' + response[i].id + '">Valider</span>' +
+                                '<span class="link-table editCanceled">Annuler</span>' +
+                                '<span class="link-table delete" id="deleteLeave' + response[i].id + '">Supprimer</span>';
+                            } else {
+                                action = 'La demande n\'est plus modifiable';
+                            }
+                            $(element).append(
+                                '<form action="" id="formLeave' + response[i].id + '" class="tr">' +
+                                    '<div class="td td--created">Le ' + response[i].created + '</div>' +
+                                    '<div class="td td--updated">' + response[i].updated + '</div>' +
+                                    '<div class="td"><input type="text" name="start" value="' + response[i].start + '" disabled></div>' +
+                                    '<div class="td"><input type="text" name="end" value="' + response[i].end + '" disabled></div>' +
+                                    '<div class="td td--justification"><teaxtarea name="justification" disabled>' + response[i].justification + '</textarea></div>' +
+                                    '<div class="td td--status"><span class="' + css + '">' + status + '</span></div>' +
+                                    '<div class="td">' + action + '</div>' +
+                                '</form>'
+                            );
+                        }
+                        break;
+                    case "rest":
+                        var status = 'En attente';
+                        var css = 'progress';
+                        var action = '';
+                        console.log(response);
+                        for (var i = 0; i < response.length; i++) {
+                            switch(response[i].status) {
+                                case 0:
+                                    status = 'Refusé';
+                                    css = 'refused';
+                                    break;
+                                case 1:
+                                    status = 'Accepté';
+                                    css = 'accepted';
+                                    break;
+                                case 2:
+                                    status = 'En attente';
+                                    css = 'progress';
+                                    break;
+                                default:
+                                    status = 'En attente';
+                                    css = 'progress';
+                            }
+                            if(response[i].status == 2) {
+                                action = ''+
+                                '<span class="link-table editEnabled">Editer</span>' +
+                                '<span class="link-table edit" id="editRest' + response[i].id + '">Valider</span>' +
+                                '<span class="link-table editCanceled">Annuler</span>' +
+                                '<span class="link-table delete" id="deleteRest' + response[i].id + '">Supprimer</span>';
+                            } else {
+                                action = 'La demande n\'est plus modifiable';
+                            }
+                            $(element).append(
+                                '<form action="" id="formRest' + response[i].id + '" class="tr">' +
+                                    '<div class="td td--created">Le ' + response[i].created + '</div>' +
+                                    '<div class="td td--updated">' + response[i].updated + '</div>' +
+                                    '<div class="td"><input type="text" name="start" value="' + response[i].start + '" disabled></div>' +
+                                    '<div class="td"><input type="text" name="end" value="' + response[i].end + '" disabled></div>' +
+                                    '<div class="td td--justification"><teaxtarea name="justification" disabled>' + response[i].justification + '</textarea></div>' +
+                                    '<div class="td td--status"><span class="' + css + '">' + status + '</span></div>' +
+                                    '<div class="td">' + action + '</div>' +
                                 '</form>'
                             );
                         }
@@ -324,7 +414,7 @@ var crud = {
     /**
      * REMOVE AN ELEMENT
      */
-    ajaxRemove: function (click, element, type, authTokenVALUE) {
+    ajaxRemove: function (click, element, type, authTokenVALUE, actionType = "") {
         $(click).on('click', '.delete', function () {
             if (confirm("Cette action sera irréversible.")) {
                 var idStr = $(this).attr('id');
@@ -338,28 +428,50 @@ var crud = {
                         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
                     },
                     success: function (response) {
-                        switch (type) {
-                            case "access":
-                                if (response.type == 'success') {
+                        if(actionType != "") {
+                            switch (actionType) {
+                                case "leave":
                                     $('.msg-flash .alert').remove();
                                     $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                                    $(element + '' + response.id).parent().remove();
-                                }
-                                break;
-                            case "setting":
-                                if (response.type == 'success') {
+                                    $(element + '' + response.id).parents('#formLeave' + response.id).remove();
+                                    break;
+                                case "rest":
                                     $('.msg-flash .alert').remove();
                                     $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                                    $(element + '' + response.id).parent().remove();
-                                }
-                                break;
-                            case "user":
-                                if (response.type == 'success') {
+                                    $(element + '' + response.id).parents('#formRest' + response.id).remove();
+                                    break;
+                                case "hours":
+                                    break;
+                            }
+                        } else {
+                            switch (type) {
+                                case "access":
+                                    if (response.type == 'success') {
+                                        $('.msg-flash .alert').remove();
+                                        $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+                                        $(element + '' + response.id).parent().remove();
+                                    }
+                                    break;
+                                case "setting":
+                                    if (response.type == 'success') {
+                                        $('.msg-flash .alert').remove();
+                                        $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+                                        $(element + '' + response.id).parent().remove();
+                                    }
+                                    break;
+                                case "user":
+                                    if (response.type == 'success') {
+                                        $('.msg-flash .alert').remove();
+                                        $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+                                        $(element + '' + response.id).parents('#formUser' + response.id).remove();
+                                    }
+                                    break;
+                                case "action":
                                     $('.msg-flash .alert').remove();
                                     $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                                    $(element + '' + response.id).parents('#formUser' + response.id).remove();
-                                }
-                                break;
+                                    $(element + '' + response.id).parents('#formLeave' + response.id).remove();
+                                    break;
+                            }
                         }
                     },
                     error: function (response) {
@@ -372,50 +484,58 @@ var crud = {
         });
     },
 
-    addAction: function (type, authTokenVALUE, userID) {
+    ajaxAddAction: function (type, authTokenVALUE, userID) {
         $('.form-add-' + type).on('submit', function (e) {
-            e.preventDefault();
-            /**
-             * TODO :
-             * 
-             * - Create Route on API
-             * -- Get type / start / end / justification / user_id
-             * -- Set created (now) / status (0: declined / 1: accepted / 2: in progress) / view (0)
-             * -- Persist & Flush
-             * 
-             * - Show confirm message : Demande bien enregistré et visible dans les notifications et/ou profil (3 dernières)
-             * - Show history on this page
-             */
+            e.preventDefault();            
+            
+            // Make start & end input (rest)
+            if(type == 'rest') {
+                $('.start').val( $('.restDay').val() + ' ' + $('.startAction').val() );
+                $('.end').val( $('.restDay').val() + ' ' + $('.endAction').val() );
+            }
 
-            var api = "http://127.0.0.1:8000/action/create/" + userID;
-            $.ajax({
-                url: api,
-                type: 'POST',
-                data: $(this).serialize(),
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
-                },
-                success: function (response) {
-                    switch (type) {
-                        case "leave":
-                            $('.msg-flash .alert').remove();
-                            $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                            console.log(response);
-                            break;
-                        case "rest":
-                            
-                            break;
-                        case "hours":
-                            
-                            break;
+            var start = $(this).find('.start');
+            var end = $(this).find('.end');
+            var justification = $(this).find('.justification');
+            var error = utils.checkActionFields(start, end, justification);
+
+            if(!error) {
+                var api = "http://127.0.0.1:8000/action/create/" + type + "/" + userID;
+                $.ajax({
+                    url: api,
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+                    },
+                    success: function (response) {
+                        switch (type) {
+                            case "leave":
+                                utils.removeHTML("level2Leave");
+                                $('.msg-flash .alert').remove();
+                                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+                                crud.ajaxSimpleList('http://127.0.0.1:8000/actions/leave/' + userID, $('.leave-list tbody'), 'leave', authTokenVALUE);
+                                utils.emptyForm('leave'); 
+                                break;
+                            case "rest":
+                                utils.removeHTML("level2Rest");
+                                $('.msg-flash .alert').remove();
+                                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+                                crud.ajaxSimpleList('http://127.0.0.1:8000/actions/rest/' + userID, $('.rest-list tbody'), 'rest', authTokenVALUE);
+                                utils.emptyForm('rest');
+                                break;
+                            case "hours":
+                                utils.emptyForm('hours');
+                                break;
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response);
+                        $('.msg-flash .alert').remove();
+                        $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.responseJSON.message + '</div>');
                     }
-                },
-                error: function (response) {
-                    console.log(response);
-                    $('.msg-flash .alert').remove();
-                    $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.responseJSON.message + '</div>');
-                }
-            })
+                })
+            }
         });
     },
 };

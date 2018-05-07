@@ -24,6 +24,41 @@ table {
     }
     .td {
       display: table-cell;
+
+      &--created {
+        min-width: 180px;
+      }
+      &--updated {
+        min-width: 100px;
+      }
+      &--justification {
+        max-width: 400px;
+      }
+      &--status {
+        min-width: 100px;
+
+        span {
+          &::before {
+            display: inline-block;
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+          }
+
+
+          &.refused::before {
+            background-color: color('validation', 'no');
+          }
+          &.accepted::before {
+            background-color: color('validation', 'ok');
+          }
+          &.progress::before {
+            background-color: color('validation', 'progress');
+          }
+        }
+      }
     }
     tr, .tr {
       &:nth-child(odd) {

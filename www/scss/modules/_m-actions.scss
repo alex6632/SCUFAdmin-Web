@@ -36,6 +36,18 @@
       border-top: solid 1px color('gray', 'super-light');
       cursor: pointer;
 
+      .error-msg {
+        color: color('validation', 'no');
+        margin-left: 15px;
+        font-size: 12px;
+        font-weight: 700;
+
+        &--top {
+          display: block;
+          margin-top: -30px; 
+        }
+      }
+
       &:last-child {
         border-bottom: solid 1px color('gray', 'super-light');
       }

@@ -14,6 +14,12 @@ var utils = {
                 $('.action__list__item.list div').remove();
                 $('.user-list tbody form').remove();
                 break;
+            case "level2Leave":
+                $('.leave-list tbody form').remove();
+                break;
+            case "level2Rest":
+                $('.rest-list tbody form').remove();
+                break;
         }
     },
 
@@ -39,6 +45,14 @@ var utils = {
                 $('.user-list').off('click', 'form .editCanceled');
                 $('.user-list').off('click', 'form .edit');
                 break;
+            case "level2Leave":
+                $('.form-add-leave').off('submit');
+                $('.leave-list').off('click', '.delete');
+                break;
+            case "level2Rest":
+                $('.form-add-rest').off('submit');
+                $('.rest-list').off('click', '.delete');
+                break;
         }
     },
 
@@ -52,6 +66,18 @@ var utils = {
                 $('.jsFormAddUser input:password').val('');
                 $('.jsFormAddUser select').prop('selectedIndex', 0);
                 $('.jsFormAddUser input:checkbox').removeAttr('checked');
+                break;
+            case "leave":
+                $('.form-add-leave input:text').val('');
+                $('.form-add-leave textarea').val('');
+                break;
+            case "rest":
+                $('.form-add-rest input:text').val('');
+                $('.form-add-rest textarea').val('');
+                break;
+            case "hours":
+                $('.form-add-hours input:text').val('');
+                $('.form-add-hours textarea').val('');
                 break;
         }
     },
@@ -74,6 +100,7 @@ var utils = {
             case "profile":
                 page.getSetting('coeff', authTokenVALUE);
                 page.profile(authTokenVALUE, userID);
+                page.refreshProfile(authTokenVALUE, userID);
             break;
         }
     },
@@ -162,5 +189,35 @@ var utils = {
         });
         //lowercase, asciifolding
 
+    },
+    /**
+     * CHECK FIELDS
+     */
+    checkActionFields: function (start, end, justification) {
+        var error = false;
+        var regex = new RegExp('[0-9]{2}-[0-9]{2}-[0-9]{4} [0-9]{2}:[0-9]{2}');
+
+        if(!regex.test(start.val()) || !regex.test(end.val()) || justification.val() == '' ) { 
+            error = true; 
+        }
+
+        if(!regex.test(start.val())) {
+            start.next().text('Format incorrect.');
+        } else {
+            start.next().text('');
+        }
+
+        if(!regex.test(end.val())) {
+            end.next().text('Format incorrect.');
+        } else {
+            end.next().text('');
+        }
+
+        if(justification.val() == '') {
+            justification.next().text('La justification est obligatoire');
+        } else {
+            justification.next().text('');
+        }
+        return error;
     }
 };

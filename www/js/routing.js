@@ -56,9 +56,16 @@ var routing = {
                     crud.ajaxEditUser(authTokenVALUE);
                     break;
                 case "rest":
+                    jsGoLevel1.attr('id', 'level2Rest');
+                    crud.ajaxSimpleList('http://127.0.0.1:8000/actions/rest/' + userID, $('.rest-list tbody'), 'rest', authTokenVALUE);
+                    crud.ajaxAddAction('rest', authTokenVALUE, userID);
+                    crud.ajaxRemove('.rest-list', '.rest-list #deleteRest', 'action', authTokenVALUE, 'rest');
                     break;
                 case "leave":
-                    crud.addAction('leave', authTokenVALUE, userID);
+                    jsGoLevel1.attr('id', 'level2Leave');
+                    crud.ajaxSimpleList('http://127.0.0.1:8000/actions/leave/' + userID, $('.leave-list tbody'), 'leave', authTokenVALUE);
+                    crud.ajaxAddAction('leave', authTokenVALUE, userID);
+                    crud.ajaxRemove('.leave-list', '.leave-list #deleteLeave', 'action', authTokenVALUE, 'leave');
                     break;
                 case "hours":
                     break;

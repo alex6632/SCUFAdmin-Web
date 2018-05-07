@@ -11,7 +11,7 @@ var page = {
             success: function (response) {
                 //console.log("Profile response : ", response);
                 var role = "";
-                switch (response.role) {
+                switch (response[0].role) {
                     case 1:
                         role = 'Salarié';
                         break;
@@ -31,7 +31,9 @@ var page = {
                 var percentageHoursTodo = (response[0].hoursDone / response[0].hoursTodo) * 100;
                 var percentageHoursPlanified = (response[0].hoursPlanifiedByMe / hoursToPlanify) * 100;
                 var coeff = localStorage.getItem('settingCOEFF');
-                var repos = response[0].overtime / coeff;
+                var restHours = Math.trunc((response[0].overtime * coeff) / 60);
+                var restMinutes = (response[0].overtime * coeff) % 60;
+                var rest = restHours == 0 ? restMinutes + '<span>MIN</span>' : restHours + '<span>H</span>' + restMinutes;
                 if(response[0].access.length > 0) {
                     var listAccess = '';
                     for (var i = 0; i < response[0].access.length; i++) {
@@ -45,21 +47,21 @@ var page = {
                     listAccess = 'Aucun';
                 }
 
-                $('#profile-firstname').html(response[0].firstname);
-                $('#profile-lastname').html(response[0].lastname);
-                $('#profile-username').html(response[0].username);
-                $('#profile-role').html(response[0].role);
-                $('#profile-superior').html(response[1]);
-                $('#profile-access').html(listAccess);
+                $('#profile-firstname').text(response[0].firstname);
+                $('#profile-lastname').text(response[0].lastname);
+                $('#profile-username').text(response[0].username);
+                $('#profile-role').text(role);
+                $('#profile-superior').text(response[1]);
+                $('#profile-access').text(listAccess);
 
-                $('.profile-page__status').text(role);
+                //$('.profile-page__status').text(role);
                 $('#jsHoursTodo .progress-bar__ratio').html('<span class="ratio-ok">' + response[0].hoursDone + '</span>/' + response[0].hoursTodo + '<span>H</span>');
                 $('#jsHoursTodo .progress-bar__bar__text, #jsHoursTodo .progress-bar__bar__wip span').text(percentageHoursTodo + '%');
                 $('#jsHoursTodo .progress-bar__bar__wip').attr('style', 'width: ' + percentageHoursTodo + '%;');
                 $('#jsHoursPlanified .progress-bar__ratio').html('<span class="ratio-ok">' + response[0].hoursPlanifiedByMe + '</span>/' + hoursToPlanify + '<span>H</span>');
                 $('#jsHoursPlanified .progress-bar__bar__text, #jsHoursPlanified .progress-bar__bar__wip span').text(percentageHoursPlanified + '%');
                 $('#jsHoursPlanified .progress-bar__bar__wip').attr('style', 'width: ' + percentageHoursPlanified + '%;');
-                $('.profile-page__info-hours__nb').html(repos + '<span>H</span>');
+                $('.profile-page__info-hours__nb').html(rest);
             },
             error: function (response) {
                 console.log(response);
@@ -68,6 +70,28 @@ var page = {
                 $('.msg-flash').append('<div class="alert alert--error" role="alert">' + error + '</div>');
             }
         });
+    },
+
+    refreshProfile: function (authTokenVALUE, userID) {
+      $('.jsRefreshProfile').on('click', function() {
+        // Reset all data
+        $('#profile-firstname').text('');
+        $('#profile-lastname').text('');
+        $('#profile-username').text('');
+        $('#profile-role').text('');
+        $('#profile-superior').text('');
+        $('#profile-access').text('');
+        $('#jsHoursTodo .progress-bar__ratio').html('');
+        $('#jsHoursTodo .progress-bar__bar__text, #jsHoursTodo .progress-bar__bar__wip span').text('%');
+        $('#jsHoursTodo .progress-bar__bar__wip').attr('style', 'width: 0%;');
+        $('#jsHoursPlanified .progress-bar__ratio').html('<span class="ratio-ok"></span>/<span>H</span>');
+        $('#jsHoursPlanified .progress-bar__bar__text, #jsHoursPlanified .progress-bar__bar__wip span').text('%');
+        $('#jsHoursPlanified .progress-bar__bar__wip').attr('style', 'width: 0%;');
+        $('.profile-page__info-hours__nb').html('');
+
+        // Re inject data
+        page.profile(authTokenVALUE, userID);
+      });
     },
 
     getSetting: function (element, authTokenVALUE) {

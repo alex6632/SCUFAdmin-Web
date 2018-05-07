@@ -173,66 +173,137 @@
             <!-- Repos -->
             <div class="level2" id="rest">
                 <div class="action">
-                    <span class="action__info">Remarque : la date doit être identique</span>
-                    <ul class="action__list">
-                        <li class="action__list__item">
-                            <input type="datetime-local">
-                        </li>
-                        <li class="action__list__item">
-                            <input type="time">
-                        </li>
-                    </ul>
-                    <ul class="action__list">
-                        <li class="action__list__item textarea">
-                            <textarea name="" id="" cols="30" rows="10" placeholder="Justification"></textarea>
-                        </li>
-                    </ul>
+                    <form action="" class="form-add-rest">
+                        <input type="hidden" value="rest" name="type">
+                        <ul class="action__list">
+                            <li class="action__list__item">
+                                <span>Date : </span>
+                                <input type="text" placeholder="JJ-MM-AAAA" class="restDay">
+                                <span class="error-msg"></span>
+                            </li>
+                            <li class="action__list__item">
+                                <span>Heure de début : </span>
+                                <input type="text" placeholder="HH:MM" class="startAction">
+                                <input type="hidden" name="start" value="" class="start">
+                                <span class="error-msg"></span>
+                            </li>
+                            <li class="action__list__item">
+                                <span>Heure de fin : </span>
+                                <input type="text" placeholder="HH:MM" class="endAction">
+                                <input type="hidden" name="end" value=""  class="end">
+                                <span class="error-msg"></span>
+                            </li>
+                        </ul>
+                        <span class="action__info">Veuillez respecter le bon format. (Format 24H)</span>
+                        <span class="action__info">Par exemple pour le 1er Juillet 2018 : 01-01-2018</span>
+                        <span class="action__info">Par exemple pour 9h30 : 09:30</span>
+                        <ul class="action__list">
+                            <li class="action__list__item textarea">
+                                <textarea name="justification" id="" cols="30" rows="10" placeholder="Justification (obligatoire)" class="justification"></textarea>
+                                <span class="error-msg error-msg--top"></span>
+                            </li>
+                        </ul>
+                        <input type="submit" class="button button--small button--mg" value="Soumettre">
+                    </form>
                 </div>
+                <div class="title">Historique des demandes</div>
+                <table class="list rest-list">
+                    <thead>
+                        <tr>
+                            <th>Date soumission</th>
+                            <th>M à j</th>
+                            <th>Date de début</th>
+                            <th>Date de fin</th>
+                            <th>Justification</th>
+                            <th>Statut</th>
+                            <th class="action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
 
             <!-- Congés -->
             <div class="level2" id="leave">
                 <div class="action">
                     <form action="" class="form-add-leave">
+                        <input type="hidden" value="leave" name="type">
                         <ul class="action__list">
                             <li class="action__list__item">
-                                <input type="date">
+                                <input type="text" name="start" placeholder="JJ-MM-AAAA HH-MM" class="start">
+                                <span class="error-msg"></span>
                             </li>
                             <li class="action__list__item">
-                                <input type="date">
+                                <input type="text" name="end" placeholder="JJ-MM-AAAA HH-MM" class="end">
+                                <span class="error-msg"></span>
                             </li>
                         </ul>
+                        <span class="action__info">Veuillez respecter le bon format. Par exemple pour le 1er Juillet 2018 à 09 heures : 01-01-2018 09:00</span>
                         <ul class="action__list">
                             <li class="action__list__item textarea">
-                                <textarea name="" id="" cols="30" rows="10" placeholder="Justification" required></textarea>
+                                <textarea name="justification" id="" cols="30" rows="10" placeholder="Justification" class="justification"></textarea>
+                                <span class="error-msg error-msg--top"></span>
                             </li>
                         </ul>
                         <input type="submit" class="button button--small button--mg" value="Soumettre">
                     </form>
                 </div>
+                <div class="title">Historique des demandes</div>
+                <table class="list leave-list">
+                    <thead>
+                        <tr>
+                            <th>Date soumission</th>
+                            <th>M à j</th>
+                            <th>Date de début</th>
+                            <th>Date de fin</th>
+                            <th>Justification</th>
+                            <th>Statut</th>
+                            <th class="action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
 
             <!-- Heures supp -->
             <div class="level2" id="hours">
                 <div class="action">
-                    <ul class="action__list">
-                        <li class="action__list__item">
-                            <select name="" id="">
-                                <option value="">Alexandre Simonin</option>
-                                <option value="">Jonathan Guillemot</option>
-                            </select>
-                        </li>
-                    </ul>
-                    <span class="action__info">Remarque : la date doit être identique</span>
-                    <ul class="action__list">
-                        <li class="action__list__item">
-                            <input type="date">
-                        </li>
-                        <li class="action__list__item">
-                            <input type="time">
-                        </li>
-                    </ul>
+                    <form action="" class="form-add-hours">
+                        <ul class="action__list">
+                            <li class="action__list__item">
+                                <select name="" id="">
+                                    <option value="">Alexandre Simonin</option>
+                                    <option value="">Jonathan Guillemot</option>
+                                </select>
+                            </li>
+                        </ul>
+                        <span class="action__info">Remarque : la date doit être identique</span>
+                        <ul class="action__list">
+                            <li class="action__list__item">
+                                <input type="date">
+                            </li>
+                            <li class="action__list__item">
+                                <input type="time">
+                            </li>
+                        </ul>
+                        <input type="submit" class="button button--small button--mg" value="Soumettre">
+                    </form>
                 </div>
+                <div class="title">Historique des demandes</div>
+                <table class="list leave-list">
+                    <thead>
+                        <tr>
+                            <th>Date soumission</th>
+                            <th>M à j</th>
+                            <th>Date de début</th>
+                            <th>Date de fin</th>
+                            <th>Justification</th>
+                            <th>Statut</th>
+                            <th class="action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
 
             <!-- User -->
@@ -391,7 +462,7 @@
                 <div class="profile-page__col">
                     <div class="profile-page__col__nb profile-page__col__nb--no">11</div>
                     <span>h</span>
-                    <div>non validées</div>
+                    <div>non effectuées</div>
                 </div>
             </div>
 
