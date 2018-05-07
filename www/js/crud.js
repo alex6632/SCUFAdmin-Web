@@ -156,20 +156,20 @@ var crud = {
               }
               $(element).append(
                 '<form action="" id="formUser' + response[i].id + '" class="tr">' +
-                '<div class="td">' + response[i].id + '</div>' +
-                '<div class="td"><input type="text" name="firstname" value="' + response[i].firstname + '" disabled></div>' +
-                '<div class="td"><input type="text" name="lastname" value="' + response[i].lastname + '" disabled></div>' +
-                '<div class="td"><input type="text" name="username" value="' + response[i].username + '" disabled></div>' +
-                '<div class="td">' + role + '</div>' +
-                '<div class="td"><input type="text" name="superior" value="' + superior + '" disabled></div>' +
-                '<div class="td user-access-list">' + listAccess + '</div>' +
-                '<div class="td"><input type="text" name="hours_todo" value="' + response[i].hoursTodo + '" disabled></div>' +
-                '<div class="td">' +
-                '<span class="link-table editEnabled">Editer</span>' +
-                '<span class="link-table edit" id="editUser' + response[i].id + '">Valider</span>' +
-                '<span class="link-table editCanceled">Annuler</span>' +
-                '<span class="link-table delete" id="deleteUser' + response[i].id + '">Supprimer</span>' +
-                '</div>' +
+                  '<div class="td">' + response[i].id + '</div>' +
+                  '<div class="td"><input type="text" name="firstname" value="' + response[i].firstname + '" disabled></div>' +
+                  '<div class="td"><input type="text" name="lastname" value="' + response[i].lastname + '" disabled></div>' +
+                  '<div class="td"><input type="text" name="username" value="' + response[i].username + '" disabled></div>' +
+                  '<div class="td">' + role + '</div>' +
+                  '<div class="td"><input type="text" name="superior" value="' + superior + '" disabled></div>' +
+                  '<div class="td user-access-list">' + listAccess + '</div>' +
+                  '<div class="td"><input type="text" name="hours_todo" value="' + response[i].hoursTodo + '" disabled></div>' +
+                  '<div class="td">' +
+                  '<span class="link-table editEnabled">Editer</span>' +
+                  '<span class="link-table edit" id="editUser' + response[i].id + '">Valider</span>' +
+                  '<span class="link-table editCanceled">Annuler</span>' +
+                  '<span class="link-table delete" id="deleteUser' + response[i].id + '">Supprimer</span>' +
+                  '</div>' +
                 '</form>'
               );
             }
@@ -258,6 +258,52 @@ var crud = {
                 '<div class="td"><input type="text" name="start" value="' + response[i].start + '" disabled></div>' +
                 '<div class="td"><input type="text" name="end" value="' + response[i].end + '" disabled></div>' +
                 '<div class="td td--justification"><teaxtarea name="justification" disabled>' + response[i].justification + '</textarea></div>' +
+                '<div class="td td--status"><span class="' + css + '">' + status + '</span></div>' +
+                '<div class="td">' + action + '</div>' +
+                '</form>'
+              );
+            }
+            break;
+          case "hours":
+            var status = 'En attente';
+            var css = 'progress';
+            var action = '';
+            console.log(response);
+            for (var i = 0; i < response.length; i++) {
+              switch (response[i].status) {
+                case 0:
+                  status = 'Refusé';
+                  css = 'refused';
+                  break;
+                case 1:
+                  status = 'Accepté';
+                  css = 'accepted';
+                  break;
+                case 2:
+                  status = 'En attente';
+                  css = 'progress';
+                  break;
+                default:
+                  status = 'En attente';
+                  css = 'progress';
+              }
+              if (response[i].status == 2) {
+                action = '' +
+                  '<span class="link-table editEnabled">Editer</span>' +
+                  '<span class="link-table edit" id="editHours' + response[i].id + '">Valider</span>' +
+                  '<span class="link-table editCanceled">Annuler</span>' +
+                  '<span class="link-table delete" id="deleteHours' + response[i].id + '">Supprimer</span>';
+              } else {
+                action = 'La demande n\'est plus modifiable';
+              }
+              $(element).append(
+                '<form action="" id="formHours' + response[i].id + '" class="tr">' +
+                '<div class="td td--created">Le ' + response[i].created + '</div>' +
+                '<div class="td td--updated">' + response[i].updated + '</div>' +
+                '<div class="td">' + response[i].start + '</div>' +
+                '<div class="td"><input type="text" name="start" value="' + response[i].start + '" disabled></div>' +
+                '<div class="td"><input type="text" name="end" value="' + response[i].end + '" disabled></div>' +
+                '<div class="td"><select name="recipient" disabled><option value="">' + response[i].recipient + '</option></select></div>' +
                 '<div class="td td--status"><span class="' + css + '">' + status + '</span></div>' +
                 '<div class="td">' + action + '</div>' +
                 '</form>'
@@ -481,18 +527,43 @@ var crud = {
   ajaxAddAction: function (type, authTokenVALUE, userID) {
     $('.form-add-' + type).on('submit', function (e) {
       e.preventDefault();
+      var error = false;
+      var start = "";
+      var end = "";
+      var errorJustification = false;
+      var justification = $(this).find('.justification');
 
-      // Make start & end input (rest)
-      if (type == 'rest') {
-        $('.start').val($('.restDay').val() + ' ' + $('.startAction').val());
-        $('.end').val($('.restDay').val() + ' ' + $('.endAction').val());
+      if (type == 'rest' || type == 'hours') {
+        var actionDay = $(this).find('.actionDay');
+        var errorDay = utils.checkDate(actionDay);
+
+        var startAction = $(this).find('.startAction');
+        var endAction = $(this).find('.endAction');
+        var errorHours = utils.checkHours(startAction, endAction);
+
+        errorJustification = utils.checkJustification(justification);
+
+        //if(!errorDay && !errorHours) {
+        start = $(this).find('.start').val(actionDay.val() + ' ' + startAction.val());
+        end = $(this).find('.end').val(actionDay.val() + ' ' + endAction.val());
+        //error = utils.checkFullDate(start, end);
+        //}
+        if (errorDay || errorHours || errorJustification) {
+          error = true;
+        }
+      } else { // "leave" type
+        start = $(this).find('.start');
+        end = $(this).find('.end');
+        errorJustification = utils.checkJustification(justification);
+        errorDates = utils.checkFullDate(start, end, justification);
+
+        if (errorJustification || errorerrorDatesHours) {
+          error = true;
+        }
       }
 
-      var start = $(this).find('.start');
-      var end = $(this).find('.end');
-      var justification = $(this).find('.justification');
-      var error = utils.checkActionFields(start, end, justification);
 
+      // TODO : Remove if
       if (!error) {
         var api = "http://127.0.0.1:8000/action/create/" + type + "/" + userID;
         $.ajax({
@@ -519,6 +590,10 @@ var crud = {
                 utils.emptyForm('rest');
                 break;
               case "hours":
+                utils.removeHTML("level2Hours");
+                $('.msg-flash .alert').remove();
+                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+                crud.ajaxSimpleList('http://127.0.0.1:8000/actions/hours/' + userID, $('.hours-list tbody'), 'hours', authTokenVALUE);
                 utils.emptyForm('hours');
                 break;
             }

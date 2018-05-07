@@ -154,4 +154,23 @@ var page = {
       }
     });
   },
+
+  getEmployees: function (authTokenVALUE, userID) {
+    var api = "http://127.0.0.1:8000/users/" + userID;
+    $.ajax({
+      url: api,
+      type: 'GET',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+      },
+      success: function (response) {
+        for(var i=0; i<response.length; i++) {
+          $('#jsEmployeesList').append('<option value="' + response[i].id + '">' + response[i].firstname + ' ' + response[i].lastname + '</option>');
+        }
+      },
+      error: function (response) {
+        console.log(response);
+      }
+    });
+  }
 };
