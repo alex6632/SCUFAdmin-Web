@@ -3,7 +3,7 @@ SCUFAdmin Web
 
 Purpose
 ------------
-"Occurrency" count the occurrences of each word in a text.
+SCUFAdmin Web enables you to manage the working time of your staff, and more...
 
 Dependencies
 -------------
