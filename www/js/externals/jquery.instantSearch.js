@@ -25,7 +25,7 @@
 
     var initInstantSearch = function(el, config) {
         var $input = $(el);
-        console.log($input);
+        //console.log($input);
         var $form = $input.closest('form');
         var $preview = $('<ul class="search__list">').appendTo($form);
 

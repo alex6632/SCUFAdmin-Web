@@ -267,7 +267,6 @@ var page = {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
       },
       success: function (response) {
-        console.log(response);
         if(response[0].count > 0) {
           $('.jsNotifications').find('#push').html('<div class="push">' + response[0].count + '</div>');
         }

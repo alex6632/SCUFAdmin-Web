@@ -6,6 +6,7 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
   <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+  <!-- <link rel="stylesheet" type="text/css" href="../node_modules/fullcalendar/dist/fullcalendar.min.css"> -->
   <link rel="stylesheet" type="text/css" href="dist/css/app.css">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,700|Rajdhani:300,400,500,700" rel="stylesheet">
   <title>SCUF Admin</title>
@@ -19,10 +20,15 @@
   <!-- /Page login -->
 
   <!-- Page planning -->
-  <div class="routing" id="planning">
+  <div class="routing show" id="planning">
     <header class="header">
       <h1 class="title">Planning</h1>
     </header>
+    <div class="calendar-navigation">
+      <div class="calendar-navigation-prev"><span class="icon icon-left-arrow"></span>Précédent</div>
+      <div class="calendar-navigation-next">Suivant<span class="icon icon-right-arrow"></span></div>
+    </div>
+    <div id="calendar"></div>
   </div>
   <!-- /Page planning -->
 
@@ -66,7 +72,7 @@
         <div class="validation-item__justification jsJustificationNo">
           <ul class="action__list">
             <li class="action__list__item textarea">
-              <textarea name="" id="" cols="30" rows="10" placeholder="Justification"></textarea>
+              <textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>
             </li>
           </ul>
         </div>
@@ -81,7 +87,7 @@
           </ul>
           <ul class="action__list">
             <li class="action__list__item textarea">
-              <textarea name="" id="" cols="30" rows="10" placeholder="Justification"></textarea>
+              <textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>
             </li>
           </ul>
         </div>
@@ -114,7 +120,7 @@
         <div class="validation-item__justification jsJustificationNo">
           <ul class="action__list">
             <li class="action__list__item textarea">
-              <textarea name="" id="" cols="30" rows="10" placeholder="Justification"></textarea>
+              <textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>
             </li>
           </ul>
         </div>
@@ -129,7 +135,7 @@
           </ul>
           <ul class="action__list">
             <li class="action__list__item textarea">
-              <textarea name="" id="" cols="30" rows="10" placeholder="Justification"></textarea>
+              <textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>
             </li>
           </ul>
         </div>
@@ -199,7 +205,7 @@
             <span class="action__info">Par exemple pour 9h30 : 09:30</span>
             <ul class="action__list">
               <li class="action__list__item textarea">
-                <textarea name="justification" id="" cols="30" rows="10" placeholder="Justification (obligatoire)" class="justification"></textarea>
+                <textarea name="justification" cols="30" rows="10" placeholder="Justification (obligatoire)" class="justification"></textarea>
                 <span class="error-msg error-msg--top"></span>
               </li>
             </ul>
@@ -207,7 +213,7 @@
           </form>
         </div>
         <div class="title">Historique des demandes</div>
-        <table class="list rest-list">
+        <table class="table list rest-list">
           <thead>
             <tr>
               <th>Date soumission</th>
@@ -247,7 +253,7 @@
             <span class="action__info">Veuillez respecter le bon format. Par exemple pour le 1er Juillet 2018 à 09 heures : 01-01-2018 09:00</span>
             <ul class="action__list">
               <li class="action__list__item textarea">
-                <textarea name="justification" id="" cols="30" rows="10" placeholder="Justification" class="justification"></textarea>
+                <textarea name="justification" cols="30" rows="10" placeholder="Justification" class="justification"></textarea>
                 <span class="error-msg error-msg--top"></span>
               </li>
             </ul>
@@ -255,7 +261,7 @@
           </form>
         </div>
         <div class="title">Historique des demandes</div>
-        <table class="list leave-list">
+        <table class="table list leave-list">
           <thead>
             <tr>
               <th>Date soumission</th>
@@ -310,7 +316,7 @@
           </form>
         </div>
         <div class="title">Historique des demandes</div>
-        <table class="list hours-list">
+        <table class="table list hours-list">
           <thead>
             <tr>
               <th>Date soumission</th>
@@ -380,7 +386,7 @@
           </form>
         </div>
         <div class="title">Liste des utilisateurs</div>
-        <table class="list user-list">
+        <table class="table list user-list">
           <thead>
             <tr>
               <th>Id</th>
@@ -444,7 +450,7 @@
   <!-- /Page actions -->
 
   <!-- Page profil -->
-  <div class="routing show" id="profile">
+  <div class="routing" id="profile">
     <header class="header">
       <div class="header__link header__link--icon jsRefreshProfile">Rafraichir</div>
       <h1 class="title">Votre profil</h1>
@@ -639,6 +645,9 @@
   <!--<script type="text/javascript" src="cordova.js"></script>-->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
+  <script type="text/javascript" src="../node_modules/moment/min/moment.min.js"></script>
+  <script type="text/javascript" src="../node_modules/fullcalendar/dist/fullcalendar.min.js"></script>
+  <script type="text/javascript" src="../node_modules/fullcalendar/dist/locale/fr.js"></script>
   <script type="text/javascript" src="dist/js/app.js"></script>
 </body>
 

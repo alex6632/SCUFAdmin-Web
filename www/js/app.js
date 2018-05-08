@@ -1,6 +1,5 @@
 var me = {
 
-
     init: function () {
 
         // CONNECT
@@ -51,6 +50,9 @@ var me = {
 
             // SEARCH USER - AUTOCOMPLETE -
             utils.ajaxSearchUser('jsSearchUser');
+
+            // CALENDAR
+            calendar.init();
         }
 
     },

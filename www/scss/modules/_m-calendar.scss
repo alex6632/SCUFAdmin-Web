@@ -1,0 +1,156 @@
+/*
+ * Custom Table Calendar
+ * ---------------------
+ */
+#calendar {
+  font-family: font('secondary');
+  font-size: 13px;
+
+  hr {
+    display: none !important;
+  }
+
+  table {
+    width: 100%;
+
+    td {
+      //border: solid 1px color('gray', 'light');
+    }
+  }
+
+  .fc-header-toolbar {
+    background-color: color('background', 'invert');
+    border-top: 2px solid color('primary');
+    padding: 25px 25px 0 25px;
+
+    h2 {
+      color: color('foreground', 'invert');
+      font-weight: 200;
+      font-size: 25px;
+    }
+  }
+
+  /*.fc-today {
+    background-color: color('primary');
+  }*/
+
+  .fc-head {
+    //background-color: color('gray', 'extra-light');
+    //border-bottom: 2px solid color('gray', 'super-light');
+    //border-bottom: 2px solid color('background', 'invert');
+
+    .fc-head-container {
+
+      .fc-widget-header {
+        margin: 0;
+        border: 0;
+
+        .fc-day-header {
+          height: 40px;
+          vertical-align: bottom;
+          text-align: right;
+          text-transform: uppercase;
+          color: color('gray', 'base');
+          padding-right: 6px;
+        }
+      }
+    }
+  }
+  
+  .fc-body {
+    // Toute la journée
+    .fc-day-grid {
+      border-bottom: 2px solid color('gray', 'super-light');
+      background-color: color('gray', 'super-light');
+
+      .fc-bg {
+        tr {
+          .fc-axis {
+            padding-right: 4px;
+            text-align: right;
+            border-right: solid 1px color('gray', 'super-light');
+            span {
+              color: color('foreground');
+              font-size: 13px;
+              font-weight: 700;
+            }
+          }
+        }
+      }
+    }
+    // Reste
+    .fc-time-grid-container {
+      .fc-time-grid {
+        .fc-slats {
+          tr {
+            td {
+              //border-top: solid 1px color('gray', 'light');
+              &.fc-axis {
+                padding-right: 4px;
+                text-align: right;
+                border-right: solid 1px color('gray', 'super-light'); 
+              }
+            }
+            &.fc-minor {
+              height: 22px;
+
+              td {
+                line-height: 22px;
+                border-top: dotted 1px color('gray', 'extra-light');
+                border-bottom: solid 1px color('gray', 'super-light');
+              }
+            }
+          }
+        }
+      }
+      
+    
+    }
+  }
+}
+
+  
+
+/*
+ * Custom Navigation
+ * -----------------
+ * Left & right button
+ */
+.calendar-navigation {
+  position: absolute;
+  right: 25px;
+  top: 107px;
+
+  &-prev {
+    margin-right: 60px; 
+  }
+
+  div {
+    display: inline-block;
+    color: color('foreground', 'invert');
+    font-size: 11px;
+    text-transform: uppercase;
+    cursor: pointer;
+    @include transition();
+
+    .icon {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 14px;
+      margin: 0 4px 3px 4px;
+    }
+
+    &:hover {
+      color: color('primary');
+      @include transition();
+    }
+  }
+
+  
+  .icon-left-arrow {
+
+  }
+  .icon-right-arrow {
+
+  }
+}
