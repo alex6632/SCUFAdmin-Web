@@ -23,5 +23,9 @@
         "gulp-sass": "^3.1.0",
         "gulp-uglify": "^2.0.0",
         "gulp-sourcemaps": "^2.5.1"
+    },
+    "dependencies": {
+        "fullcalendar": "^3.9.0",
+        "moment": "^2.22.1"
     }
 }
