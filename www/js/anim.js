@@ -15,7 +15,7 @@ var anim = {
         })
     },
 
-    fadeInPage: function (element) {
+    fadeInPage: function (element, authTokenVALUE, userID) {
         $('.' + element).on('click', function () {
             $(this).toggleClass('current');
             utils.removeHTML();
@@ -24,10 +24,17 @@ var anim = {
             if (elementToShow.css('display') == 'none') {
                 elementToShow.fadeIn();
                 $('.tab-bar__overlay').fadeIn();
+                if(element == "jsNotifications") {
+                  page.notifications(authTokenVALUE, userID);
+                }
             } else {
                 elementToShow.fadeOut();
                 $('.tab-bar__overlay').fadeOut();
+                if(element == "jsNotifications") {
+                  utils.removeHTML("notifications");
+                }
             }
+            
         })
     },
 
@@ -46,11 +53,11 @@ var anim = {
     swipe: function (element) {
         var ts;
         var el = $('.' + element);
-        el.on('touchstart', function (e) {
+        el.on('touchstart', '.notification__list__item', function (e) {
             ts = e.originalEvent.touches[0].clientX;
         });
 
-        el.on('touchend', function (e) {
+        el.on('touchend', '.notification__list__item', function (e) {
             var te = e.originalEvent.changedTouches[0].clientX;
             if (ts > te + 5) {
                 $('.notification__list__item').removeClass('swipe');
@@ -59,6 +66,18 @@ var anim = {
                 $(this).removeClass('swipe');
             }
         });
+    },
+
+    swipeDesktop: function (element) {
+      var el = $('.' + element);
+      el.on('click', '.notification__list__item', function (e) {
+        if($(this).hasClass('not-seen')) {
+          if (!$(this).hasClass('swipe')) {
+            $('.notification__list__item').removeClass('swipe');
+          }
+          $(this).toggleClass('swipe');
+        }
+      });
     },
 
     switch: function (element) {

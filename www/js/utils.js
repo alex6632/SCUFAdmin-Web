@@ -21,7 +21,11 @@ var utils = {
         $('.rest-list tbody form').remove();
         break;
       case "level2Hours":
+        $('#jsEmployeesList option').remove();
         $('.hours-list tbody form').remove();
+        break;
+      case "notifications":
+        $('.notification__list li').remove();
         break;
     }
   },
@@ -93,7 +97,7 @@ var utils = {
     var activePage = $('.tab-bar').find('.current').attr('data-routing');
     switch (activePage) {
       case "notification":
-
+        
         break;
       case "planning":
 
@@ -200,15 +204,24 @@ var utils = {
   /**
    * CHECK DATES & HOURS
    */
-  checkDate: function (myDate) {
+  checkDate: function (startDate, endDate = "") {
     var error = false;
     var regex = new RegExp('[0-9]{2}-[0-9]{2}-[0-9]{4}');
 
-    if (!regex.test(myDate.val())) {
+    if (!regex.test(startDate.val())) {
       error = true;
-      myDate.next().text('Format incorrect.');
+      startDate.next().text('Format incorrect.');
     } else {
-      myDate.next().text('');
+      startDate.next().text('');
+    }
+
+    if(endDate != "") {
+      if (!regex.test(endDate.val())) {
+        error = true;
+        endDate.next().text('Format incorrect.');
+      } else {
+        endDate.next().text('');
+      }
     }
     return error;
   },
@@ -252,7 +265,7 @@ var utils = {
     return error;
   },
 
-  checkFullDate: function (start, end, justification) {
+  checkFullDate: function (start, end) {
     var error = false;
     var regex = new RegExp('[0-9]{2}-[0-9]{2}-[0-9]{4} [0-9]{2}:[0-9]{2}');
 

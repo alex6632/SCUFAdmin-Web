@@ -82,37 +82,43 @@ var page = {
       $(this).parents('.profile-page__edit__text--update-pwd').find('.container-update-pwd').fadeOut();
     })
     $('#jsUpdatePassword').on('click', function () {
-      var api = "http://127.0.0.1:8000/user/update/" + userID;
       previousPassword = $('#previous_password').val();
       plainPassword = $('#new_password').val();
       confirmPassword = $('#confirm_new_password').val();
-      var data = {
-        previous_password: previousPassword,
-        plain_password: plainPassword,
-        confirm_password: confirmPassword
-      };
-      $.ajax({
-        url: api,
-        type: 'PATCH',
-        data: data,
-        beforeSend: function (xhr) {
-          xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
-        },
-        success: function (response) {
+
+      if(previousPassword.length != "" && plainPassword.length != "" && confirmPassword.length != "") {
+        var api = "http://127.0.0.1:8000/user/update/" + userID;
+        var data = {
+          previous_password: previousPassword,
+          plain_password: plainPassword,
+          confirm_password: confirmPassword
+        };
+        $.ajax({
+          url: api,
+          type: 'PATCH',
+          data: data,
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+          },
+          success: function (response) {
+              $('.msg-flash .alert').remove();
+              $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+              //page.refreshProfile(authTokenVALUE, userID);
+              $('#profile-cancel-password').fadeOut();
+              $('#profile-update-password').fadeIn();
+              $('#profile-cancel-password').parents('.profile-page__edit__text--update-pwd').find('input').val('');
+              $('#profile-cancel-password').parents('.profile-page__edit__text--update-pwd').find('.container-update-pwd').fadeOut();
+          },
+          error: function (response) {
+            console.log(response);
             $('.msg-flash .alert').remove();
-            $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-            //page.refreshProfile(authTokenVALUE, userID);
-            $('#profile-cancel-password').fadeOut();
-            $('#profile-update-password').fadeIn();
-            $('#profile-cancel-password').parents('.profile-page__edit__text--update-pwd').find('input').val('');
-            $('#profile-cancel-password').parents('.profile-page__edit__text--update-pwd').find('.container-update-pwd').fadeOut();
-        },
-        error: function (response) {
-          console.log(response);
-          $('.msg-flash .alert').remove();
-          $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.responseJSON.message + '</div>');
-        }
-      })
+            $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.responseJSON.message + '</div>');
+          }
+        })
+      } else {
+        $('.msg-flash .alert').remove();
+        $('.msg-flash').append('<div class="alert alert--error" role="alert">Tous les champs sont obligatoire !</div>');
+      }
     });
   },
 
@@ -166,6 +172,104 @@ var page = {
       success: function (response) {
         for(var i=0; i<response.length; i++) {
           $('#jsEmployeesList').append('<option value="' + response[i].id + '">' + response[i].firstname + ' ' + response[i].lastname + '</option>');
+        }
+      },
+      error: function (response) {
+        console.log(response);
+      }
+    });
+  },
+
+  notifications: function(authTokenVALUE, userID) {
+    var api = "http://127.0.0.1:8000/notifications/" + userID;
+    $.ajax({
+      url: api,
+      type: 'GET',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+      },
+      success: function (response) {
+        console.log(response);
+        $('.notification__wait').text(response.count + ' en attente de traitement');
+        for(var i=0; i<response.list.length; i++) {
+          let li = '';
+          let view = response.list[i].view == 0 ? "not-seen" : "";
+          switch(response.list[i].type) {
+            case 'rest':
+              li = '' +
+              '<li class="notification__list__item ' + view + '">' +
+                '<div class="notification__author">De ' + response.userFirstName + ' ' + response.userLastName + '</div>' +
+                '<div>Demande de repos compensatoire</div>' +
+                '<div>Le ' + response.list[i].startDate + ' de ' + response.list[i].startHours + ' à ' + response.list[i].endHours + '</div>' +
+                '<div class="notification__justification">' + response.list[i].justification + '</div>' +
+                '<div class="options">' +
+                '<div class="options__inner options__inner--approve jsApproveAction">' +
+                  '<span>Accepter</span>' +
+                '</div>' +
+                '<div class="options__inner options__inner--decline jsADeclineAction">' +
+                  '<span>Décliner</span>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+              '</li>';
+              break;
+            case 'hours':
+              li = '' +
+              '<li class="notification__list__item ' + view + '">' +
+                '<div class="notification__author">De ' + response.recipientFirstName + ' ' + response.recipientLastName + '</div>' +
+                '<div>Demande d\'heures supplémentaires : XXh</div>' +
+                '<div>Le ' + response.list[i].startDate + ' de ' + response.list[i].startHours + ' à ' + response.list[i].endHours + '</div>' +
+                '<div class="notification__motivation">Acceptez ! <br> Les heures supplémentaires vous seront bientôt récompensées par un repos compensatoire !</div>' +
+                '<div class="options">' +
+                  '<div class="options__inner options__inner--approve jsApproveAction">' +
+                    '<span>Accepter</span>' +
+                  '</div>' +
+                  '<div class="options__inner options__inner--decline jsADeclineAction">' +
+                    '<span>Décliner</span>' +
+                  '</div>' +
+                '</div>' +
+              '</li>';
+              break;
+            case 'leave':
+              li = '' +
+              '<li class="notification__list__item ' + view + '">' +
+                '<div class="notification__author">De ' + response.userFirstName + ' ' + response.userLastName + '</div>' +
+                '<div>Demande de congés</div>' +
+                '<div>Du ' + response.list[i].startDate + ' au ' + response.list[i].endDate + '</div>' +
+                '<div class="notification__justification">' + response.list[i].justification + '</div>' +
+                '<div class="options">' +
+                  '<div class="options__inner options__inner--approve jsApproveAction">' +
+                    '<span>Accepter</span>' +
+                  '</div>' +
+                  '<div class="options__inner options__inner--decline jsADeclineAction">' +
+                    '<span>Décliner</span>' +
+                  '</div>' +
+                '</div>' +
+              '</li>' +
+              '';
+              break;
+          }
+          $('.notification__list').append(li);
+        }
+      },
+      error: function (response) {
+        console.log(response);
+      }
+    });
+  },
+
+  refreshNotifications: function(authTokenVALUE, userID) {
+    var api = "http://127.0.0.1:8000/notifications/count/" + userID;
+    $.ajax({
+      url: api,
+      type: 'GET',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+      },
+      success: function (response) {
+        console.log(response);
+        if(response[0].count > 0) {
+          $('.jsNotifications').find('#push').html('<div class="push">' + response[0].count + '</div>');
         }
       },
       error: function (response) {

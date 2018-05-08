@@ -156,158 +156,168 @@ var crud = {
               }
               $(element).append(
                 '<form action="" id="formUser' + response[i].id + '" class="tr">' +
-                  '<div class="td">' + response[i].id + '</div>' +
-                  '<div class="td"><input type="text" name="firstname" value="' + response[i].firstname + '" disabled></div>' +
-                  '<div class="td"><input type="text" name="lastname" value="' + response[i].lastname + '" disabled></div>' +
-                  '<div class="td"><input type="text" name="username" value="' + response[i].username + '" disabled></div>' +
-                  '<div class="td">' + role + '</div>' +
-                  '<div class="td"><input type="text" name="superior" value="' + superior + '" disabled></div>' +
-                  '<div class="td user-access-list">' + listAccess + '</div>' +
-                  '<div class="td"><input type="text" name="hours_todo" value="' + response[i].hoursTodo + '" disabled></div>' +
-                  '<div class="td">' +
-                  '<span class="link-table editEnabled">Editer</span>' +
-                  '<span class="link-table edit" id="editUser' + response[i].id + '">Valider</span>' +
-                  '<span class="link-table editCanceled">Annuler</span>' +
-                  '<span class="link-table delete" id="deleteUser' + response[i].id + '">Supprimer</span>' +
-                  '</div>' +
+                '<div class="td">' + response[i].id + '</div>' +
+                '<div class="td"><input type="text" name="firstname" value="' + response[i].firstname + '" disabled></div>' +
+                '<div class="td"><input type="text" name="lastname" value="' + response[i].lastname + '" disabled></div>' +
+                '<div class="td"><input type="text" name="username" value="' + response[i].username + '" disabled></div>' +
+                '<div class="td">' + role + '</div>' +
+                '<div class="td"><input type="text" name="superior" value="' + superior + '" disabled></div>' +
+                '<div class="td user-access-list">' + listAccess + '</div>' +
+                '<div class="td"><input type="text" name="hours_todo" value="' + response[i].hoursTodo + '" disabled></div>' +
+                '<div class="td">' +
+                '<span class="link-table editEnabled">Editer</span>' +
+                '<span class="link-table edit" id="editUser' + response[i].id + '">Valider</span>' +
+                '<span class="link-table editCanceled">Annuler</span>' +
+                '<span class="link-table delete" id="deleteUser' + response[i].id + '">Supprimer</span>' +
+                '</div>' +
                 '</form>'
               );
             }
             break;
           case "leave":
-            var status = 'En attente';
-            var css = 'progress';
-            var action = '';
-            console.log(response);
-            for (var i = 0; i < response.length; i++) {
-              switch (response[i].status) {
-                case 0:
-                  status = 'Refusé';
-                  css = 'refused';
-                  break;
-                case 1:
-                  status = 'Accepté';
-                  css = 'accepted';
-                  break;
-                case 2:
-                  status = 'En attente';
-                  css = 'progress';
-                  break;
-                default:
-                  status = 'En attente';
-                  css = 'progress';
+            if(response.success) {
+              var status = 'En attente';
+              var css = 'progress';
+              var action = '';
+              for (var i = 0; i < response.list.length; i++) {
+                switch (response.list[i].status) {
+                  case 0:
+                    status = 'Refusé';
+                    css = 'refused';
+                    break;
+                  case 1:
+                    status = 'Accepté';
+                    css = 'accepted';
+                    break;
+                  case 2:
+                    status = 'En attente';
+                    css = 'progress';
+                    break;
+                  default:
+                    status = 'En attente';
+                    css = 'progress';
+                }
+                if (response.list[i].status == 2) {
+                  action = '' +
+                    '<span class="link-table editEnabled">Editer</span>' +
+                    '<span class="link-table edit" id="editLeave' + response.list[i].id + '">Valider</span>' +
+                    '<span class="link-table editCanceled">Annuler</span>' +
+                    '<span class="link-table delete" id="deleteLeave' + response.list[i].id + '">Supprimer</span>';
+                } else {
+                  action = 'La demande n\'est plus modifiable';
+                }
+                $(element).append(
+                  '<form action="" id="formLeave' + response.list[i].id + '" class="tr">' +
+                  '<div class="td td--created">Le ' + response.list[i].created + '</div>' +
+                  '<div class="td td--updated">' + response.list[i].updated + '</div>' +
+                  '<div class="td"><input type="text" name="start" value="' + response.list[i].startDate + '" disabled></div>' +
+                  '<div class="td"><input type="text" name="end" value="' + response.list[i].endDate + '" disabled></div>' +
+                  '<div class="td td--justification"><teaxtarea name="justification" disabled>' + response.list[i].justification + '</textarea></div>' +
+                  '<div class="td td--status"><span class="' + css + '">' + status + '</span></div>' +
+                  '<div class="td">' + action + '</div>' +
+                  '</form>'
+                );
               }
-              if (response[i].status == 2) {
-                action = '' +
-                  '<span class="link-table editEnabled">Editer</span>' +
-                  '<span class="link-table edit" id="editLeave' + response[i].id + '">Valider</span>' +
-                  '<span class="link-table editCanceled">Annuler</span>' +
-                  '<span class="link-table delete" id="deleteLeave' + response[i].id + '">Supprimer</span>';
-              } else {
-                action = 'La demande n\'est plus modifiable';
-              }
-              $(element).append(
-                '<form action="" id="formLeave' + response[i].id + '" class="tr">' +
-                '<div class="td td--created">Le ' + response[i].created + '</div>' +
-                '<div class="td td--updated">' + response[i].updated + '</div>' +
-                '<div class="td"><input type="text" name="start" value="' + response[i].start + '" disabled></div>' +
-                '<div class="td"><input type="text" name="end" value="' + response[i].end + '" disabled></div>' +
-                '<div class="td td--justification"><teaxtarea name="justification" disabled>' + response[i].justification + '</textarea></div>' +
-                '<div class="td td--status"><span class="' + css + '">' + status + '</span></div>' +
-                '<div class="td">' + action + '</div>' +
-                '</form>'
-              );
+            } else {
+              $('.leave-list').next().append(response.message);
             }
             break;
           case "rest":
-            var status = 'En attente';
-            var css = 'progress';
-            var action = '';
-            console.log(response);
-            for (var i = 0; i < response.length; i++) {
-              switch (response[i].status) {
-                case 0:
-                  status = 'Refusé';
-                  css = 'refused';
-                  break;
-                case 1:
-                  status = 'Accepté';
-                  css = 'accepted';
-                  break;
-                case 2:
-                  status = 'En attente';
-                  css = 'progress';
-                  break;
-                default:
-                  status = 'En attente';
-                  css = 'progress';
+            if(response.success) {
+              var status = 'En attente';
+              var css = 'progress';
+              var action = '';
+              for (var i = 0; i < response.list.length; i++) {
+                switch (response.list[i].status) {
+                  case 0:
+                    status = 'Refusé';
+                    css = 'refused';
+                    break;
+                  case 1:
+                    status = 'Accepté';
+                    css = 'accepted';
+                    break;
+                  case 2:
+                    status = 'En attente';
+                    css = 'progress';
+                    break;
+                  default:
+                    status = 'En attente';
+                    css = 'progress';
+                }
+                if (response.list[i].status == 2) {
+                  action = '' +
+                    '<span class="link-table editEnabled">Editer</span>' +
+                    '<span class="link-table edit" id="editRest' + response.list[i].id + '">Valider</span>' +
+                    '<span class="link-table editCanceled">Annuler</span>' +
+                    '<span class="link-table delete" id="deleteRest' + response.list[i].id + '">Supprimer</span>';
+                } else {
+                  action = 'La demande n\'est plus modifiable';
+                }
+                $(element).append(
+                  '<form action="" id="formRest' + response.list[i].id + '" class="tr">' +
+                  '<div class="td td--created">Le ' + response.list[i].created + '</div>' +
+                  '<div class="td td--updated">' + response.list[i].updated + '</div>' +
+                  '<div class="td">' + response.list[i].startDate + '</div>' +
+                  '<div class="td"><input type="text" name="start" value="' + response.list[i].startHours + '" disabled></div>' +
+                  '<div class="td"><input type="text" name="end" value="' + response.list[i].endHours + '" disabled></div>' +
+                  '<div class="td td--justification"><teaxtarea name="justification" disabled>' + response.list[i].justification + '</textarea></div>' +
+                  '<div class="td td--status"><span class="' + css + '">' + status + '</span></div>' +
+                  '<div class="td">' + action + '</div>' +
+                  '</form>'
+                );
               }
-              if (response[i].status == 2) {
-                action = '' +
-                  '<span class="link-table editEnabled">Editer</span>' +
-                  '<span class="link-table edit" id="editRest' + response[i].id + '">Valider</span>' +
-                  '<span class="link-table editCanceled">Annuler</span>' +
-                  '<span class="link-table delete" id="deleteRest' + response[i].id + '">Supprimer</span>';
-              } else {
-                action = 'La demande n\'est plus modifiable';
-              }
-              $(element).append(
-                '<form action="" id="formRest' + response[i].id + '" class="tr">' +
-                '<div class="td td--created">Le ' + response[i].created + '</div>' +
-                '<div class="td td--updated">' + response[i].updated + '</div>' +
-                '<div class="td"><input type="text" name="start" value="' + response[i].start + '" disabled></div>' +
-                '<div class="td"><input type="text" name="end" value="' + response[i].end + '" disabled></div>' +
-                '<div class="td td--justification"><teaxtarea name="justification" disabled>' + response[i].justification + '</textarea></div>' +
-                '<div class="td td--status"><span class="' + css + '">' + status + '</span></div>' +
-                '<div class="td">' + action + '</div>' +
-                '</form>'
-              );
+            } else {
+              $('.rest-list').next().append(response.message);
             }
             break;
           case "hours":
-            var status = 'En attente';
-            var css = 'progress';
-            var action = '';
-            console.log(response);
-            for (var i = 0; i < response.length; i++) {
-              switch (response[i].status) {
-                case 0:
-                  status = 'Refusé';
-                  css = 'refused';
-                  break;
-                case 1:
-                  status = 'Accepté';
-                  css = 'accepted';
-                  break;
-                case 2:
-                  status = 'En attente';
-                  css = 'progress';
-                  break;
-                default:
-                  status = 'En attente';
-                  css = 'progress';
+            if(response.success) {
+              var status = 'En attente';
+              var css = 'progress';
+              var action = '';
+              for (var i = 0; i < response.list.length; i++) {
+                switch (response.list[i].status) {
+                  case 0:
+                    status = 'Refusé';
+                    css = 'refused';
+                    break;
+                  case 1:
+                    status = 'Accepté';
+                    css = 'accepted';
+                    break;
+                  case 2:
+                    status = 'En attente';
+                    css = 'progress';
+                    break;
+                  default:
+                    status = 'En attente';
+                    css = 'progress';
+                }
+                if (response.list[i].status == 2) {
+                  action = '' +
+                    '<span class="link-table editEnabled">Editer</span>' +
+                    '<span class="link-table edit" id="editHours' + response.list[i].id + '">Valider</span>' +
+                    '<span class="link-table editCanceled">Annuler</span>' +
+                    '<span class="link-table delete" id="deleteHours' + response.list[i].id + '">Supprimer</span>';
+                } else {
+                  action = 'La demande n\'est plus modifiable';
+                }
+                $(element).append(
+                  '<form action="" id="formHours' + response.list[i].id + '" class="tr">' +
+                    '<div class="td td--created">Le ' + response.list[i].created + '</div>' +
+                    '<div class="td td--updated">' + response.list[i].updated + '</div>' +
+                    '<div class="td">' + response.list[i].startDate + '</div>' +
+                    '<div class="td"><input type="text" name="start" value="' + response.list[i].startHours + '" disabled></div>' +
+                    '<div class="td"><input type="text" name="end" value="' + response.list[i].endHours + '" disabled></div>' +
+                    '<div class="td">' + response.list[i].recipientFirstName + ' ' + response.list[i].recipientLastName + '</div>' +
+                    '<div class="td td--status"><span class="' + css + '">' + status + '</span></div>' +
+                    '<div class="td">' + action + '</div>' +
+                  '</form>'
+                );
               }
-              if (response[i].status == 2) {
-                action = '' +
-                  '<span class="link-table editEnabled">Editer</span>' +
-                  '<span class="link-table edit" id="editHours' + response[i].id + '">Valider</span>' +
-                  '<span class="link-table editCanceled">Annuler</span>' +
-                  '<span class="link-table delete" id="deleteHours' + response[i].id + '">Supprimer</span>';
-              } else {
-                action = 'La demande n\'est plus modifiable';
-              }
-              $(element).append(
-                '<form action="" id="formHours' + response[i].id + '" class="tr">' +
-                '<div class="td td--created">Le ' + response[i].created + '</div>' +
-                '<div class="td td--updated">' + response[i].updated + '</div>' +
-                '<div class="td">' + response[i].start + '</div>' +
-                '<div class="td"><input type="text" name="start" value="' + response[i].start + '" disabled></div>' +
-                '<div class="td"><input type="text" name="end" value="' + response[i].end + '" disabled></div>' +
-                '<div class="td"><select name="recipient" disabled><option value="">' + response[i].recipient + '</option></select></div>' +
-                '<div class="td td--status"><span class="' + css + '">' + status + '</span></div>' +
-                '<div class="td">' + action + '</div>' +
-                '</form>'
-              );
+            } else {
+              $('.hours-list').next().append(response.message);
             }
             break;
         }
@@ -527,6 +537,7 @@ var crud = {
   ajaxAddAction: function (type, authTokenVALUE, userID) {
     $('.form-add-' + type).on('submit', function (e) {
       e.preventDefault();
+
       var error = false;
       var start = "";
       var end = "";
@@ -536,34 +547,31 @@ var crud = {
       if (type == 'rest' || type == 'hours') {
         var actionDay = $(this).find('.actionDay');
         var errorDay = utils.checkDate(actionDay);
-
         var startAction = $(this).find('.startAction');
         var endAction = $(this).find('.endAction');
         var errorHours = utils.checkHours(startAction, endAction);
-
         errorJustification = utils.checkJustification(justification);
 
-        //if(!errorDay && !errorHours) {
         start = $(this).find('.start').val(actionDay.val() + ' ' + startAction.val());
         end = $(this).find('.end').val(actionDay.val() + ' ' + endAction.val());
-        //error = utils.checkFullDate(start, end);
-        //}
+
         if (errorDay || errorHours || errorJustification) {
           error = true;
         }
       } else { // "leave" type
-        start = $(this).find('.start');
-        end = $(this).find('.end');
+        var startAction = $(this).find('.startAction');
+        var endAction = $(this).find('.endAction');
+        var errorDates = utils.checkDate(startAction, endAction);
         errorJustification = utils.checkJustification(justification);
-        errorDates = utils.checkFullDate(start, end, justification);
 
-        if (errorJustification || errorerrorDatesHours) {
+        start = $(this).find('.start').val( startAction.val() + ' 08:00' );
+        end = $(this).find('.end').val( endAction.val() + ' 18:00' );
+
+        if (errorJustification || errorDates) {
           error = true;
         }
       }
 
-
-      // TODO : Remove if
       if (!error) {
         var api = "http://127.0.0.1:8000/action/create/" + type + "/" + userID;
         $.ajax({

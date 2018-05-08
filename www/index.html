@@ -212,8 +212,9 @@
             <tr>
               <th>Date soumission</th>
               <th>M à j</th>
-              <th>Date de début</th>
-              <th>Date de fin</th>
+              <th>Date</th>
+              <th>Début</th>
+              <th>Fin</th>
               <th>Justification</th>
               <th>Statut</th>
               <th class="action">Action</th>
@@ -221,6 +222,7 @@
           </thead>
           <tbody></tbody>
         </table>
+        <div class="no-result"></div>
       </div>
 
       <!-- Congés -->
@@ -230,12 +232,16 @@
             <input type="hidden" value="leave" name="type">
             <ul class="action__list">
               <li class="action__list__item">
-                <input type="text" name="start" placeholder="JJ-MM-AAAA HH-MM" class="start">
+                <span>Date de début : </span>
+                <input type="text" placeholder="JJ-MM-AAAA" class="startAction">
                 <span class="error-msg"></span>
+                <input type="hidden" name="start" class="start">
               </li>
               <li class="action__list__item">
-                <input type="text" name="end" placeholder="JJ-MM-AAAA HH-MM" class="end">
+                <span>Date de fin (inclu) : </span>
+                <input type="text" placeholder="JJ-MM-AAAA" class="endAction">
                 <span class="error-msg"></span>
+                <input type="hidden" name="end" class="end">
               </li>
             </ul>
             <span class="action__info">Veuillez respecter le bon format. Par exemple pour le 1er Juillet 2018 à 09 heures : 01-01-2018 09:00</span>
@@ -263,6 +269,7 @@
           </thead>
           <tbody></tbody>
         </table>
+        <div class="no-result"></div>
       </div>
 
       <!-- Heures supp -->
@@ -318,6 +325,7 @@
           </thead>
           <tbody></tbody>
         </table>
+        <div class="no-result"></div>
       </div>
 
       <!-- User -->
@@ -576,55 +584,8 @@
 
   <!-- Page notification -->
   <div class="notification" id="jsNotifications">
-    <div class="notification__wait">3 en attente de traitement</div>
-    <ul class="notification__list">
-      <li class="notification__list__item">
-        <div class="notification__author">De Alexandre Simonin</div>
-        <div>Demande de repos compensatoire</div>
-        <div>Le 03/04/2018 de 08h00 à 17h00</div>
-        <div class="notification__justification">Ayant atteint 12 heures supplémentaires, je souhaiterais prendre un repos compensatoire ce mardi 3 avril. Je vous
-          remercie par avance.</div>
-        <div class="options">
-          <div class="options__inner options__inner--approve jsApproveAction">
-            <span>Accepter</span>
-          </div>
-          <div class="options__inner options__inner--decline jsADeclineAction">
-            <span>Décliner</span>
-          </div>
-        </div>
-      </li>
-
-      <li class="notification__list__item">
-        <div class="notification__author">De Jonathan Guillemot</div>
-        <div>Demande d'heures supplémentaires : 2h</div>
-        <div>Le 22/02/2018 de 14h00 à 16h00</div>
-        <div class="notification__motivation">
-          Acceptez !
-          <br> Les heures supplémentaires vous seront bientôt récompensées par un repos compensatoire !</div>
-        <div class="options">
-          <div class="options__inner options__inner--approve jsApproveAction">
-            <span>Accepter</span>
-          </div>
-          <div class="options__inner options__inner--decline jsADeclineAction">
-            <span>Décliner</span>
-          </div>
-        </div>
-      </li>
-
-      <li class="notification__list__item">
-        <div class="notification__author">De Alexandre Simonin</div>
-        <div>Demande de congés</div>
-        <div>Du 07/05/2018 au 11/05/2018</div>
-        <div class="options">
-          <div class="options__inner options__inner--approve jsApproveAction">
-            <span>Accepter</span>
-          </div>
-          <div class="options__inner options__inner--decline jsADeclineAction">
-            <span>Décliner</span>
-          </div>
-        </div>
-      </li>
-    </ul>
+    <div class="notification__wait"></div>
+    <ul class="notification__list"></ul>
   </div>
   <!-- /Page notification -->
 
@@ -639,7 +600,7 @@
     <div class="tab-bar__item jsNotifications">
       <div>
         <div class="icon icon-notification"></div>
-        <div class="push">3</div>
+        <div id="push"></div>
         <div class="tab-bar__item__text">Notifications</div>
       </div>
     </div>

@@ -9,6 +9,8 @@ var routing = {
   level1: function (element, authTokenVALUE) {
     $('.' + element).on('click', function () {
       if (utils.isValidToken()) {
+        var userID = localStorage.getItem('userID');
+        
         // Tab bar
         $('.tab-bar__item').removeClass('current');
         $(this).addClass('current');
@@ -17,6 +19,9 @@ var routing = {
         $('.routing').removeClass('show');
         var current = $(this).attr('data-routing');
         $('.routing#' + current).addClass('show');
+
+        // RefreshNotifications
+        page.refreshNotifications(authTokenVALUE, userID);
       }
     });
   },

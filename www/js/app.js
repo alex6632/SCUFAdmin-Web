@@ -15,6 +15,9 @@ var me = {
                 authTokenVALUE = localStorage.getItem('authTokenVALUE'),
                 userID = localStorage.getItem('userID');
 
+            // CHECK IF THERE ARE NOTIFICATIONS
+            page.refreshNotifications(authTokenVALUE, userID);
+
             // FIND ACTIVE PAGE
             utils.loadActivePage(authTokenVALUE, userID);
 
@@ -29,11 +32,12 @@ var me = {
             routing.level2(authTokenVALUE, userID);
 
             // SPECIAL PAGES
-            anim.fadeInPage('jsNotifications');
-            anim.fadeInPage('jsSearch');
+            anim.fadeInPage('jsNotifications', authTokenVALUE, userID);
+            anim.fadeInPage('jsSearch', authTokenVALUE, userID);
 
             // OTHER EVENTS
-            anim.swipe('notification__list__item');
+            //anim.swipe('notification__list');
+            anim.swipeDesktop('notification__list');
             anim.switch('stop');
             anim.switch('ok');
             anim.switch('no');
