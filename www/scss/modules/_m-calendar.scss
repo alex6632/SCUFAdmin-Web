@@ -70,8 +70,9 @@
             text-align: right;
             border-right: solid 1px color('gray', 'super-light');
             span {
+              width: 42px;
               color: color('foreground');
-              font-size: 13px;
+              font-size: 12px;
               font-weight: 700;
             }
           }
@@ -103,9 +104,31 @@
           }
         }
       }
-      
-    
     }
+    // Events
+    .fc-content-skeleton {
+      .fc-content-col {
+        position: relative;
+
+        .fc-event-container {
+          position: relative;
+          margin: 0 2.5% 0 2px;
+          z-index: 4;
+
+          .fc-event {
+            position: absolute;
+            background: steelblue;
+          }
+        }
+      }
+    }
+  }
+
+  .fc-now-indicator.fc-now-indicator-arrow {
+    background-color: color('validation', 'no');
+    position: absolute;
+    width: 100%;
+    height: 1px;
   }
 }
 
@@ -125,11 +148,14 @@
     margin-right: 60px; 
   }
 
-  div {
+  button {
     display: inline-block;
+    border: 0;
+    background-color: transparent;
     color: color('foreground', 'invert');
     font-size: 11px;
     text-transform: uppercase;
+    outline: none;
     cursor: pointer;
     @include transition();
 
@@ -145,12 +171,129 @@
       @include transition();
     }
   }
+}
 
-  
-  .icon-left-arrow {
+.calendar-view {
+  position: absolute;
+  right: 0;
+  top: 0px;
+  //top: 70px;
+  border-left: solid 2px color('primary');
+  width: 200px;
+  z-index: 10;
 
+  &__button {
+    position: relative;
+    display: block;
+    text-transform: uppercase;
+    background-color: color('background', 'invert');
+    color: color('foreground', 'invert');
+    font-weight: 500;
+    border: 0;
+    outline: none;
+    width: 100%;
+    height: 35px;
+    @include transition();
+
+    &.active {
+      &::before {
+        display: block;
+        content: "";
+        @include center-v(absolute);
+        left: 12px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: color('primary');
+      }
+      color: color('primary');
+    }
+    &:hover {
+      color: color('primary');
+      @include transition();
+    }
   }
-  .icon-right-arrow {
+}
 
+.calendar-add {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(color('background', 'invert'), .8);
+  z-index: 10;
+
+  &__inner {
+    @include center-v(fixed);
+    text-align: center;
+    background-color: color('background');
+    padding: 35px;
+    width: 400px;
+    left: 50%;
+    margin-left: -275px;
+
+    .icon-close {
+      font-size: 20px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      padding: 10px;
+      cursor: pointer;
+    }
+  }
+
+  &__title {
+    font-family: font('secondary');
+    font-weight: 700;
+    font-size: 28px;
+  }
+
+  &__input-container {
+    margin: 10px 0 30px 0;
+  }
+
+  &__input {
+    border: 0;
+    padding: 10px;
+    border-bottom: solid 2px color('gray', 'light');
+    margin: 5px 0;
+    width: 100%;
+    font-size: 13px;
+    outline: none;
+    @include transition();
+
+    &:focus {
+      border-bottom: solid 2px color('background', 'invert');
+      @include transition();
+    }
+  }
+
+  &__button {
+    font-family: font('primary');
+    font-size: 14px;
+    display: inline-block;
+    border: 0;
+    color: color('foreground', 'invert');
+    text-transform: uppercase;
+    font-weight: 500;
+    margin: 0 25px;
+    padding: 12px;
+    outline: none;
+    min-width: 100px;
+    cursor: pointer;
+    //@include transition();
+
+    &:hover {
+      //@include transition();
+    }
+    
+    &--confirm {
+      background-color: color('validation', 'ok');
+    }
+    &--cancel {
+      background-color: color('validation', 'no');
+    }
   }
 }

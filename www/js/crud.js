@@ -317,6 +317,7 @@ var crud = {
                 );
               }
             } else {
+              $('.no-result').text('');
               $('.hours-list').next().append(response.message);
             }
             break;
