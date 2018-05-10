@@ -52,7 +52,7 @@ var me = {
             utils.ajaxSearchUser('jsSearchUser');
 
             // CALENDAR
-            calendar.init();
+            calendar.init(authTokenVALUE, userID);
         }
 
     },
