@@ -6,6 +6,29 @@
   font-family: font('secondary');
   font-size: 13px;
 
+  &.fc-unthemed {
+    .fc-agendaWeek-view {
+      td {
+        &.fc-today {
+          background-color: rgba(color('primary'),.5);
+        }
+      }
+    }
+    .fc-agendaDay-view {
+      td {
+        &.fc-today {
+          background-color: transparent;
+        }
+      }
+    }
+  }
+
+  .fc-toolbar {
+    &.fc-header-toolbar {
+      margin: 0;
+    }
+  }
+
   hr {
     display: none !important;
   }
@@ -41,6 +64,10 @@
 
     .fc-head-container {
 
+      &.fc-widget-header {
+        border: 0;
+      }
+
       .fc-widget-header {
         margin: 0;
         border: 0;
@@ -50,7 +77,7 @@
           vertical-align: bottom;
           text-align: right;
           text-transform: uppercase;
-          color: color('gray', 'base');
+          //color: color('gray', 'base');
           padding-right: 6px;
         }
       }
@@ -110,26 +137,39 @@
       .fc-content-col {
         position: relative;
 
+        .fc-now-indicator {
+          border: 0 solid color('validation', 'no');
+
+          &.fc-now-indicator-line {
+            border-top-width: 2px;
+          }
+        }
+
         .fc-event-container {
           position: relative;
           margin: 0 2.5% 0 2px;
           z-index: 4;
 
           .fc-event {
-            position: absolute;
-            background: steelblue;
+            padding: 2px 6px;
+
+            .fc-content {
+              text-align: right;
+
+              .fc-time {
+                font-size: 14px;
+              }
+              .fc-title {
+                font-size: 14px;
+              }
+            }
           }
         }
       }
     }
   }
 
-  .fc-now-indicator.fc-now-indicator-arrow {
-    background-color: color('validation', 'no');
-    position: absolute;
-    width: 100%;
-    height: 1px;
-  }
+  
 }
 
   
@@ -215,8 +255,12 @@
   }
 }
 
-.calendar-add {
-  display: none;
+/*
+ * Custom Modale
+ * -----------------
+ * Add & Edit Events
+ */
+.calendar-modale {
   position: fixed;
   top: 0;
   left: 0;
@@ -224,6 +268,7 @@
   height: 100%;
   background-color: rgba(color('background', 'invert'), .8);
   z-index: 10;
+  @include transition();
 
   &__inner {
     @include center-v(fixed);
@@ -258,16 +303,24 @@
     border: 0;
     padding: 10px;
     border-bottom: solid 2px color('gray', 'light');
+    color: color('gray');
     margin: 5px 0;
     width: 100%;
-    font-size: 13px;
+    font-size: 14px;
     outline: none;
     @include transition();
 
     &:focus {
       border-bottom: solid 2px color('background', 'invert');
+      color: color('foreground');
       @include transition();
     }
+  }
+
+  span {
+    display: block;
+    font-size: 14px;
+    color: color('gray');
   }
 
   &__button {
@@ -278,7 +331,7 @@
     color: color('foreground', 'invert');
     text-transform: uppercase;
     font-weight: 500;
-    margin: 0 25px;
+    margin: 0 4px;
     padding: 12px;
     outline: none;
     min-width: 100px;
@@ -293,6 +346,9 @@
       background-color: color('validation', 'ok');
     }
     &--cancel {
+      background-color: color('background', 'invert');
+    }
+    &--delete {
       background-color: color('validation', 'no');
     }
   }
