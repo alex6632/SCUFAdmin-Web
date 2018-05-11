@@ -9,6 +9,10 @@ calendar = {
   init: function (authTokenVALUE, userID) {
 
     const el = $('#calendar');
+
+    // The first time, show GIF during loading
+    el.append('<div class="loader"><div class="loader__gif"></div></div>');
+
     el.fullCalendar({
       defaultView: 'agendaWeek', // 'basicDay'
       weekends: false,
@@ -16,8 +20,11 @@ calendar = {
       editable: true,
       nowIndicator: true,
       slotDuration: '00:30:00',
-      minTime: "08:00:00",
-      maxTime: "21:00:00",
+      minTime: '08:00:00',
+      maxTime: '23:00:00',
+      forceEventDuration: true,
+      defaultTimedEventDuration: '00:00:00',
+      //defaultAllDayEventDuration: '00:00:00',
       header: {
         left: 'title', //day,basicDay week,basicWeek myCustomButton
         center: '',
@@ -49,10 +56,9 @@ calendar = {
       },
       /*
        * -------------------
-       * SHOW CUSTOM HEADER
+       * RENDER EVENTS
        * -------------------
        */
-      events: "http://127.0.0.1:8000/events/" + userID,
       events: function (start, end, timezone, callback) {
         var api = "http://127.0.0.1:8000/events/" + userID;
         $.ajax({
@@ -62,6 +68,7 @@ calendar = {
             xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
           },
           success: function (response) {
+            $('#calendar .loader').remove();
             callback(response);
           },
           error: function (err) {
@@ -75,8 +82,88 @@ calendar = {
        * -------------------
        */
       eventResize: function (event) {
-        console.log('Resize event: ', event);
-        el.fullCalendar('refetchEvents');
+
+        let updatedStart = moment(event.start).format('YYYY-MM-DD HH:mm:ss');
+        let updatedEnd = moment(event.end).format('YYYY-MM-DD HH:mm:ss');       
+
+        // 1. Add loader
+        $('#calendar').append('<div class="loader"><div class="loader__gif"></div></div>');
+
+        // 2. Update calendar data
+        event.start = updatedStart;
+        event.end = updatedEnd;
+
+        // 3. Save data into DB
+        var api = "http://127.0.0.1:8000/event/update/" + event.id;
+        $.ajax({
+          url: api,
+          type: 'PATCH',
+          data: {
+            start: updatedStart,
+            end: updatedEnd
+          },
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+          },
+          success: function (response) {
+            console.log(response);
+
+            // 1. Remove loader
+            $('#calendar .loader').remove();
+
+            // 2. Render update event on calendar
+            el.fullCalendar('updateEvent', event);
+            el.fullCalendar('refetchEvents');
+          },
+          error: function (err) {
+            console.log(err);
+          }
+        });
+      },
+      /*
+       * ----------------------
+       * DRAG & DROP EVENT
+       * ----------------------
+       */
+      eventDrop: function (event) {
+
+        let updatedStart = moment(event.start).format('YYYY-MM-DD HH:mm:ss');
+        let updatedEnd = moment(event.end).format('YYYY-MM-DD HH:mm:ss');
+        
+        // 1. Add loader
+        $('#calendar').append('<div class="loader"><div class="loader__gif"></div></div>');
+
+        // 2. Update calendar data
+        event.start = updatedStart
+        event.end = updatedEnd;
+
+        // 3. Save data into DB
+        var api = "http://127.0.0.1:8000/event/update/" + event.id;
+        $.ajax({
+          url: api,
+          type: 'PATCH',
+          data: {
+            start: updatedStart,
+            end: updatedEnd
+          },
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+          },
+          success: function (response) {
+            console.log(response);
+
+            // 1. Remove loader
+            $('#calendar .loader').remove();
+
+            // 2. Render update event on calendar
+            el.fullCalendar('updateEvent', event);
+            el.fullCalendar('refetchEvents');
+          },
+          error: function (err) {
+            console.log(err);
+            revertFunc();
+          }
+        });
       },
       /*
        * ----------------------
@@ -104,38 +191,41 @@ calendar = {
           '<span class="icon icon-close jsCloseModalCalendar"></span>' +
           '<div class="calendar-modale__title">Modifier un événement</div>' +
           '<div class="calendar-modale__input-container">' +
-          '<input type="text" class="calendar-modale__input" id="jsCalendarAddTitle" placeholder="Titre" value="' + event.title + '">' +
-          '<input type="text" class="calendar-modale__input" id="jsCalendarAddLocation" placeholder="Lieu" value="' + event.location + '">' +
+          '<input type="text" name="title" class="calendar-modale__input" id="jsCalendarAddTitle" placeholder="Titre" value="' + event.title + '">' +
+          '<input type="text" name="location" class="calendar-modale__input" id="jsCalendarAddLocation" placeholder="Lieu" value="' + event.location + '">' +
           '</div>' +
           '<span>Couleur de l\'arrière plan</span>' +
           '<div class="calendar-modale__input-container">' +
-          '<input type="radio" class="radio" id="bg-red" name="jsEventBgColor" value="#ff0000" ' + redBgChecked + '>' +
+          '<input type="radio" class="radio" id="bg-red" name="background_color" value="#ff0000" ' + redBgChecked + '>' +
           '<label for="bg-red"></label>' +
-          '<input type="radio" class="radio" id="bg-green" name="jsEventBgColor" value="#7ec730" ' + greenBgChecked + '>' +
+          '<input type="radio" class="radio" id="bg-green" name="background_color" value="#7ec730" ' + greenBgChecked + '>' +
           '<label for="bg-green"></label>' +
-          '<input type="radio" class="radio" id="bg-orange" name="jsEventBgColor" value="#f5882f" ' + orangeBgChecked + '>' +
+          '<input type="radio" class="radio" id="bg-orange" name="background_color" value="#f5882f" ' + orangeBgChecked + '>' +
           '<label for="bg-orange"></label>' +
-          '<input type="radio" class="radio" id="bg-blue" name="jsEventBgColor" value="#2f67f5" ' + blueBgChecked + '>' +
+          '<input type="radio" class="radio" id="bg-blue" name="background_color" value="#2f67f5" ' + blueBgChecked + '>' +
           '<label for="bg-blue"></label>' +
-          '<input type="radio" class="radio" id="bg-dark" name="jsEventBgColor" value="#1e1e1e" ' + darkBgChecked + '>' +
+          '<input type="radio" class="radio" id="bg-dark" name="background_color" value="#1e1e1e" ' + darkBgChecked + '>' +
           '<label for="bg-dark"></label>' +
           '</div>' +
           '<span>Couleur de la bordure</span>' +
           '<div class="calendar-modale__input-container">' +
-          '<input type="radio" class="radio" id="border-red" name="jsEventBorderColor" value="#ff0000" ' + redBorderChecked + '>' +
+          '<input type="radio" class="radio" id="border-red" name="border_color" value="#ff0000" ' + redBorderChecked + '>' +
           '<label for="border-red"></label>' +
-          '<input type="radio" class="radio" id="border-green" name="jsEventBorderColor" value="#7ec730" ' + greenBorderChecked + '>' +
+          '<input type="radio" class="radio" id="border-green" name="border_color" value="#7ec730" ' + greenBorderChecked + '>' +
           '<label for="border-green"></label>' +
-          '<input type="radio" class="radio" id="border-orange" name="jsEventBorderColor" value="#f5882f" ' + orangeBorderChecked + '>' +
+          '<input type="radio" class="radio" id="border-orange" name="border_color" value="#f5882f" ' + orangeBorderChecked + '>' +
           '<label for="border-orange"></label>' +
-          '<input type="radio" class="radio" id="border-blue" name="jsEventBorderColor" value="#2f67f5" ' + blueBorderChecked + '>' +
+          '<input type="radio" class="radio" id="border-blue" name="border_color" value="#2f67f5" ' + blueBorderChecked + '>' +
           '<label for="border-blue"></label>' +
-          '<input type="radio" class="radio" id="border-dark" name="jsEventBorderColor" value="#1e1e1e" ' + darkBorderChecked + '>' +
+          '<input type="radio" class="radio" id="border-dark" name="border_color" value="#1e1e1e" ' + darkBorderChecked + '>' +
           '<label for="border-dark"></label>' +
           '</div>' +
-          '<button class="calendar-modale__button calendar-modale__button--confirm jsConfirmEditEvent">Confirmer</button>' +
+          '<div>' +
+          '<button type="submit" class="calendar-modale__button calendar-modale__button--confirm jsConfirmEditEvent">Confirmer</button>' +
           '<button class="calendar-modale__button calendar-modale__button--cancel jsCloseModalCalendar">Annuler</button>' +
           '<button class="calendar-modale__button calendar-modale__button--delete jsConfirmDeleteEvent">Supprimer</button>' +
+          '</div>' +
+          '<div class="calendar-modale-error"></div>' +
           '</div>' +
           '</form>';
 
@@ -143,31 +233,96 @@ calendar = {
 
         $('#planning').on('click', '.jsConfirmDeleteEvent', function () {
           if (confirm("Cette action sera irréversible.")) {
-            el.fullCalendar('removeEvents', event._id);
+            // 1. Add loader
+            $('#calendar').append('<div class="loader"><div class="loader__gif"></div></div>');
+
+            // 2. Remove modale
             $(this).parents('.calendar-modale').remove();
+
+            // 3. Delete data into DB
+            var api = "http://127.0.0.1:8000/event/delete/" + event.id;
+            $.ajax({
+              url: api,
+              type: 'DELETE',
+              beforeSend: function (xhr) {
+                xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+              },
+              success: function (response) {
+                console.log(response);
+
+                // 1. Remove loader
+                $('#calendar .loader').remove();
+
+                // 2. Delete event on calendar
+                el.fullCalendar('removeEvents', event._id);
+
+                // 3. Remove handlers event
+                el.fullCalendar('unselect');
+                $('#planning').off('click', '.jsConfirmEditEvent');
+                $('#planning').off('click', '.jsConfirmDeleteEvent');
+              },
+              error: function (err) {
+                console.log(err);
+              }
+            });
           }
         });
 
-        $('#planning').on('click', '.jsConfirmEditEvent', function () {
+        $('#planning').on('click', '.jsConfirmEditEvent', function (e) {
+          e.preventDefault();
+          eventTitle = $(this).parents('.calendar-modale').find('#jsCalendarAddTitle').val();
+          eventLocation = $(this).parents('.calendar-modale').find('#jsCalendarAddLocation').val();
 
-          const edit = $(this).parents('.calendar-edit');
-
-          event.title = edit.find('#jsCalendarAddTitle').val();
-          event.location = edit.find('#jsCalendarAddLocation').val();
-          event.backgroundColor = edit.find('input[name=jsEventBgColor]:checked').val();
-          event.borderColor = edit.find('input[name=jsEventBorderColor]:checked').val();
-
-
-          var error = event.title.length == "" || event.location.length == "" ? true : false;
-          if (!error) {
-            console.log('New event:', event);
-            el.fullCalendar('updateEvent', event);
-            $(this).parents('.calendar-modale').remove();
+          let error = eventTitle.length == "" || eventLocation.length == "" ? true : false;
+          if(error) {
+            $(this).parents('.calendar-modale').find('.calendar-modale-error').text('Les champs "titre" et "lieu" sont obligatoire.');
           }
-          // Remove handlers event
-          el.fullCalendar('unselect');
-          $('#planning').off('click', '.jsConfirmEditEvent');
-          $('#planning').off('click', '.jsConfirmDeleteEvent');
+
+          if (!error) {
+            // 1. Add loader
+            $('#calendar').append('<div class="loader"><div class="loader__gif"></div></div>');
+
+            // 2. Remove errors
+            $(this).parents('.calendar-modale').find('.calendar-modale-error').text('');
+
+            // 3. Update calendar data
+            const edit = $(this).parents('.calendar-edit');
+            event.title = edit.find('#jsCalendarAddTitle').val();
+            event.location = edit.find('#jsCalendarAddLocation').val();
+            event.backgroundColor = edit.find('input[name=background_color]:checked').val();
+            event.borderColor = edit.find('input[name=border_color]:checked').val();
+
+            // 4. Remove modale
+            $(this).parents('.calendar-modale').remove();
+
+            // 5. Save data into DB
+            var api = "http://127.0.0.1:8000/event/update/" + event.id;
+            $.ajax({
+              url: api,
+              type: 'PATCH',
+              data: $(this).parents('#jsUpdateEventForm').serialize(),
+              beforeSend: function (xhr) {
+                xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+              },
+              success: function (response) {
+                console.log(response);
+
+                // 1. Remove loader
+                $('#calendar .loader').remove();
+
+                // 2. Render update event on calendar
+                el.fullCalendar('updateEvent', event);
+
+                // 3. Remove handlers event
+                el.fullCalendar('unselect');
+                $('#planning').off('click', '.jsConfirmEditEvent');
+                $('#planning').off('click', '.jsConfirmDeleteEvent');
+              },
+              error: function (err) {
+                console.log(err);
+              }
+            });
+          }
         });
       },
       /*
@@ -193,15 +348,15 @@ calendar = {
           '</div>' +
           '<span>Couleur de l\'arrière plan</span>' +
           '<div class="calendar-modale__input-container">' +
-          '<input type="radio" class="radio" id="bg-red" name="bg_color" value="#ff0000">' +
+          '<input type="radio" class="radio" id="bg-red" name="background_color" value="#ff0000">' +
           '<label for="bg-red"></label>' +
-          '<input type="radio" class="radio" id="bg-green" name="bg_color" value="#7ec730">' +
+          '<input type="radio" class="radio" id="bg-green" name="background_color" value="#7ec730">' +
           '<label for="bg-green"></label>' +
-          '<input type="radio" class="radio" id="bg-orange" name="bg_color" value="#f5882f">' +
+          '<input type="radio" class="radio" id="bg-orange" name="background_color" value="#f5882f">' +
           '<label for="bg-orange"></label>' +
-          '<input type="radio" class="radio" id="bg-blue" name="bg_color" value="#2f67f5">' +
+          '<input type="radio" class="radio" id="bg-blue" name="background_color" value="#2f67f5">' +
           '<label for="bg-blue"></label>' +
-          '<input type="radio" class="radio" id="bg-dark" name="bg_color" value="#1e1e1e">' +
+          '<input type="radio" class="radio" id="bg-dark" name="background_color" value="#1e1e1e" checked>' +
           '<label for="bg-dark"></label>' +
           '</div>' +
           '<span>Couleur de la bordure</span>' +
@@ -214,11 +369,14 @@ calendar = {
           '<label for="border-orange"></label>' +
           '<input type="radio" class="radio" id="border-blue" name="border_color" value="#2f67f5">' +
           '<label for="border-blue"></label>' +
-          '<input type="radio" class="radio" id="border-dark" name="border_color" value="#1e1e1e">' +
+          '<input type="radio" class="radio" id="border-dark" name="border_color" value="#1e1e1e" checked>' +
           '<label for="border-dark"></label>' +
           '</div>' +
+          '<div>' +
           '<button type="submit" class="calendar-modale__button calendar-modale__button--confirm jsConfirmAddEvent">Ajouter</button>' +
           '<button class="calendar-modale__button calendar-modale__button--cancel jsCloseModalCalendar">Annuler</button>' +
+          '</div>' +
+          '<div class="calendar-modale-error"></div>' +
           '</div>' +
           '</form>';
 
@@ -226,16 +384,29 @@ calendar = {
 
         $('#planning').on('click', '.jsConfirmAddEvent', function (e) {
           e.preventDefault();
-          eventTitle = $('#jsCalendarAddTitle').val();
-          eventLocation = $('#jsCalendarAddLocation').val();
+          eventTitle = $(this).parents('.calendar-modale').find('#jsCalendarAddTitle').val();
+          eventLocation = $(this).parents('.calendar-modale').find('#jsCalendarAddLocation').val();
 
-          let eventData;
-          let eventBg = $("input[name=bg_color]:checked").val() ? $('input[name=bg_color]:checked').val() : '#2f67f5';
-          let eventBorder = $("input[name=border_color]:checked").val() ? $('input[name=border_color]:checked').val() : '';
           let error = eventTitle.length == "" || eventLocation.length == "" ? true : false;
+          if(error) {
+            $(this).parents('.calendar-modale').find('.calendar-modale-error').text('Les champs "titre" et "lieu" sont obligatoire.');
+          }
 
           if (!error) {
+            let eventData;
+            const eventBg = $(this).parents('.calendar-modale').find('input[name=background_color]:checked').val();
+            const eventBorder = $(this).parents('.calendar-modale').find('input[name=border_color]:checked').val();
+
+            // 1. Add loader
+            $('#calendar').append('<div class="loader"><div class="loader__gif"></div></div>');
+
+            // 2. Remove errors
+            $(this).parents('.calendar-modale').find('.calendar-modale-error').text('');
+
+            // 3. Remove modale
             $(this).parents('.calendar-modale').remove();
+
+            // 4. Create object with data
             eventData = {
               allDay: isAllDay,
               title: eventTitle,
@@ -248,7 +419,7 @@ calendar = {
               textColor: '#fff',
             };
 
-            // Save data into DB
+            // 5. Save data into DB
             var api = "http://127.0.0.1:8000/event/create/" + userID;
             $.ajax({
               url: api,
@@ -259,21 +430,24 @@ calendar = {
               },
               success: function (response) {
                 console.log(response);
+                // 1. Remove previous selection
+                $('.calendar-add input:text').val('');
+
+                // 2. Remove loader
+                $('#calendar .loader').remove();
+
+                // 3. Render new event on calendar
                 el.fullCalendar('renderEvent', eventData, true);
+
+                // 4. Remove handlers event
+                el.fullCalendar('unselect');
+                $('#planning').off('click', '.jsConfirmAddEvent');
               },
               error: function (err) {
                 console.log(err);
               }
             });
-
           }
-          // Remove handlers event
-          el.fullCalendar('unselect');
-          $('#planning').off('click', '.jsConfirmAddEvent');
-          // Remove previous selection
-          $('.calendar-add input:text').val('');
-          $('.calendar-add input:radio').prop('checked', false);
-          $('.calendar-add #bg-dark').prop('checked', true);
         });
       },
     })
@@ -284,8 +458,9 @@ calendar = {
 
   modal: function (el) {
     $('#planning').on('click', '.jsCloseModalCalendar', function () {
-      // Remove modale
+      // Remove modale & error
       $(this).parents('.calendar-modale').remove();
+      $(this).parents('.calendar-modale').find('.calendar-modale-error').text('');
 
       // Remove handlers event
       $('#planning').off('click', '.jsConfirmAddEvent');
