@@ -20,6 +20,11 @@ var routing = {
         var current = $(this).attr('data-routing');
         $('.routing#' + current).addClass('show');
 
+        if(current == "planning") {
+          calendar.init(authTokenVALUE, userID, 'calendar');
+          $('#calendar').fullCalendar('refetchEvents');
+        }
+
         // RefreshNotifications
         page.refreshNotifications(authTokenVALUE, userID);
       }
@@ -74,12 +79,15 @@ var routing = {
           break;
         case "hours":
           jsGoLevel1.attr('id', 'level2Hours');
-          page.getEmployees(authTokenVALUE, userID);
+          page.getEmployees(authTokenVALUE, userID, 'hours');
           crud.ajaxSimpleList('http://127.0.0.1:8000/actions/hours/' + userID, $('.hours-list tbody'), 'hours', authTokenVALUE);
           crud.ajaxAddAction('hours', authTokenVALUE, userID);
           crud.ajaxRemove('.hours-list', '.hours-list #deleteHours', 'action', authTokenVALUE, 'hours');
           break;
-        case "edit":
+        case "editPlanning":
+          jsGoLevel1.attr('id', 'level2Edit');
+          calendar.init(authTokenVALUE, userID, 'calendar-edit');
+          $('#calendar-edit').fullCalendar('refetchEvents');
           break;
       }
       var content = $(this).text();

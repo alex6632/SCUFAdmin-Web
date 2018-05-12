@@ -45,6 +45,42 @@
     padding: 5px 20px 5px 20px;
   }
 
+  &__status {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    
+    &::before {
+      display: inline-block;
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    &--refused {
+      &::before {
+        background-color: color('validation', 'no');
+      }
+
+      &::after {
+        display: inline-block;
+        content: "Déclinée";
+      }
+    }
+    &--accepted {
+      &::before {
+        background-color: color('validation', 'ok');
+      }
+
+      &::after {
+        display: inline-block;
+        content: "Acceptée";
+      }
+    }
+  }
+
   &__list {
     width: 100%;
     padding: 0;

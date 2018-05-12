@@ -6,9 +6,24 @@ calendar = {
    * Doc : https://fullcalendar.io/docs/
    * --------------------------------------
    */
-  init: function (authTokenVALUE, userID) {
+  init: function (authTokenVALUE, userID, calendarID) {
 
-    const el = $('#calendar');
+    // TODO: Use correct userID
+    if(calendarID == 'calendar-edit') {
+      page.getEmployees(authTokenVALUE, userID, 'planning');
+      userID = $('.selectUserToEditPlanning').val();
+
+      $('.selectUserToEditPlanning').on('change', function () {
+        userID = $(this).val();
+        $('#calendar-edit').fullCalendar('refetchEvents');
+        console.log('Switch to calendar : ' + userID);
+      });
+
+    } else {
+      userID = localStorage.getItem('userID');
+    }
+
+    const el = $('#' + calendarID);
 
     // The first time, show GIF during loading
     el.append('<div class="loader"><div class="loader__gif"></div></div>');
@@ -42,13 +57,13 @@ calendar = {
       viewRender: function (view) {
         if (view.type == 'agendaWeek') {
           window.setTimeout(function () {
-            $("#calendar").find('.fc-toolbar > div > h2').empty().append(
+            el.find('.fc-toolbar > div > h2').empty().append(
               "<div>" + view.start.format('[Semaine du<span>] D [</span>au<span>]') + "" + view.end.format(' D [</span>] MMMM YYYY') + "</div>"
             );
           }, 0);
         } else {
           window.setTimeout(function () {
-            $("#calendar").find('.fc-toolbar > div > h2').empty().append(
+            el.find('.fc-toolbar > div > h2').empty().append(
               "<div>" + view.start.format('[Journée du<span>] D MMMM YYYY[</span>]') + "</div>"
             );
           }, 0);
@@ -68,7 +83,7 @@ calendar = {
             xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
           },
           success: function (response) {
-            $('#calendar .loader').remove();
+            $('#calendar .loader, #calendar-edit .loader').remove();
             callback(response);
           },
           error: function (err) {
@@ -84,10 +99,10 @@ calendar = {
       eventResize: function (event) {
 
         let updatedStart = moment(event.start).format('YYYY-MM-DD HH:mm:ss');
-        let updatedEnd = moment(event.end).format('YYYY-MM-DD HH:mm:ss');       
+        let updatedEnd = moment(event.end).format('YYYY-MM-DD HH:mm:ss');
 
         // 1. Add loader
-        $('#calendar').append('<div class="loader"><div class="loader__gif"></div></div>');
+        $('#calendar, #calendar-edit').append('<div class="loader"><div class="loader__gif"></div></div>');
 
         // 2. Update calendar data
         event.start = updatedStart;
@@ -109,7 +124,7 @@ calendar = {
             console.log(response);
 
             // 1. Remove loader
-            $('#calendar .loader').remove();
+            $('#calendar .loader, #calendar-edit .loader').remove();
 
             // 2. Render update event on calendar
             el.fullCalendar('updateEvent', event);
@@ -129,9 +144,9 @@ calendar = {
 
         let updatedStart = moment(event.start).format('YYYY-MM-DD HH:mm:ss');
         let updatedEnd = moment(event.end).format('YYYY-MM-DD HH:mm:ss');
-        
+
         // 1. Add loader
-        $('#calendar').append('<div class="loader"><div class="loader__gif"></div></div>');
+        $('#calendar, #calendar-edit').append('<div class="loader"><div class="loader__gif"></div></div>');
 
         // 2. Update calendar data
         event.start = updatedStart
@@ -153,7 +168,7 @@ calendar = {
             console.log(response);
 
             // 1. Remove loader
-            $('#calendar .loader').remove();
+            $('#calendar .loader, #calendar-edit .loader').remove();
 
             // 2. Render update event on calendar
             el.fullCalendar('updateEvent', event);
@@ -229,12 +244,17 @@ calendar = {
           '</div>' +
           '</form>';
 
-        $('.calendar-edit').append(editModale);
+          el.parents('.generic-planning').find('.calendar-edit').append(editModale);
 
-        $('#planning').on('click', '.jsConfirmDeleteEvent', function () {
+        /* 
+         * ----------------------
+         * DELETE EVENT
+         * ----------------------
+         */
+        el.parents('.generic-planning').on('click', '.jsConfirmDeleteEvent', function () {
           if (confirm("Cette action sera irréversible.")) {
             // 1. Add loader
-            $('#calendar').append('<div class="loader"><div class="loader__gif"></div></div>');
+            $('#calendar, #calendar-edit').append('<div class="loader"><div class="loader__gif"></div></div>');
 
             // 2. Remove modale
             $(this).parents('.calendar-modale').remove();
@@ -251,15 +271,15 @@ calendar = {
                 console.log(response);
 
                 // 1. Remove loader
-                $('#calendar .loader').remove();
+                $('#calendar .loader, #calendar-edit .loader').remove();
 
                 // 2. Delete event on calendar
                 el.fullCalendar('removeEvents', event._id);
 
                 // 3. Remove handlers event
                 el.fullCalendar('unselect');
-                $('#planning').off('click', '.jsConfirmEditEvent');
-                $('#planning').off('click', '.jsConfirmDeleteEvent');
+                el.parents('.generic-planning').off('click', '.jsConfirmEditEvent');
+                el.parents('.generic-planning').off('click', '.jsConfirmDeleteEvent');
               },
               error: function (err) {
                 console.log(err);
@@ -268,19 +288,24 @@ calendar = {
           }
         });
 
-        $('#planning').on('click', '.jsConfirmEditEvent', function (e) {
+        /*
+         * ----------------------
+         * UPDATE EVENT
+         * ----------------------
+         */
+        el.parents('.generic-planning').on('click', '.jsConfirmEditEvent', function (e) {
           e.preventDefault();
           eventTitle = $(this).parents('.calendar-modale').find('#jsCalendarAddTitle').val();
           eventLocation = $(this).parents('.calendar-modale').find('#jsCalendarAddLocation').val();
 
           let error = eventTitle.length == "" || eventLocation.length == "" ? true : false;
-          if(error) {
+          if (error) {
             $(this).parents('.calendar-modale').find('.calendar-modale-error').text('Les champs "titre" et "lieu" sont obligatoire.');
           }
 
           if (!error) {
             // 1. Add loader
-            $('#calendar').append('<div class="loader"><div class="loader__gif"></div></div>');
+            $('#calendar, #calendar-edit').append('<div class="loader"><div class="loader__gif"></div></div>');
 
             // 2. Remove errors
             $(this).parents('.calendar-modale').find('.calendar-modale-error').text('');
@@ -308,15 +333,15 @@ calendar = {
                 console.log(response);
 
                 // 1. Remove loader
-                $('#calendar .loader').remove();
+                $('#calendar .loader, #calendar-edit .loader').remove();
 
                 // 2. Render update event on calendar
                 el.fullCalendar('updateEvent', event);
 
                 // 3. Remove handlers event
                 el.fullCalendar('unselect');
-                $('#planning').off('click', '.jsConfirmEditEvent');
-                $('#planning').off('click', '.jsConfirmDeleteEvent');
+                el.parents('.generic-planning').off('click', '.jsConfirmEditEvent');
+                el.parents('.generic-planning').off('click', '.jsConfirmDeleteEvent');
               },
               error: function (err) {
                 console.log(err);
@@ -380,15 +405,15 @@ calendar = {
           '</div>' +
           '</form>';
 
-        $('.calendar-add').append(addModale);
+        el.parents('.generic-planning').find('.calendar-edit').append(addModale);
 
-        $('#planning').on('click', '.jsConfirmAddEvent', function (e) {
+        el.parents('.generic-planning').on('click', '.jsConfirmAddEvent', function (e) {
           e.preventDefault();
           eventTitle = $(this).parents('.calendar-modale').find('#jsCalendarAddTitle').val();
           eventLocation = $(this).parents('.calendar-modale').find('#jsCalendarAddLocation').val();
 
           let error = eventTitle.length == "" || eventLocation.length == "" ? true : false;
-          if(error) {
+          if (error) {
             $(this).parents('.calendar-modale').find('.calendar-modale-error').text('Les champs "titre" et "lieu" sont obligatoire.');
           }
 
@@ -398,7 +423,7 @@ calendar = {
             const eventBorder = $(this).parents('.calendar-modale').find('input[name=border_color]:checked').val();
 
             // 1. Add loader
-            $('#calendar').append('<div class="loader"><div class="loader__gif"></div></div>');
+            $('#calendar, #calendar-edit').append('<div class="loader"><div class="loader__gif"></div></div>');
 
             // 2. Remove errors
             $(this).parents('.calendar-modale').find('.calendar-modale-error').text('');
@@ -431,17 +456,17 @@ calendar = {
               success: function (response) {
                 console.log(response);
                 // 1. Remove previous selection
-                $('.calendar-add input:text').val('');
+                $(this).parents('.generic-planning').find('.calendar-add input:text').val('');
 
                 // 2. Remove loader
-                $('#calendar .loader').remove();
+                $('#calendar .loader, #calendar-edit .loader').remove();
 
                 // 3. Render new event on calendar
                 el.fullCalendar('renderEvent', eventData, true);
 
                 // 4. Remove handlers event
                 el.fullCalendar('unselect');
-                $('#planning').off('click', '.jsConfirmAddEvent');
+                el.parents('.generic-planning').off('click', '.jsConfirmAddEvent');
               },
               error: function (err) {
                 console.log(err);
@@ -457,45 +482,154 @@ calendar = {
   },
 
   modal: function (el) {
-    $('#planning').on('click', '.jsCloseModalCalendar', function () {
+    $('.generic-planning').on('click', '.jsCloseModalCalendar', function () {
       // Remove modale & error
       $(this).parents('.calendar-modale').remove();
       $(this).parents('.calendar-modale').find('.calendar-modale-error').text('');
 
       // Remove handlers event
-      $('#planning').off('click', '.jsConfirmAddEvent');
-      $('#planning').off('click', '.jsConfirmEditEvent');
-      $('#planning').off('click', '.jsConfirmDeleteEvent');
+      $(this).parents('.generic-planning').off('click', '.jsConfirmAddEvent');
+      $(this).parents('.generic-planning').off('click', '.jsConfirmEditEvent');
+      $(this).parents('.generic-planning').off('click', '.jsConfirmDeleteEvent');
 
       // Remove previous selection
-      $('.calendar-add input:text').val('');
-      $('.calendar-add input:radio').prop('checked', false);
-      $('.calendar-add #bg-dark').prop('checked', true);
+      $(this).parents('.generic-planning').find('.calendar-add input:text').val('');
+      $(this).parents('.generic-planning').find('.calendar-add input:radio').prop('checked', false);
+      $(this).parents('.generic-planning').find('.calendar-add #bg-dark').prop('checked', true);
     });
   },
 
   navigate: function (el) {
     // Go to previous day / week
     $('.calendar-navigation-prev').on('click', function () {
-      el.fullCalendar('prev');
+      $(this).parents('.generic-planning').find(el).fullCalendar('prev');
+      el.fullCalendar('refetchEvents');
     });
     // Go to next day / week
     $('.calendar-navigation-next').on('click', function () {
-      el.fullCalendar('next');
+      $(this).parents('.generic-planning').find(el).fullCalendar('next');
+      el.fullCalendar('refetchEvents');
     });
     // Switch on week view
     $('.calendar-view__button--week').on('click', function () {
       $('.calendar-view__button').removeClass('active');
       $(this).addClass('active');
-      el.fullCalendar('changeView', 'agendaWeek');
+      $(this).parents('.generic-planning').find(el).fullCalendar('changeView', 'agendaWeek');
     });
     // Switch on day view
     $('.calendar-view__button--day').on('click', function () {
       $('.calendar-view__button').removeClass('active');
       $(this).addClass('active');
-      el.fullCalendar('changeView', 'agendaDay');
+      $(this).parents('.generic-planning').find(el).fullCalendar('changeView', 'agendaDay');
     });
 
+  },
+ /*
+  * ------------------------------------
+  * ADD EVENT IF NOTIFICATION IS ACCEPT
+  * ------------------------------------
+  */
+  addEventFromNotification: function (authTokenVALUE, userConnectedID) {
+    $('.notification__list').on('click', '.jsApproveAction', function (e) {
+      e.preventDefault();
+      let item = $(this).parents('.notification__list__item');
+      let userNotificationID = item.find('.notification-userID').val();
+      let actionID = item.find('.notification-id').val();
+      let eventType = item.find('.notification-type').val();
+      let eventStart = item.find('.notification-start').val();
+      let eventEnd = item.find('.notification-end').val();
+      let eventTitle = '';
+      let eventLocation = '';
+      let eventBg = '';
+      let eventBorder = '';
+      let eventData;
+      let api = "";
+
+      switch(eventType) {
+        case 'hours':
+          eventBg = '#1e1e1e';
+          eventBorder = '#1e1e1e';
+          eventTitle = item.find('.notification-justification').val();
+          eventLocation = item.find('.notification-location').val();
+          api = "http://127.0.0.1:8000/event/createFromNotification/" + userConnectedID + "/" + actionID;
+          break;
+        case 'leave':
+          eventBg = '#b0b0b0';
+          eventBorder = '#b0b0b0';
+          eventTitle = 'Congés';
+          eventLocation = 'Aucun';
+          api = "http://127.0.0.1:8000/event/createFromNotification/" + userNotificationID + "/" + actionID;
+          break;
+        case 'rest':
+          eventBg = '#b0b0b0';
+          eventBorder = '#b0b0b0';
+          eventTitle = 'Repos';
+          eventLocation = 'Aucun';
+          api = "http://127.0.0.1:8000/event/createFromNotification/" + userNotificationID + "/" + actionID;
+          break;
+      }
+
+      // 1. Add loader
+      $('#jsNotifications').append('<div class="loader"><div class="loader__gif"></div></div>');
+
+      // 1. Create object with data
+      eventData = {
+        allDay: false,
+        title: eventTitle,
+        location: eventLocation,
+        start: eventStart,
+        end: eventEnd,
+        editable: false,
+        backgroundColor: eventBg,
+        borderColor: eventBorder,
+        textColor: '#fff',
+      };
+
+      // 2. Save data into DB
+      $.ajax({
+        url: api,
+        type: 'POST',
+        data: {
+          title: eventTitle,
+          start: eventStart,
+          end: eventEnd,
+          location: eventLocation,
+          background_color: eventBg,
+          border_color: eventBorder
+        },
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+        },
+        success: function (response) {
+          console.log(response);
+
+          // 0. Refresh notifications
+          utils.removeHTML('notifications');
+          page.notifications(authTokenVALUE, userID);
+
+          // 1. Remove loader
+          $('#jsNotifications .loader').remove();
+
+          // 2. Remove "not-seen" class to item
+          item.removeClass('not-seen');
+
+          // 3. Show success message on notification page
+          $('.msg-flash .alert').remove();
+          $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+
+          // 4. Render new event on calendar
+          $('#calendar').fullCalendar('renderEvent', eventData, true);
+
+          // 5. Remove handlers event
+          $('#calendar').fullCalendar('unselect');
+          $('.notification__list').off('click', '.jsApproveAction');
+          $('.notification__list').off('click', '.jsADeclineAction');
+        },
+        error: function (err) {
+          console.log(err);
+        }
+      });
+    });
   },
 
   testFunction: function (el) {

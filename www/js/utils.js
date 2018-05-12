@@ -230,9 +230,6 @@ var utils = {
     var error = false;
     var regex = new RegExp('[0-9]{2}:[0-9]{2}');
 
-    console.log(startHour.val())
-    console.log(startHour.val())
-
     if (!regex.test(startHour.val()) || !regex.test(endHour.val())) {
       error = true;
     }
@@ -249,6 +246,21 @@ var utils = {
       endHour.next().text('Format incorrect.');
     } else {
       endHour.next().text('');
+    }
+    return error;
+  },
+
+  checkText: function (tab) {
+    let error = [];
+
+    for(let i=0; i<tab.length; i++) {
+      if (tab[i].val() == '') {
+        error[i] = true;
+        tab[i].next().text('Ce champs est obligatoire');
+      } else {
+        tab[i].next().text('');
+        error[i] = false;
+      }
     }
     return error;
   },

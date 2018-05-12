@@ -175,7 +175,7 @@ var crud = {
             }
             break;
           case "leave":
-            if(response.success) {
+            if (response.success) {
               var status = 'En attente';
               var css = 'progress';
               var action = '';
@@ -223,7 +223,7 @@ var crud = {
             }
             break;
           case "rest":
-            if(response.success) {
+            if (response.success) {
               var status = 'En attente';
               var css = 'progress';
               var action = '';
@@ -272,7 +272,7 @@ var crud = {
             }
             break;
           case "hours":
-            if(response.success) {
+            if (response.success) {
               var status = 'En attente';
               var css = 'progress';
               var action = '';
@@ -305,14 +305,14 @@ var crud = {
                 }
                 $(element).append(
                   '<form action="" id="formHours' + response.list[i].id + '" class="tr">' +
-                    '<div class="td td--created">Le ' + response.list[i].created + '</div>' +
-                    '<div class="td td--updated">' + response.list[i].updated + '</div>' +
-                    '<div class="td">' + response.list[i].startDate + '</div>' +
-                    '<div class="td"><input type="text" name="start" value="' + response.list[i].startHours + '" disabled></div>' +
-                    '<div class="td"><input type="text" name="end" value="' + response.list[i].endHours + '" disabled></div>' +
-                    '<div class="td">' + response.list[i].recipientFirstName + ' ' + response.list[i].recipientLastName + '</div>' +
-                    '<div class="td td--status"><span class="' + css + '">' + status + '</span></div>' +
-                    '<div class="td">' + action + '</div>' +
+                  '<div class="td td--created">Le ' + response.list[i].created + '</div>' +
+                  '<div class="td td--updated">' + response.list[i].updated + '</div>' +
+                  '<div class="td">' + response.list[i].startDate + '</div>' +
+                  '<div class="td"><input type="text" name="start" value="' + response.list[i].startHours + '" disabled></div>' +
+                  '<div class="td"><input type="text" name="end" value="' + response.list[i].endHours + '" disabled></div>' +
+                  '<div class="td">' + response.list[i].recipientFirstName + ' ' + response.list[i].recipientLastName + '</div>' +
+                  '<div class="td td--status"><span class="' + css + '">' + status + '</span></div>' +
+                  '<div class="td">' + action + '</div>' +
                   '</form>'
                 );
               }
@@ -534,39 +534,59 @@ var crud = {
       }
     });
   },
-
+  /**
+   * ADD AN ACTION
+   */
   ajaxAddAction: function (type, authTokenVALUE, userID) {
     $('.form-add-' + type).on('submit', function (e) {
       e.preventDefault();
 
-      var error = false;
-      var start = "";
-      var end = "";
-      var errorJustification = false;
-      var justification = $(this).find('.justification');
-
+      let error = false;
+      let start = "";
+      let end = "";
+      let errorJustification = false;
+      let justification = $(this).find('.justification');
+      let location = $(this).find('.location');
+      let hours = false;
+      let errorText = false;
+      
+      if(type == 'hours') {
+        hours = true;
+        let tab = [justification, location];
+        let errortab = utils.checkText(tab);
+        errorText = errortab.includes(true) ? true : false;
+      }
       if (type == 'rest' || type == 'hours') {
-        var actionDay = $(this).find('.actionDay');
-        var errorDay = utils.checkDate(actionDay);
-        var startAction = $(this).find('.startAction');
-        var endAction = $(this).find('.endAction');
-        var errorHours = utils.checkHours(startAction, endAction);
-        errorJustification = utils.checkJustification(justification);
+        let actionDay = $(this).find('.actionDay');
+        let errorDay = utils.checkDate(actionDay);
+        let startAction = $(this).find('.startAction');
+        let endAction = $(this).find('.endAction');
+        let errorHours = utils.checkHours(startAction, endAction);
 
         start = $(this).find('.start').val(actionDay.val() + ' ' + startAction.val());
         end = $(this).find('.end').val(actionDay.val() + ' ' + endAction.val());
 
-        if (errorDay || errorHours || errorJustification) {
-          error = true;
+        if(!hours) {
+          // 'Rest' case
+          errorJustification = utils.checkJustification(justification);
+          if (errorDay || errorHours || errorJustification) {
+            error = true;
+          }
+        } else {
+          // 'Hours' case
+          if (errorDay || errorHours || errorText) {
+            error = true;
+          }
         }
-      } else { // "leave" type
-        var startAction = $(this).find('.startAction');
-        var endAction = $(this).find('.endAction');
-        var errorDates = utils.checkDate(startAction, endAction);
+      } else {
+        // 'Leave' case
+        let startAction = $(this).find('.startAction');
+        let endAction = $(this).find('.endAction');
+        let errorDates = utils.checkDate(startAction, endAction);
         errorJustification = utils.checkJustification(justification);
 
-        start = $(this).find('.start').val( startAction.val() + ' 08:00' );
-        end = $(this).find('.end').val( endAction.val() + ' 18:00' );
+        start = $(this).find('.start').val(startAction.val() + ' 08:00');
+        end = $(this).find('.end').val(endAction.val() + ' 18:00');
 
         if (errorJustification || errorDates) {
           error = true;

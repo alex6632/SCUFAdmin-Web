@@ -2,7 +2,8 @@
  * Custom Table Calendar
  * ---------------------
  */
-#calendar {
+#calendar,
+#calendar-edit {
   font-family: font('secondary');
   font-size: 13px;
 
@@ -184,6 +185,10 @@
   right: 25px;
   top: 107px;
 
+  #editPlanning & {
+    top: 86px;
+  }
+
   &-prev {
     margin-right: 60px; 
   }
@@ -279,6 +284,10 @@
     left: 50%;
     margin-left: -275px;
 
+    #editPlanning & {
+      margin-left: -200px;
+    }
+
     .icon-close {
       font-size: 20px;
       position: absolute;
@@ -359,4 +368,15 @@
   margin-top: 25px;
   font-weight: 700;
   color: color('validation', 'no');
+}
+
+.selectUserToEditPlanning {
+  background-color: color('background', 'invert');
+  color: color('foreground', 'invert');
+  border: 0;
+  height: 30px;
+  padding: 10px;
+  margin-bottom: 20px;
+  width: 150px;
+  font-size: 13px;
 }

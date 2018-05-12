@@ -20,7 +20,7 @@
   <!-- /Page login -->
 
   <!-- Page planning -->
-  <div class="routing show" id="planning">
+  <div class="routing generic-planning" id="planning">
     <header class="header">
       <div class="header__link header__link--icon jsRefreshPlanning">Rafraichir</div>
       <h1 class="title">Planning</h1>
@@ -173,7 +173,7 @@
 
         <ul class="action__list">
           <li class="action__list__item arrow jsGoLevel2" data-routing="hours">Demande d'heures supplémentaires</li>
-          <li class="action__list__item arrow jsGoLevel2" data-routing="edit">Editer un planning</li>
+          <li class="action__list__item arrow jsGoLevel2" data-routing="editPlanning">Editer un planning</li>
         </ul>
 
         <!-- SUPER ADMIN -->
@@ -217,6 +217,7 @@
                 <span class="error-msg error-msg--top"></span>
               </li>
             </ul>
+            <input type="hidden" name="location" value="/">
             <input type="submit" class="button button--small button--mg" value="Soumettre">
           </form>
         </div>
@@ -265,6 +266,7 @@
                 <span class="error-msg error-msg--top"></span>
               </li>
             </ul>
+            <input type="hidden" name="location" value="/">
             <input type="submit" class="button button--small button--mg" value="Soumettre">
           </form>
         </div>
@@ -316,7 +318,18 @@
                 <input type="hidden" name="end" value="" class="end">
               </li>
             </ul>
-            <input type="hidden" name="justification" value="/">
+            <ul class="action__list">
+              <li class="action__list__item">
+                <span>Titre : </span>
+                <input type="text" name="justification" placeholder="Entrez ici la tâche à faire en heure supplémentaire" class="justification">
+                <span class="error-msg"></span>
+              </li>
+              <li class="action__list__item">
+                <span>Lieu : </span>
+                <input type="text" name="location" placeholder="Entrez ici le lieu de l'heure supplémentaire" class="location">
+                <span class="error-msg"></span>
+              </li>
+            </ul>
             <span class="action__info">Veuillez respecter le bon format. (Format 24H)</span>
             <span class="action__info">Par exemple pour le 1er Juillet 2018 : 01-01-2018</span>
             <span class="action__info">Par exemple pour 9h30 : 09:30</span>
@@ -340,6 +353,20 @@
           <tbody></tbody>
         </table>
         <div class="no-result"></div>
+      </div>
+
+      <!-- Edit planning -->
+      <div class="level2 generic-planning" id="editPlanning">
+        <div class="action">
+          <select class="selectUserToEditPlanning"></select>
+          <div class="calendar-navigation">
+            <button class="calendar-navigation-prev"><span class="icon icon-left-arrow"></span>Précédent</button>
+            <button class="calendar-navigation-next">Suivant<span class="icon icon-right-arrow"></span></button>
+          </div>
+          <div class="calendar-edit"></div>
+          <div class="calendar-add"></div>
+          <div id="calendar-edit"></div>
+        </div>
       </div>
 
       <!-- User -->
@@ -458,7 +485,7 @@
   <!-- /Page actions -->
 
   <!-- Page profil -->
-  <div class="routing" id="profile">
+  <div class="routing show" id="profile">
     <header class="header">
       <div class="header__link header__link--icon jsRefreshProfile">Rafraichir</div>
       <h1 class="title">Votre profil</h1>

@@ -86,7 +86,7 @@ var page = {
       plainPassword = $('#new_password').val();
       confirmPassword = $('#confirm_new_password').val();
 
-      if(previousPassword.length != "" && plainPassword.length != "" && confirmPassword.length != "") {
+      if (previousPassword.length != "" && plainPassword.length != "" && confirmPassword.length != "") {
         var api = "http://127.0.0.1:8000/user/update/" + userID;
         var data = {
           previous_password: previousPassword,
@@ -101,13 +101,13 @@ var page = {
             xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
           },
           success: function (response) {
-              $('.msg-flash .alert').remove();
-              $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-              //page.refreshProfile(authTokenVALUE, userID);
-              $('#profile-cancel-password').fadeOut();
-              $('#profile-update-password').fadeIn();
-              $('#profile-cancel-password').parents('.profile-page__edit__text--update-pwd').find('input').val('');
-              $('#profile-cancel-password').parents('.profile-page__edit__text--update-pwd').find('.container-update-pwd').fadeOut();
+            $('.msg-flash .alert').remove();
+            $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+            //page.refreshProfile(authTokenVALUE, userID);
+            $('#profile-cancel-password').fadeOut();
+            $('#profile-update-password').fadeIn();
+            $('#profile-cancel-password').parents('.profile-page__edit__text--update-pwd').find('input').val('');
+            $('#profile-cancel-password').parents('.profile-page__edit__text--update-pwd').find('.container-update-pwd').fadeOut();
           },
           error: function (response) {
             console.log(response);
@@ -161,7 +161,7 @@ var page = {
     });
   },
 
-  getEmployees: function (authTokenVALUE, userID) {
+  getEmployees: function (authTokenVALUE, userID, page) {
     var api = "http://127.0.0.1:8000/users/" + userID;
     $.ajax({
       url: api,
@@ -170,8 +170,17 @@ var page = {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
       },
       success: function (response) {
-        for(var i=0; i<response.length; i++) {
-          $('#jsEmployeesList').append('<option value="' + response[i].id + '">' + response[i].firstname + ' ' + response[i].lastname + '</option>');
+        switch(page) {
+          case "hours":
+            for (var i = 0; i < response.length; i++) {
+              $('#jsEmployeesList').append('<option value="' + response[i].id + '">' + response[i].firstname + ' ' + response[i].lastname + '</option>');
+            }
+            break;
+          case "planning":
+            for (var i = 0; i < response.length; i++) {
+              $('.selectUserToEditPlanning').append('<option value="' + response[i].id + '">' + response[i].firstname + ' ' + response[i].lastname + '</option>');
+            }
+            break;
         }
       },
       error: function (response) {
@@ -180,7 +189,7 @@ var page = {
     });
   },
 
-  notifications: function(authTokenVALUE, userID) {
+  notifications: function (authTokenVALUE, userID) {
     var api = "http://127.0.0.1:8000/notifications/" + userID;
     $.ajax({
       url: api,
@@ -191,62 +200,93 @@ var page = {
       success: function (response) {
         console.log(response);
         $('.notification__wait').text(response.count + ' en attente de traitement');
-        for(var i=0; i<response.list.length; i++) {
+        for (var i = 0; i < response.list.length; i++) {
           let li = '';
           let view = response.list[i].view == 0 ? "not-seen" : "";
-          switch(response.list[i].type) {
+          let statusClass = "";
+          if (response.list[i].status != 2) {
+            statusClass = response.list[i].status == 0 ? "notification__status--refused" : "notification__status--accepted";
+          }
+          switch (response.list[i].type) {
             case 'rest':
               li = '' +
-              '<li class="notification__list__item ' + view + '">' +
-                '<div class="notification__author">De ' + response.userFirstName + ' ' + response.userLastName + '</div>' +
+                '<li class="notification__list__item ' + view + '">' +
+                '<div class="notification__status ' + statusClass + '"></div>' +
+                '<form>' +
+                '<input type="hidden" class="notification-userID" value="' + response.list[i].userID + '">' +
+                '<input type="hidden" class="notification-id" value="' + response.list[i].id + '">' +
+                '<input type="hidden" class="notification-type" value="' + response.list[i].type + '">' +
+                '<input type="hidden" class="notification-start" value="' + response.list[i].startUnformatted + '">' +
+                '<input type="hidden" class="notification-end" value="' + response.list[i].endUnformatted + '">' +
+                '<div class="notification__author">De ' + response.list[i].userFirstName + ' ' + response.list[i].userLastName + '</div>' +
                 '<div>Demande de repos compensatoire</div>' +
                 '<div>Le ' + response.list[i].startDate + ' de ' + response.list[i].startHours + ' à ' + response.list[i].endHours + '</div>' +
                 '<div class="notification__justification">' + response.list[i].justification + '</div>' +
                 '<div class="options">' +
                 '<div class="options__inner options__inner--approve jsApproveAction">' +
-                  '<span>Accepter</span>' +
+                '<span>Accepter</span>' +
                 '</div>' +
                 '<div class="options__inner options__inner--decline jsADeclineAction">' +
-                  '<span>Décliner</span>' +
+                '<span>Décliner</span>' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
-              '</li>';
+                '</form>' +
+                '</li>';
               break;
             case 'hours':
               li = '' +
-              '<li class="notification__list__item ' + view + '">' +
-                '<div class="notification__author">De ' + response.recipientFirstName + ' ' + response.recipientLastName + '</div>' +
-                '<div>Demande d\'heures supplémentaires : XXh</div>' +
+                '<li class="notification__list__item ' + view + '">' +
+                '<div class="notification__status ' + statusClass + '"></div>' +
+                '<form>' +
+                '<input type="hidden" class="notification-userID" value="' + response.list[i].userID + '">' +
+                '<input type="hidden" class="notification-id" value="' + response.list[i].id + '">' +
+                '<input type="hidden" class="notification-type" value="' + response.list[i].type + '">' +
+                '<input type="hidden" class="notification-start" value="' + response.list[i].startUnformatted + '">' +
+                '<input type="hidden" class="notification-end" value="' + response.list[i].endUnformatted + '">' +
+                '<input type="hidden" class="notification-justification" value="' + response.list[i].justification + '">' +
+                '<input type="hidden" class="notification-location" value="' + response.list[i].location + '">' +
+                '<div class="notification__author">De ' + response.list[i].userFirstName + ' ' + response.list[i].userLastName + '</div>' +
+                '<div>Demande d\'heures supplémentaires : ' + response.list[i].justification + '</div>' +
+                '<div>Lieu : ' + response.list[i].location + '</div>' +
                 '<div>Le ' + response.list[i].startDate + ' de ' + response.list[i].startHours + ' à ' + response.list[i].endHours + '</div>' +
                 '<div class="notification__motivation">Acceptez ! <br> Les heures supplémentaires vous seront bientôt récompensées par un repos compensatoire !</div>' +
                 '<div class="options">' +
-                  '<div class="options__inner options__inner--approve jsApproveAction">' +
-                    '<span>Accepter</span>' +
-                  '</div>' +
-                  '<div class="options__inner options__inner--decline jsADeclineAction">' +
-                    '<span>Décliner</span>' +
-                  '</div>' +
+                '<div class="options__inner options__inner--approve jsApproveAction">' +
+                '<span>Accepter</span>' +
                 '</div>' +
-              '</li>';
+                '<div class="options__inner options__inner--decline jsADeclineAction">' +
+                '<span>Décliner</span>' +
+                '</div>' +
+                '</div>' +
+                '</form>' +
+                '</li>';
               break;
             case 'leave':
               li = '' +
-              '<li class="notification__list__item ' + view + '">' +
-                '<div class="notification__author">De ' + response.userFirstName + ' ' + response.userLastName + '</div>' +
+                '<li class="notification__list__item ' + view + '">' +
+                '<div class="notification__status ' + statusClass + '"></div>' +
+                '<form>' +
+                '<input type="hidden" class="notification-userID" value="' + response.list[i].userID + '">' +
+                '<input type="hidden" class="notification-id" value="' + response.list[i].id + '">' +
+                '<input type="hidden" class="notification-type" value="' + response.list[i].type + '">' +
+                '<input type="hidden" class="notification-start" value="' + response.list[i].startUnformatted + '">' +
+                '<input type="hidden" class="notification-end" value="' + response.list[i].endUnformatted + '">' +
+                '<div class="notification__author">De ' + response.list[i].userFirstName + ' ' + response.list[i].userLastName + '</div>' +
                 '<div>Demande de congés</div>' +
                 '<div>Du ' + response.list[i].startDate + ' au ' + response.list[i].endDate + '</div>' +
                 '<div class="notification__justification">' + response.list[i].justification + '</div>' +
                 '<div class="options">' +
-                  '<div class="options__inner options__inner--approve jsApproveAction">' +
-                    '<span>Accepter</span>' +
-                  '</div>' +
-                  '<div class="options__inner options__inner--decline jsADeclineAction">' +
-                    '<span>Décliner</span>' +
-                  '</div>' +
+                '<div class="options__inner options__inner--approve jsApproveAction">' +
+                '<span>Accepter</span>' +
                 '</div>' +
-              '</li>' +
-              '';
+                '<div class="options__inner options__inner--decline jsADeclineAction">' +
+                '<span>Décliner</span>' +
+                '</div>' +
+                '</div>' +
+                '</form>' +
+                '</li>' +
+                '';
               break;
           }
           $('.notification__list').append(li);
@@ -258,7 +298,7 @@ var page = {
     });
   },
 
-  refreshNotifications: function(authTokenVALUE, userID) {
+  refreshNotifications: function (authTokenVALUE, userID) {
     var api = "http://127.0.0.1:8000/notifications/count/" + userID;
     $.ajax({
       url: api,
@@ -267,7 +307,7 @@ var page = {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
       },
       success: function (response) {
-        if(response[0].count > 0) {
+        if (response[0].count > 0) {
           $('.jsNotifications').find('#push').html('<div class="push">' + response[0].count + '</div>');
         }
       },
@@ -275,5 +315,56 @@ var page = {
         console.log(response);
       }
     });
-  }
+  },
+
+  /*
+  * ------------------------------------
+  * IF USER DECLINE A NOTIFICATION
+  * ------------------------------------
+  */
+  declineNotification: function (authTokenVALUE, userID) {
+    $('.notification__list').on('click', '.jsADeclineAction', function (e) {
+      e.preventDefault();
+
+      // 1. Add loader
+      $('#jsNotifications').append('<div class="loader"><div class="loader__gif"></div></div>');
+
+      let item = $(this).parents('.notification__list__item');
+      let actionID = item.find('.notification-id').val();
+
+      // 2. Update data into DB
+      var api = "http://127.0.0.1:8000/action/update/" + actionID;
+      $.ajax({
+        url: api,
+        type: 'PATCH',
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+        },
+        success: function (response) {
+          console.log(response);
+          
+          // 0. Refresh notifications
+          utils.removeHTML('notifications');
+          page.notifications(authTokenVALUE, userID);
+
+          // 1. Remove loader
+          $('#jsNotifications .loader').remove();
+
+          // 2. Remove "not-seen" class to item
+          item.removeClass('not-seen');
+
+          // 3. Show success message on notification page
+          $('.msg-flash .alert').remove();
+          $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+
+          // 4. Remove handlers event
+          $('.notification__list').off('click', '.jsApproveAction');
+          $('.notification__list').off('click', '.jsADeclineAction');
+        },
+        error: function (err) {
+          console.log(err);
+        }
+      });
+    });
+  },
 };

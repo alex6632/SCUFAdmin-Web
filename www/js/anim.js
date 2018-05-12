@@ -25,7 +25,9 @@ var anim = {
                 elementToShow.fadeIn();
                 $('.tab-bar__overlay').fadeIn();
                 if(element == "jsNotifications") {
-                  page.notifications(authTokenVALUE, userID);
+                  page.notifications(authTokenVALUE, userID);                  
+                  page.declineNotification(authTokenVALUE, userID);
+                  calendar.addEventFromNotification(authTokenVALUE, userID);
                 }
             } else {
                 elementToShow.fadeOut();

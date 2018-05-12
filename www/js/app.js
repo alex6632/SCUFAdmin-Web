@@ -50,9 +50,6 @@ var me = {
 
             // SEARCH USER - AUTOCOMPLETE -
             utils.ajaxSearchUser('jsSearchUser');
-
-            // CALENDAR
-            calendar.init(authTokenVALUE, userID);
         }
 
     },
