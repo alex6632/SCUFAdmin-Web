@@ -64,6 +64,21 @@
         }
       }
 
+      &.premium {
+        padding-left: 40px;
+        background-color: color('primary');
+
+        &::before {
+          display: block;
+          font-family: font('icon');
+          content: $icon-lock;
+          color: #beb139;
+          font-size: 15px;
+          left: 15px;
+          @include center-v(absolute);
+        }
+      }
+
       &.textarea {
         height: 120px;
         padding: 0;

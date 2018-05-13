@@ -31,8 +31,11 @@
       </div>
     </header>
     <div class="calendar-navigation">
-      <button class="calendar-navigation-prev"><span class="icon icon-left-arrow"></span>Précédent</button>
-      <button class="calendar-navigation-next">Suivant<span class="icon icon-right-arrow"></span></button>
+      <button class="calendar-navigation-prev">
+        <span class="icon icon-left-arrow"></span>Précédent</button>
+      <button class="calendar-navigation-next">Suivant
+        <span class="icon icon-right-arrow"></span>
+      </button>
     </div>
     <div class="calendar-edit"></div>
     <div class="calendar-add"></div>
@@ -165,22 +168,25 @@
     <div class="routing__center">
       <div class="action level1">
         <ul class="action__list">
-          <li class="action__list__item arrow jsGoLevel2" data-routing="rest">Demande de repos compensatoire</li>
-          <li class="action__list__item arrow jsGoLevel2" data-routing="leave">Demande de congés</li>
+          <li class="action__list__item arrow jsGoLevel2" data-routing="rest">Repos compensatoire</li>
+          <li class="action__list__item arrow jsGoLevel2" data-routing="leave">Congés</li>
           <!--<li class="action__list__item">Demande de remplacement</li>-->
         </ul>
 
 
         <ul class="action__list">
-          <li class="action__list__item arrow jsGoLevel2" data-routing="hours">Demande d'heures supplémentaires</li>
+          <li class="action__list__item arrow jsGoLevel2" data-routing="hours">Heures supplémentaires</li>
           <li class="action__list__item arrow jsGoLevel2" data-routing="editPlanning">Editer un planning</li>
         </ul>
 
         <!-- SUPER ADMIN -->
         <ul class="action__list">
+          <li class="action__list__item premium" data-routing="dashboard">Dashboard</li>
+          <li class="action__list__item premium" data-routing="weeks">Semaines</li>
+          <li class="action__list__item arrow jsGoLevel2" data-routing="addUser">Utilisateurs</li>
           <li class="action__list__item arrow jsGoLevel2" data-routing="addAccess">Droits</li>
+          <li class="action__list__item arrow jsGoLevel2" data-routing="addSection">Sections</li>
           <li class="action__list__item arrow jsGoLevel2" data-routing="addSetting">Réglages</li>
-          <li class="action__list__item arrow jsGoLevel2" data-routing="addUser">Gestion des utilisateurs</li>
         </ul>
       </div>
 
@@ -360,8 +366,11 @@
         <div class="action">
           <select class="selectUserToEditPlanning"></select>
           <div class="calendar-navigation">
-            <button class="calendar-navigation-prev"><span class="icon icon-left-arrow"></span>Précédent</button>
-            <button class="calendar-navigation-next">Suivant<span class="icon icon-right-arrow"></span></button>
+            <button class="calendar-navigation-prev">
+              <span class="icon icon-left-arrow"></span>Précédent</button>
+            <button class="calendar-navigation-next">Suivant
+              <span class="icon icon-right-arrow"></span>
+            </button>
           </div>
           <div class="calendar-edit"></div>
           <div class="calendar-add"></div>
@@ -458,6 +467,30 @@
         <div class="title">Liste des droits</div>
         <ul class="list access-list"></ul>
       </div>
+
+      <!-- Section -->
+      <div class="level2" id="addSection">
+        <div class="action">
+          <form action="" class="jsFormAddSection">
+            <ul class="action__list">
+              <li class="action__list__item input">
+                <input type="text" name="name" class="input-text" placeholder="Nouvelle section">
+              </li>
+            </ul>
+            <input type="submit" class="button button--small button--mg" value="Ajouter">
+          </form>
+        </div>
+        <div class="title">Liste des sections</div>
+        <ul class="list section-list"></ul>
+      </div>
+
+      <!-- Semaine -->
+      <div class="level2" id="weeks">
+          <div class="action"></div>
+          <div class="title">Tableau des semaines</div>
+          <select class="jsSectionsList"></select>
+          <ul class="list section-list"></ul>
+        </div>
 
       <!-- Setting -->
       <div class="level2" id="addSetting">
