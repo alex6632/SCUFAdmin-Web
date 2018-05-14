@@ -476,7 +476,6 @@ calendar = {
         });
       },
     })
-
     calendar.navigate(el);
     calendar.modal(el);
   },

@@ -23,6 +23,9 @@ var routing = {
         if(current == "planning") {
           calendar.init(authTokenVALUE, userID, 'calendar');
           $('#calendar').fullCalendar('refetchEvents');
+          $('#calendar').fullCalendar('refetchEventSources');
+        } else {
+          utils.removeEventHandlers('calendar');
         }
 
         // RefreshNotifications

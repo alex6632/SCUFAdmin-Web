@@ -90,6 +90,13 @@ var utils = {
         $('.week-list').off('click', 'form .editCanceled');
         $('.week-list').off('click', 'form .edit');
         break;
+      case "calendar":
+        $('.generic-planning').off('click', '.jsCloseModalCalendar');
+        $('.calendar-navigation-prev').off('click');
+        $('.calendar-navigation-next').off('click');
+        $('.calendar-view__button--week').off('click');
+        $('.calendar-view__button--day').off('click');
+        break;
     }
   },
 
