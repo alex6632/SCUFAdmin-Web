@@ -58,12 +58,28 @@ var routing = {
           crud.ajaxRemove('.setting-list', '.setting-list #deleteSetting', 'setting', authTokenVALUE);
           crud.ajaxEdit('.setting-list', '.setting-list #editSetting', 'setting', authTokenVALUE);
           break;
+        case "addSection":
+          jsGoLevel1.attr('id', 'level2Section');
+          crud.ajaxSimpleList('http://127.0.0.1:8000/sections', $('.section-list'), 'section', authTokenVALUE);
+          crud.ajaxAdd('jsFormAddSection', 'section', authTokenVALUE);
+          crud.ajaxRemove('.section-list', '.section-list #deleteSection', 'section', authTokenVALUE);
+          crud.ajaxEdit('.section-list', '.section-list #editSection', 'section', authTokenVALUE);
+          break;
+        case "addWeek":
+          jsGoLevel1.attr('id', 'level2Week');
+          utils.ajaxGetWeeksType(authTokenVALUE);
+          utils.ajaxGetUsers(authTokenVALUE);
+          utils.loadWeeksOnChange(authTokenVALUE);
+          crud.ajaxAddWeek(authTokenVALUE);
+          crud.ajaxRemove('.week-list', '.week-list #deleteWeek', 'week', authTokenVALUE);
+          crud.ajaxEditForm('.week-list', 'week', authTokenVALUE);
+          break;
         case "addUser":
           jsGoLevel1.attr('id', 'level2User');
           crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user', authTokenVALUE);
           crud.ajaxAdd('jsFormAddUser', 'user', authTokenVALUE);
           crud.ajaxRemove('.user-list', '.user-list #deleteUser', 'user', authTokenVALUE);
-          crud.ajaxEditUser(authTokenVALUE);
+          crud.ajaxEditForm('.user-list', 'user', authTokenVALUE);
           break;
         case "rest":
           jsGoLevel1.attr('id', 'level2Rest');

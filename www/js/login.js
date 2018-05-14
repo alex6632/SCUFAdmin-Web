@@ -43,14 +43,18 @@ var login = {
             anim.input('login-pwd');
 
         } else {
-            $('.loginTrigger .login').remove();
-            $('.loginTrigger').addClass('hide');
+          $('.loginTrigger .login').remove();
+          $('.loginTrigger').addClass('hide');
+          const authTokenVALUE = localStorage.getItem('authTokenVALUE');
+          const userID = localStorage.getItem('userID');
+          me.init();
         }
     },
 
     ajaxLogin: function () {
         $('.loginTrigger').on('submit', '.login__form', function (e) {
             e.preventDefault();
+            $('#jsShowConnectForm').append('<div class="loader"><div class="loader__gif"></div></div>');
             var api = "http://127.0.0.1:8000/auth-tokens";
             $.ajax({
             url: api,
@@ -58,6 +62,7 @@ var login = {
             type: 'POST',
             success: function (response) {
                 console.log(response);
+                $('#jsShowConnectForm .loader').remove();
                 $('.msg-flash .alert').remove();
                 localStorage.setItem('authTokenID', response.authToken.id);
                 localStorage.setItem('authTokenVALUE', response.authToken.value);
@@ -75,4 +80,10 @@ var login = {
             });
         });
     },
+
+    cleaLogin: function (authTokenVALUE, userID) {
+      $('.loginTrigger .login').remove();
+      $('.loginTrigger').addClass('hide');
+      page.profile(authTokenVALUE, userID);
+    }
 };

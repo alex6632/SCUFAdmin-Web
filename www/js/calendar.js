@@ -8,7 +8,6 @@ calendar = {
    */
   init: function (authTokenVALUE, userID, calendarID) {
 
-    // TODO: Use correct userID
     if(calendarID == 'calendar-edit') {
       page.getEmployees(authTokenVALUE, userID, 'planning');
       userID = $('.selectUserToEditPlanning').val();
@@ -26,7 +25,7 @@ calendar = {
     const el = $('#' + calendarID);
 
     // The first time, show GIF during loading
-    el.append('<div class="loader"><div class="loader__gif"></div></div>');
+    el.parents('.routing').append('<div class="loader"><div class="loader__gif"></div></div>');
 
     el.fullCalendar({
       defaultView: 'agendaWeek', // 'basicDay'
@@ -83,7 +82,7 @@ calendar = {
             xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
           },
           success: function (response) {
-            $('#calendar .loader, #calendar-edit .loader').remove();
+            $('#planning .loader, #actions .loader').remove();
             callback(response);
           },
           error: function (err) {
@@ -463,6 +462,7 @@ calendar = {
 
                 // 3. Render new event on calendar
                 el.fullCalendar('renderEvent', eventData, true);
+                el.fullCalendar('refetchEvents');
 
                 // 4. Remove handlers event
                 el.fullCalendar('unselect');

@@ -1,5 +1,11 @@
 var utils = {
 
+  removeAlert: function() {
+    $('.msg-flash').click(function() {
+      $('.msg-flash .alert').remove();
+    });
+  },
+
   removeHTML: function (element) {
     $('.msg-flash .alert').remove();
 
@@ -27,6 +33,12 @@ var utils = {
       case "notifications":
         $('.notification__list li').remove();
         break;
+      case "level2Section":
+        $('.section-list li').remove();
+        break;
+      case "level2Week":
+        $('.week-list tbody form').remove();
+        break;
     }
   },
 
@@ -35,15 +47,15 @@ var utils = {
       case "level2Access":
         $('.jsFormAddAccess').off('submit');
         $('.access-list').off('click', '.delete');
-        $('.access-list').off('click', 'form .editEnabled');
-        $('.access-list').off('click', 'form .editCanceled');
-        $('.access-list').off('click', 'form .edit');
+        $('.access-list').off('click', 'li .editEnabled');
+        $('.access-list').off('click', 'li .editCanceled');
+        $('.access-list').off('click', 'li .edit');
         break;
       case "level2Setting":
         $('.setting-list').off('click', '.delete');
-        $('.setting-list').off('click', 'form .editEnabled');
-        $('.setting-list').off('click', 'form .editCanceled');
-        $('.setting-list').off('click', 'form .edit');
+        $('.setting-list').off('click', 'li .editEnabled');
+        $('.setting-list').off('click', 'li .editCanceled');
+        $('.setting-list').off('click', 'li .edit');
         break;
       case "level2User":
         $('.jsFormAddUser').off('submit');
@@ -63,6 +75,20 @@ var utils = {
       case "level2Hours":
         $('.form-add-hours').off('submit');
         $('.hours-list').off('click', '.delete');
+        break;
+      case "level2Section":
+        $('.jsFormAddSection').off('submit');
+        $('.section-list').off('click', '.delete');
+        $('.section-list').off('click', 'li .editEnabled');
+        $('.section-list').off('click', 'li .editCanceled');
+        $('.section-list').off('click', 'li .edit');
+        break;
+      case "level2Week":
+        $('.jsFormAddWeek').off('submit');
+        $('.week-list').off('click', '.delete');
+        $('.week-list').off('click', 'form .editEnabled');
+        $('.week-list').off('click', 'form .editCanceled');
+        $('.week-list').off('click', 'form .edit');
         break;
     }
   },
@@ -90,6 +116,12 @@ var utils = {
         $('.form-add-hours input:text').val('');
         $('.form-add-hours textarea').val('');
         break;
+      case "section":
+        $('.jsFormAddSection input:text').val('');
+        break;
+      case "week":
+        $('.jsFormAddWeek input:number').val($('.jsFormAddWeek input:number').val() + 1);
+        break;
     }
   },
 
@@ -97,7 +129,7 @@ var utils = {
     var activePage = $('.tab-bar').find('.current').attr('data-routing');
     switch (activePage) {
       case "notification":
-        
+
         break;
       case "planning":
 
@@ -215,7 +247,7 @@ var utils = {
       startDate.next().text('');
     }
 
-    if(endDate != "") {
+    if (endDate != "") {
       if (!regex.test(endDate.val())) {
         error = true;
         endDate.next().text('Format incorrect.');
@@ -253,7 +285,7 @@ var utils = {
   checkText: function (tab) {
     let error = [];
 
-    for(let i=0; i<tab.length; i++) {
+    for (let i = 0; i < tab.length; i++) {
       if (tab[i].val() == '') {
         error[i] = true;
         tab[i].next().text('Ce champs est obligatoire');
@@ -297,5 +329,62 @@ var utils = {
       end.next().text('');
     }
     return error;
-  }
+  },
+  /**
+   * GET USERS
+   */
+  ajaxGetUsers: function (authTokenVALUE) {
+    $.ajax({
+      url: 'http://127.0.0.1:8000/users',
+      type: 'GET',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+      },
+      success: function (response) {
+        for (var i = 0; i < response.length; i++) {
+          $('.jsUsersList').append('<option value="' + response[i].id + '">' + response[i].firstname + ' ' + response[i].lastname + '</option>');
+        }
+        let selectUserID = $('.jsUsersList').val();
+        crud.ajaxSimpleList('http://127.0.0.1:8000/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+      },
+      error: function (err) {
+        console.log(err);
+      }
+    })
+  },
+
+  /**
+   * GET WEEKS TYPE
+   */
+  ajaxGetWeeksType: function (authTokenVALUE) {
+    $.ajax({
+      url: 'http://127.0.0.1:8000/setting/week',
+      type: 'GET',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+      },
+      success: function (response) {
+        for (var i = 0; i < response.length; i++) {
+          $('.jsWeeksTypeList').append('<option value="' + response[i].id + '">' + response[i].title + ' (' + response[i].value + 'h)</option>');
+        }
+      },
+      error: function (err) {
+        console.log(err);
+      }
+    })
+  },
+
+  /**
+   * GET WEEKS BY USER
+   */
+  loadWeeksOnChange: function (authTokenVALUE) {
+    $('.jsUsersList').on('change', function () {
+      utils.removeHTML('level2Week');
+      const selected = $(this).find('option:selected').val();
+      $('.jsUsersList option[value="' + selected + '"]').prop('selected', true);
+      selectUserID = $(this).val();
+      crud.ajaxSimpleList('http://127.0.0.1:8000/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+      console.log("Change for user " + selectUserID);
+    });
+  },
 };

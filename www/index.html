@@ -182,10 +182,10 @@
         <!-- SUPER ADMIN -->
         <ul class="action__list">
           <li class="action__list__item premium" data-routing="dashboard">Dashboard</li>
-          <li class="action__list__item premium" data-routing="weeks">Semaines</li>
           <li class="action__list__item arrow jsGoLevel2" data-routing="addUser">Utilisateurs</li>
-          <li class="action__list__item arrow jsGoLevel2" data-routing="addAccess">Droits</li>
+          <li class="action__list__item arrow jsGoLevel2" data-routing="addWeek">Semaines</li>
           <li class="action__list__item arrow jsGoLevel2" data-routing="addSection">Sections</li>
+          <li class="action__list__item arrow jsGoLevel2" data-routing="addAccess">Droits</li>
           <li class="action__list__item arrow jsGoLevel2" data-routing="addSetting">Réglages</li>
         </ul>
       </div>
@@ -482,15 +482,48 @@
         </div>
         <div class="title">Liste des sections</div>
         <ul class="list section-list"></ul>
+        <div class="no-result"></div>
       </div>
 
       <!-- Semaine -->
-      <div class="level2" id="weeks">
-          <div class="action"></div>
-          <div class="title">Tableau des semaines</div>
-          <select class="jsSectionsList"></select>
-          <ul class="list section-list"></ul>
+      <div class="level2" id="addWeek">
+        <div class="action">
+          <form action="" class="jsFormAddWeek">
+            <ul class="action__list">
+              <li class="action__list__item">
+                  <span>Pour le salarié</span><select class="jsUsersList" id="selectUserIDForAdd" name="user"></select>
+              </li>
+              <li class="action__list__item">
+                  <span>Attribuer le type</span><select class="jsWeeksTypeList" name="setting"></select>
+              </li>
+              <li class="action__list__item">
+                  <span>Répéter de la semaine</span>
+                  <input type="number" min="1" max="52" name="from">
+              </li>
+              <span></span>
+              <li class="action__list__item">
+                  <span>à la semaine</span>
+                  <input type="number" min="0" max="52" name="to" value="0">
+                  <span>(incluse)</span>
+              </li>
+            </ul>
+            <span class="action__info">Si vous ne souhaitez rentrer qu'une seule semaine, laisser le 2e champs à 0</span>
+            <input type="submit" class="button button--small button--mg" value="Ajouter">
+          </form>
         </div>
+        <div class="title">Répartition des semaines<select class="jsUsersList" id="selectUserIDForShow"></select></div>
+        <table class="table list week-list">
+          <thead>
+            <tr>
+              <th>Numéro de la semaine</th>
+              <th>Type de semaine</th>
+              <th class="action">Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="no-result"></div>
+      </div>
 
       <!-- Setting -->
       <div class="level2" id="addSetting">

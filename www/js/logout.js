@@ -4,6 +4,7 @@
 var logout = {
     ajaxLogout: function (authTokenVALUE, authTokenID) {
         $('.jsLogout').on('click', function () {
+        $('.routing.show').append('<div class="loader"><div class="loader__gif"></div></div>');
         var api = "http://127.0.0.1:8000/auth-tokens/" + authTokenID;
         $.ajax({
             url: api,
@@ -12,6 +13,7 @@ var logout = {
             xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
             },
             success: function () {
+                $('.routing.show .loader').remove();
                 localStorage.removeItem('authTokenID');
                 localStorage.removeItem('authTokenVALUE');
                 localStorage.removeItem('userID');

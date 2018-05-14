@@ -1,6 +1,8 @@
 var page = {
 
   profile: function (authTokenVALUE, userID) {
+    console.log('yo');
+    $('#profile').append('<div class="loader"><div class="loader__gif"></div></div>');
     var api = "http://127.0.0.1:8000/user/" + userID;
     $.ajax({
       url: api,
@@ -9,7 +11,7 @@ var page = {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
       },
       success: function (response) {
-        //console.log("Profile response : ", response);
+        $('#profile .loader').remove();
         var role = "";
         switch (response[0].role) {
           case 1:
@@ -145,7 +147,7 @@ var page = {
   },
 
   getSetting: function (element, authTokenVALUE) {
-    var api = "http://127.0.0.1:8000/setting/" + element;
+    var api = "http://127.0.0.1:8000/setting/main/" + element;
     $.ajax({
       url: api,
       type: 'GET',
@@ -153,7 +155,7 @@ var page = {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
       },
       success: function (response) {
-        localStorage.setItem('settingCOEFF', response.value);
+        localStorage.setItem('settingCOEFF', response[0].value);
       },
       error: function (response) {
         console.log(response);
@@ -190,6 +192,7 @@ var page = {
   },
 
   notifications: function (authTokenVALUE, userID) {
+    $('#jsNotifications').append('<div class="loader"><div class="loader__gif"></div></div>');
     var api = "http://127.0.0.1:8000/notifications/" + userID;
     $.ajax({
       url: api,
@@ -199,6 +202,7 @@ var page = {
       },
       success: function (response) {
         console.log(response);
+        $('#jsNotifications .loader').remove();
         $('.notification__wait').text(response.count + ' en attente de traitement');
         for (var i = 0; i < response.list.length; i++) {
           let li = '';

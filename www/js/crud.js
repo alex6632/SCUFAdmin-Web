@@ -3,6 +3,7 @@ var crud = {
    * ADD AN ELEMENT
    */
   ajaxAdd: function (element, type, authTokenVALUE) {
+    $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
     $('.' + element).on('submit', function (e) {
       e.preventDefault();
       $('form.' + element + ' button').prop("disabled", true);
@@ -15,6 +16,7 @@ var crud = {
           xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
         },
         success: function (response) {
+          $('#actions .loader').remove();
           switch (type) {
             case 'access':
               if (response.type == 'success') {
@@ -43,6 +45,13 @@ var crud = {
               $('.jsFormAddUser').slideUp();
               $('.action__list__item.list div').detach();
               break;
+            case 'section':
+              utils.removeHTML("level2Section");
+              $('.msg-flash .alert').remove();
+              $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+              crud.ajaxSimpleList('http://127.0.0.1:8000/sections', $('.section-list'), 'section', authTokenVALUE);
+              utils.emptyForm('section');
+              break;
           }
         },
         error: function (response) {
@@ -52,10 +61,12 @@ var crud = {
       })
     });
   },
+
   /**
    * SHOW SIMPLE LIST
    */
   ajaxSimpleList: function (api, element, type, authTokenVALUE) {
+    $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
     $.ajax({
       url: api,
       type: 'GET',
@@ -63,9 +74,10 @@ var crud = {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
       },
       success: function (response) {
+        $('#actions .loader').remove();
         switch (type) {
           case "access":
-            for (var i = 0; i < response.length; i++) {
+            for (let i = 0; i < response.length; i++) {
               $(element).append(
                 '<li>' +
                 '<input type="text" name="title" value="' + response[i].title + '" disabled>' +
@@ -78,7 +90,7 @@ var crud = {
             }
             break;
           case "setting":
-            for (var j = 0; j < response.length; j++) {
+            for (let j = 0; j < response.length; j++) {
               $(element).append(
                 '<li>' +
                 '<span class="">' + response[j].title + '</span> : <input type="text" name="value" value="' + response[j].value + '" disabled>' +
@@ -88,6 +100,56 @@ var crud = {
                 '<span class="link delete" id="deleteSetting' + response[j].id + '">Supprimer</span>' +
                 '</li>'
               );
+            }
+            break;
+          case "section":
+            if (response.success) {
+              for (let j = 0; j < response.list.length; j++) {
+                $(element).append(
+                  '<li>' +
+                  '<input type="text" name="name" value="' + response.list[j].name + '" disabled>' +
+                  '<span class="link editEnabled">Editer</span>' +
+                  '<span class="link edit" id="editSection' + response.list[j].id + '">Valider</span>' +
+                  '<span class="link editCanceled">Annuler</span>' +
+                  '<span class="link delete" id="deleteSection' + response.list[j].id + '">Supprimer</span>' +
+                  '</li>'
+                );
+              }
+            } else {
+              $('.no-result').text('');
+              $('.section-list').next().append(response.message);
+            }
+            break;
+          case "week":
+            if (response.success) {
+              console.log(response);
+              $('.no-result').text('');
+              let action = "";
+              for (let i = 0; i < response.list.length; i++) {
+                let types = '<select name="setting" disabled>';
+                for(let j = 0; j < response.types.length; j++) {
+                  let selected = response.list[i].setting.slug == response.types[j].slug ? "selected" : "";
+                  types += '<option value="' + response.types[j].id + '" ' + selected + '>' + response.types[j].title + ' (' + response.types[j].value + 'h)</option>'
+                }
+                types += '</select>';
+
+                action = '' +
+                  '<span class="link-table editEnabled">Editer</span>' +
+                  '<span class="link-table edit" id="editWeek' + response.list[i].id + '">Valider</span>' +
+                  '<span class="link-table editCanceled">Annuler</span>' +
+                  '<span class="link-table delete" id="deleteWeek' + response.list[i].id + '">Supprimer</span>';
+                
+                $(element).append(
+                  '<form action="" id="formWeek' + response.list[i].id + '" class="tr">' +
+                  '<div class="td">' + response.list[i].number + '</div>' +
+                  '<div class="td">' + types + '</div>' +
+                  '<div class="td">' + action + '</div>' +
+                  '</form>'
+                );
+              }
+            } else {
+              $('.no-result').text('');
+              $('.week-list').next().append(response.message);
             }
             break;
           case "user":
@@ -347,6 +409,7 @@ var crud = {
       $(this).parents('li').find('.editEnabled').removeClass('hide');
     });
     $(click).on('click', 'li .edit', function () {
+      $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
       var idStr = $(this).attr('id');
       var reg = /([0-9]+)/.exec(idStr);
       var id = RegExp.$1;
@@ -357,9 +420,12 @@ var crud = {
         value = $(this).parents('li').find('input').val();
         data = { title: value };
         console.log(value);
-      } else {
+      } else if (type == 'setting') {
         value = $(this).parents('li').find('input').val();
         data = { value: value };
+      } else {
+        value = $(this).parents('li').find('input').val();
+        data = { name: value };
       }
       $.ajax({
         url: api,
@@ -369,6 +435,7 @@ var crud = {
           xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
         },
         success: function (response) {
+          $('#actions .loader').remove();
           switch (type) {
             case "access":
               if (response.type == 'success') {
@@ -400,6 +467,19 @@ var crud = {
                 );
               }
               break;
+            case "section":
+              if (response.type == 'success') {
+                $('.msg-flash .alert').remove();
+                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+                $(element + '' + response.section.id).parents('li').html(
+                  '<input type="text" name="value" value="' + response.section.name + '" disabled>' +
+                  '<span class="link editEnabled">Editer</span>' +
+                  '<span class="link edit" id="editSection' + response.section.id + '">Valider</span>' +
+                  '<span class="link editCanceled">Annuler</span>' +
+                  '<span class="link delete" id="deleteSection' + response.section.id + '">Supprimer</span>'
+                );
+              }
+              break;
           }
         },
         error: function (response) {
@@ -411,30 +491,31 @@ var crud = {
     });
   },
   /**
-   * EDIT USER (SPECIFIC)
+   * EDIT USER & WEEK (SPECIFIC)
    */
-  ajaxEditUser: function (authTokenVALUE) {
-    $('.user-list').on('click', 'form .editEnabled', function () {
+  ajaxEditForm: function (element, type, authTokenVALUE) {
+    $(element).on('click', 'form .editEnabled', function () {
       $(this).parents('form').find('input').prop('disabled', false);
       $(this).parents('form').find('select').prop('disabled', false);
       $(this).addClass('hide');
       $(this).parents('form').find('.editCanceled').addClass('show');
       $(this).parents('form').find('.edit').addClass('show');
     });
-    $('.user-list').on('click', 'form .editCanceled', function () {
+    $(element).on('click', 'form .editCanceled', function () {
       $(this).parents('form').find('input').prop('disabled', true);
       $(this).parents('form').find('select').prop('disabled', true);
       $(this).removeClass('show');
       $(this).parents('form').find('.edit').removeClass('show');
       $(this).parents('form').find('.editEnabled').removeClass('hide');
     });
-    $('.user-list').on('click', 'form .edit', function () {
+    $(element).on('click', 'form .edit', function () {
+      $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
       var idStr = $(this).attr('id');
       var reg = /([0-9]+)/.exec(idStr);
       var id = RegExp.$1;
-      var api = "http://127.0.0.1:8000/user/update/" + id;
+      var api = "http://127.0.0.1:8000/" + type + "/update/" + id;
       form = $(this).parents('form');
-
+      console.log(form);
       $.ajax({
         url: api,
         type: 'PATCH',
@@ -443,11 +524,23 @@ var crud = {
           xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
         },
         success: function (response) {
+          $('#actions .loader').remove();
           if (response.type == 'success') {
-            utils.removeHTML("level2User");
-            $('.msg-flash .alert').remove();
-            $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-            crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user', authTokenVALUE);
+            switch(type) {
+              case "user":
+                utils.removeHTML("level2User");
+                $('.msg-flash .alert').remove();
+                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+                crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user', authTokenVALUE);
+                break;
+              case "week":
+                utils.removeHTML("level2Week");
+                $('.msg-flash .alert').remove();
+                $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+                const selectUserID = $('.jsUsersList').val();
+                crud.ajaxSimpleList('http://127.0.0.1:8000/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+                break;
+            }
           } else {
             console.log(response);
             $('.msg-flash .alert').remove();
@@ -468,6 +561,7 @@ var crud = {
   ajaxRemove: function (click, element, type, authTokenVALUE, actionType = "") {
     $(click).on('click', '.delete', function () {
       if (confirm("Cette action sera irréversible.")) {
+        $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
         var idStr = $(this).attr('id');
         var reg = /([0-9]+)/.exec(idStr);
         var id = RegExp.$1;
@@ -479,6 +573,7 @@ var crud = {
             xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
           },
           success: function (response) {
+            $('#actions .loader').remove();
             if (actionType != "") {
               switch (actionType) {
                 case "leave":
@@ -522,6 +617,20 @@ var crud = {
                   $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
                   $(element + '' + response.id).parents('#formLeave' + response.id).remove();
                   break;
+                case "section":
+                  if (response.type == 'success') {
+                    $('.msg-flash .alert').remove();
+                    $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+                    $(element + '' + response.id).parent().remove();
+                  }
+                  break;
+                case "week":
+                  if (response.type == 'success') {
+                    $('.msg-flash .alert').remove();
+                    $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+                    $(element + '' + response.id).parents('#formWeek' + response.id).remove();
+                  }
+                  break;
               }
             }
           },
@@ -549,8 +658,8 @@ var crud = {
       let location = $(this).find('.location');
       let hours = false;
       let errorText = false;
-      
-      if(type == 'hours') {
+
+      if (type == 'hours') {
         hours = true;
         let tab = [justification, location];
         let errortab = utils.checkText(tab);
@@ -566,7 +675,7 @@ var crud = {
         start = $(this).find('.start').val(actionDay.val() + ' ' + startAction.val());
         end = $(this).find('.end').val(actionDay.val() + ' ' + endAction.val());
 
-        if(!hours) {
+        if (!hours) {
           // 'Rest' case
           errorJustification = utils.checkJustification(justification);
           if (errorDay || errorHours || errorJustification) {
@@ -594,7 +703,8 @@ var crud = {
       }
 
       if (!error) {
-        var api = "http://127.0.0.1:8000/action/create/" + type + "/" + userID;
+        $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
+        const api = "http://127.0.0.1:8000/action/create/" + type + "/" + userID;
         $.ajax({
           url: api,
           type: 'POST',
@@ -603,6 +713,7 @@ var crud = {
             xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
           },
           success: function (response) {
+            $('#actions .loader').remove();
             switch (type) {
               case "leave":
                 utils.removeHTML("level2Leave");
@@ -636,4 +747,35 @@ var crud = {
       }
     });
   },
+  /**
+   * ADD A WEEK
+   */
+  ajaxAddWeek: function (authTokenVALUE) {
+    $('.jsFormAddWeek').on('submit', function (e) {
+      e.preventDefault();
+      $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
+      const api = "http://127.0.0.1:8000/week/create";
+      $.ajax({
+        url: api,
+        type: 'POST',
+        data: $(this).serialize(),
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+        },
+        success: function (response) {
+          $('#actions .loader').remove();
+          console.log(response);
+          utils.removeHTML("level2Week");
+          $('.msg-flash .alert').remove();
+          $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+          const selectUserID = $('.jsUsersList').val();
+          crud.ajaxSimpleList('http://127.0.0.1:8000/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+          utils.emptyForm('hours');
+        },
+        error: function (err) {
+          console.log(err);
+        }
+      })
+    });
+  }
 };

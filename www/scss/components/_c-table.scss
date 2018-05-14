@@ -88,6 +88,7 @@
         }
 
         input[type="text"],
+        input[type="number"],
         select {
           width: 70px;
 
@@ -99,6 +100,9 @@
             padding: 0;
             -webkit-appearance: none;
           }
+        }
+        select {
+          width: 100%;
         }
 
         .link-table {
