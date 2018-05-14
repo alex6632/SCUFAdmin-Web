@@ -11,6 +11,8 @@ var me = {
         authTokenVALUE = localStorage.getItem('authTokenVALUE'),
         userID = localStorage.getItem('userID');
 
+      page.getSetting('coeff', authTokenVALUE);
+
       login.cleaLogin(authTokenVALUE, userID);
 
       // REMOVE ALERT
@@ -20,7 +22,7 @@ var me = {
       page.refreshNotifications(authTokenVALUE, userID);
 
       // FIND ACTIVE PAGE
-      utils.loadActivePage(authTokenVALUE, userID);
+      //utils.reloadDefaultPageOnRefresh(authTokenVALUE, userID);
 
       // DISCONNECT
       logout.ajaxLogout(authTokenVALUE, authTokenID);

@@ -1,7 +1,6 @@
 var page = {
 
   profile: function (authTokenVALUE, userID) {
-    console.log('yo');
     $('#profile').append('<div class="loader"><div class="loader__gif"></div></div>');
     var api = "http://127.0.0.1:8000/user/" + userID;
     $.ajax({
@@ -172,7 +171,7 @@ var page = {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
       },
       success: function (response) {
-        switch(page) {
+        switch (page) {
           case "hours":
             for (var i = 0; i < response.length; i++) {
               $('#jsEmployeesList').append('<option value="' + response[i].id + '">' + response[i].firstname + ' ' + response[i].lastname + '</option>');
@@ -346,7 +345,7 @@ var page = {
         },
         success: function (response) {
           console.log(response);
-          
+
           // 0. Refresh notifications
           utils.removeHTML('notifications');
           page.notifications(authTokenVALUE, userID);
@@ -370,5 +369,152 @@ var page = {
         }
       });
     });
+  },
+  /*
+  * ------------------------------------
+  * VALIDATION PAGE
+  * ------------------------------------
+  */
+  validation: function (authTokenVALUE, userID, date) {
+    // $('#calendar').fullCalendar('clientEvents', function (event) {
+    //   console.log(event);
+    //   moment(event.start).format('YYYY-MM-DD HH:mm:ss');
+    //   console.log(event.start);
+    //   moment().format('dddd');
+    //   if (event.start) {
+
+    //   }
+    // });
+    //*********************************************************************************************************************
+
+
+
+    // 1. Add loader
+    $('#validation').append('<div class="loader"><div class="loader__gif"></div></div>');
+
+    // 2. Refresh list of days in progress
+    const api1 = 'http://127.0.0.1:8000/events/in-progress/' + userID;
+    $.ajax({
+      url: api1,
+      type: 'GET',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+      },
+      success: function (response) {
+        console.log(response);
+        $('#jsListDaysInProgress option').remove();
+        for(let i=0; i<response.length; i++) {
+          let selected = '';
+          if(date == 'now') {
+            // ON LOAD
+            selected = moment().format('YYYY-MM-DD') == response[i].dateEN ? " selected" : '';
+          } else {
+            // ON CHANGE
+            selected = response[i].dateEN == date ? " selected" : "";
+          }
+          $('#jsListDaysInProgress').append('<option value="' + response[i].dateEN + '"' + selected + '>' + response[i].date + '</option>');
+        }
+      },
+      error: function (err) {
+        console.log(err);
+      }
+    });
+
+    // 3. Update page if user choose an other date
+    $('#jsListDaysInProgress').on('change', function () {
+      date = $(this).val();
+      utils.removeEventHandlers("validation");
+      utils.removeHTML('validation');
+      page.validation(authTokenVALUE, userID, date);
+    });
+
+    // 4. Show tasks to validate
+    const api2 = 'http://127.0.0.1:8000/events/' + userID + '/3/' + date;
+    $.ajax({
+      url: api2,
+      type: 'GET',
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+      },
+      success: function (response) {
+        console.log(response);
+        $('#validation .loader').remove();
+
+        let html = '' +
+          '<header class="header">' +
+            '<h1 class="title">Validation</h1>' +
+          '</header>' +
+
+          '<h2 class="header-lvl2">' +
+            '<span>semaine ' + response.week + '</span>' + response.date +
+          '</h2>' +
+
+          '<div class="routing__center">' +
+          '';
+
+        for (let i = 0; i < response.list.length; i++) {
+
+          html += '' +
+            '<div class="validation-item border-ok">' +
+              '<div class="validation-item__title">' + response.list[i].title + ', ' +
+                '<span>' + response.list[i].location + '</span>' +
+              '</div>' +
+              '<div class="validation-item__hours">' + response.list[i].startHours + ' - ' + response.list[i].endHours + '</div>' +
+              '<ul class="action__list">' +
+                '<li class="action__list__item">' +
+                'Validation' +
+                '<span class="validation-item__status">Fait</span>' +
+                '<div class="switch">' +
+                '<input type="radio" name="" class="stop">' +
+                '<label for="" class="label label--stop" data-status="stop"></label>' +
+                '<input type="radio" name="" class="ok" checked="checked">' +
+                '<label for="" class="label label--ok" data-status="ok"></label>' +
+                '<input type="radio" name="" class="no">' +
+                '<label for="" class="label label--no" data-status="no"></label>' +
+                '<div class="switch__btn ok">' +
+                '<div class="switch__btn__bar"></div>' +
+                '<div class="switch__btn__bar"></div>' +
+                '<div class="switch__btn__bar"></div>' +
+                '</div>' +
+                '</div>' +
+                '</li>' +
+              '</ul>' +
+              '<div class="validation-item__justification jsJustificationNo">' +
+                '<ul class="action__list">' +
+                  '<li class="action__list__item textarea">' +
+                    '<textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>' +
+                  '</li>' +
+                '</ul>' +
+              '</div>' +
+              '<div class="validation-item__justification jsJustificationStop">' +
+                '<ul class="action__list">' +
+                  '<li class="action__list__item">' +
+                    '<input type="datetime-local">' +
+                  '</li>' +
+                  '<li class="action__list__item">' +
+                    '<input type="time">' +
+                  '</li>' +
+                '</ul>' +
+                '<ul class="action__list">' +
+                  '<li class="action__list__item textarea">' +
+                    '<textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>' +
+                  '</li>' +
+                '</ul>' +
+              '</div>' +
+            '</div>';
+        }
+        html += '<input type="submit" class="button button--small button--mg" value="Soumettre">' +
+        '</div>'; // end of .routing__center
+
+        $('#validation').append(html);
+      },
+      error: function (err) {
+        console.log(err);
+      }
+    });
+
+
+
+    // 2. 
   },
 };

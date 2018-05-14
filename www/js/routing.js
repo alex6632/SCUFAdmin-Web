@@ -20,12 +20,32 @@ var routing = {
         var current = $(this).attr('data-routing');
         $('.routing#' + current).addClass('show');
 
-        if(current == "planning") {
-          calendar.init(authTokenVALUE, userID, 'calendar');
-          $('#calendar').fullCalendar('refetchEvents');
-          $('#calendar').fullCalendar('refetchEventSources');
-        } else {
+        if(current != "planning") {
           utils.removeEventHandlers('calendar');
+        }
+
+        // Specific actions for each page
+        switch (current) {
+          case "notification":
+    
+            break;
+          case "planning":
+            calendar.init(authTokenVALUE, userID, 'calendar');
+            $('#calendar').fullCalendar('refetchEvents');
+            $('#calendar').fullCalendar('refetchEventSources');
+            break;
+          case "validation":
+            utils.removeHTML('validation');
+            let date = 'now'; // 2018-05-16
+            page.validation(authTokenVALUE, userID, date);
+            break;
+          case "actions":
+    
+            break;
+          case "profile":
+            page.profile(authTokenVALUE, userID);
+            page.refreshProfile(authTokenVALUE, userID);
+            break;
         }
 
         // RefreshNotifications

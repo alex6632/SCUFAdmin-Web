@@ -84,6 +84,6 @@ var login = {
     cleaLogin: function (authTokenVALUE, userID) {
       $('.loginTrigger .login').remove();
       $('.loginTrigger').addClass('hide');
-      page.profile(authTokenVALUE, userID);
+      utils.reloadDefaultPageOnRefresh(authTokenVALUE, userID);
     }
 };

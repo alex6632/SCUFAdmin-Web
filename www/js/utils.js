@@ -39,6 +39,11 @@ var utils = {
       case "level2Week":
         $('.week-list tbody form').remove();
         break;
+      case "validation":
+        $('#validation .header').remove();
+        $('#validation .header-lvl2').remove();
+        $('#validation .routing__center').remove();
+        break;
     }
   },
 
@@ -97,6 +102,9 @@ var utils = {
         $('.calendar-view__button--week').off('click');
         $('.calendar-view__button--day').off('click');
         break;
+      case "validation":
+        $('#jsListDaysInProgress').off('change');
+        break;
     }
   },
 
@@ -132,14 +140,28 @@ var utils = {
     }
   },
 
-  loadActivePage: function (authTokenVALUE, userID) {
+  reloadDefaultPageOnRefresh: function (authTokenVALUE, userID) {
+    /**
+     * -------------------------
+     * Calendar is default page
+     * -------------------------
+     * /!\ Calendar need to be laod in first to get all events and show them on validation page /!\
+     * -------------------------
+     * If you want to change it:
+     * 1. Go to index.html
+     * 2. Change the .current on .tab-bar__item of your choice
+     * 3. Change the .show on .routing of your choice
+     * 4. Add load function in correct case below
+     */
     var activePage = $('.tab-bar').find('.current').attr('data-routing');
     switch (activePage) {
       case "notification":
 
         break;
       case "planning":
-
+        calendar.init(authTokenVALUE, userID, 'calendar');
+        $('#calendar').fullCalendar('refetchEvents');
+        $('#calendar').fullCalendar('refetchEventSources');
         break;
       case "validation":
 
@@ -348,6 +370,7 @@ var utils = {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
       },
       success: function (response) {
+        $('.jsUsersList option').remove();
         for (var i = 0; i < response.length; i++) {
           $('.jsUsersList').append('<option value="' + response[i].id + '">' + response[i].firstname + ' ' + response[i].lastname + '</option>');
         }
@@ -371,6 +394,7 @@ var utils = {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
       },
       success: function (response) {
+        $('.jsWeeksTypeList option').remove();
         for (var i = 0; i < response.length; i++) {
           $('.jsWeeksTypeList').append('<option value="' + response[i].id + '">' + response[i].title + ' (' + response[i].value + 'h)</option>');
         }

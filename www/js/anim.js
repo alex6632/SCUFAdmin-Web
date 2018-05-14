@@ -83,7 +83,7 @@ var anim = {
     },
 
     switch: function (element) {
-        $('.' + element).on('click', function () {
+        $('#validation').on('click', '.' + element, function () {
             var status = $(this).attr('data-status');
             var validationItem = $(this).parents('.validation-item');
             validationItem.removeClass('border-ok');

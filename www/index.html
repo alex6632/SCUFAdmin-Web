@@ -20,7 +20,7 @@
   <!-- /Page login -->
 
   <!-- Page planning -->
-  <div class="routing generic-planning" id="planning">
+  <div class="routing generic-planning show" id="planning">
     <header class="header">
       <div class="header__link header__link--icon jsRefreshPlanning">Rafraichir</div>
       <h1 class="title">Planning</h1>
@@ -45,65 +45,15 @@
 
   <!-- Page validation -->
   <div class="routing" id="validation">
-    <header class="header">
-      <h1 class="title">Validation</h1>
-    </header>
-    <h2 class="header-lvl2">
-      <span>semaine 54</span>Lundi 15 Janvier 2018
-      <div class="header-lvl2__arrow">
-        <span class="icon icon-left-arrow"></span>
-        <span class="icon icon-right-arrow"></span>
-      </div>
-    </h2>
-    <div class="routing__center">
-      <div class="validation-item border-ok">
-        <div class="validation-item__title">Administratif,
-          <span>Siège</span>
-        </div>
-        <div class="validation-item__hours">14:30 - 16h30</div>
-        <ul class="action__list">
-          <li class="action__list__item">
-            Validation
-            <span class="validation-item__status">Fait</span>
-            <div class="switch">
-              <input type="radio" name="" class="stop">
-              <label for="" class="label label--stop" data-status="stop"></label>
-              <input type="radio" name="" class="ok" checked="checked">
-              <label for="" class="label label--ok" data-status="ok"></label>
-              <input type="radio" name="" class="no">
-              <label for="" class="label label--no" data-status="no"></label>
-              <div class="switch__btn ok">
-                <div class="switch__btn__bar"></div>
-                <div class="switch__btn__bar"></div>
-                <div class="switch__btn__bar"></div>
-              </div>
-            </div>
-          </li>
-        </ul>
-        <div class="validation-item__justification jsJustificationNo">
-          <ul class="action__list">
-            <li class="action__list__item textarea">
-              <textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>
-            </li>
-          </ul>
-        </div>
-        <div class="validation-item__justification jsJustificationStop">
-          <ul class="action__list">
-            <li class="action__list__item">
-              <input type="datetime-local">
-            </li>
-            <li class="action__list__item">
-              <input type="time">
-            </li>
-          </ul>
-          <ul class="action__list">
-            <li class="action__list__item textarea">
-              <textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>
-            </li>
-          </ul>
-        </div>
-      </div>
-
+    <div class="date-container">
+      <span>Journée(s) non validée(s)</span>
+      <select id="jsListDaysInProgress"></select>
+    </div>
+  </div>
+    
+    <!--
+    <div class="routing__center"></div>
+      
       <div class="validation-item border-ok">
         <div class="validation-item__title">Terrain,
           <span>Vallerey</span>
@@ -151,9 +101,7 @@
           </ul>
         </div>
       </div>
-
-    </div>
-  </div>
+  </div>-->
   <!-- /Page validation -->
 
   <!-- Page actions -->
@@ -551,7 +499,7 @@
   <!-- /Page actions -->
 
   <!-- Page profil -->
-  <div class="routing show" id="profile">
+  <div class="routing" id="profile">
     <header class="header">
       <div class="header__link header__link--icon jsRefreshProfile">Rafraichir</div>
       <h1 class="title">Votre profil</h1>
@@ -711,7 +659,7 @@
         <div class="tab-bar__item__text">Notifications</div>
       </div>
     </div>
-    <div class="tab-bar__item planning" data-routing="planning">
+    <div class="tab-bar__item planning current" data-routing="planning">
       <div>
         <div class="icon icon-calendar"></div>
         <div class="tab-bar__item__text">Planning</div>
@@ -729,7 +677,7 @@
         <div class="tab-bar__item__text">Actions</div>
       </div>
     </div>
-    <div class="tab-bar__item profile current" data-routing="profile">
+    <div class="tab-bar__item profile" data-routing="profile">
       <div>
         <div class="icon icon-profile"></div>
         <div class="tab-bar__item__text">Profil</div>
