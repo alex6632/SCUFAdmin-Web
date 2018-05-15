@@ -478,12 +478,12 @@ var page = {
             '<div class="validation-item__justification jsJustificationNo">' +
               '<ul class="action__list">' +
                 '<li class="action__list__item textarea">' +
-                  '<textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>' +
+                '<textarea name="justification"  class="justification small" cols="30" rows="10" placeholder="Justification"></textarea>' +
+                '<span class="error-msg error-msg--validation"></span>' +
                 '</li>' +
               '</ul>' +
-            '</div>' +
-            '<span class="error-msg"></span>';
-            submitButton = '<button type="submit" class="validationConfrim">Valider définitivement ce choix</button>';
+            '</div>';
+            submitButton = response.list[i].confirm == true ? '' : '<button type="submit" class="validationConfrim">Valider définitivement ce choix</button>';
           }
           if(response.list[i].validation == 1) {
             okChecked =  "checked";
@@ -498,23 +498,30 @@ var page = {
             '<div class="validation-item__justification jsJustificationStop">' +
               '<ul class="action__list">' +
                 '<li class="action__list__item">' +
-                  '<input type="datetime-local">' +
+                  '<span>Heure de début : </span>' +
+                  '<input type="time" min="' + response.list[i].startHours + '" max="' + response.list[i].endHours + '" class="startAction">' +
+                  '<span class="error-msg"></span>' +
+                  '<input type="hidden" name="partial_start" value="" class="start">' +
                 '</li>' +
                 '<li class="action__list__item">' +
-                  '<input type="time">' +
+                  '<span>Heure de fin : </span>' +
+                  '<input type="text" min="' + response.list[i].startHours + '" max="' + response.list[i].endHours + '" class="endAction">' +
+                  '<span class="error-msg"></span>' +
+                  '<input type="hidden" name="partial_end" value="" class="end">' +
                 '</li>' +
               '</ul>' +
               '<ul class="action__list">' +
                 '<li class="action__list__item textarea">' +
-                  '<textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>' +
+                  '<textarea name="justification"  class="justification small" cols="30" rows="10" placeholder="Justification"></textarea>' +
+                  '<span class="error-msg error-msg--validation"></span>' +
                 '</li>' +
               '</ul>' +
-            '</div>' +
-            '<span class="error-msg"></span>';
+            '</div>';
           }
 
           html += '' +
-            '<form class="' + disabled + 'jsFormValidation validation-item border-' + switchBtn + '" data-validation="' + switchBtn + '" data-id="' + response.list[i].id + '">' +
+            '<form class="' + disabled + 'jsFormValidation validation-item border-' + switchBtn + '" data-id="' + response.list[i].id + '" data-date="' + response.dateEN + '">' +
+              '<input type="checkbox" name="confirm" value="" checked style="visibility: hidden;">' +
               '<input type="hidden" name="user" value="' + response.list[i].userID + '">' +
               '<div class="validation-item__title">' + response.list[i].title + ', ' +
                 '<span>' + response.list[i].location + '</span>' +
@@ -562,10 +569,13 @@ var page = {
     $('#validation').on('submit', '.jsFormValidation', function (e) {
       e.preventDefault();
       const eventID = $(this).attr('data-id');
-      const eventVALIDATION = $(this).attr('data-validation');
+      const eventVALIDATION = $(this).find('.switch__btn');
+      let justification;
+      let errors = false;
+      console.log('confirm', eventVALIDATION);
 
-      if(eventVALIDATION == 'stop') {
-        let justification = $(this).find('.justification');
+      if(eventVALIDATION.hasClass('stop')) {
+        justification = $(this).find('.justification');
         let actionDay = $(this).find('.actionDay');
         let errorDay = utils.checkDate(actionDay);
         let startAction = $(this).find('.startAction');
@@ -577,28 +587,36 @@ var page = {
 
         errorJustification = utils.checkJustification(justification);
           if (errorDay || errorHours || errorJustification) {
-            error = true;
+            errors = true;
           }
+      } else if(eventVALIDATION.hasClass('no')) {
+        justification = $(this).find('.justification');
+        errors = utils.checkJustification(justification);
       }
 
-      const api = 'http://127.0.0.1:8000/event/multiple-update/' + eventID;
-      $.ajax({
-        url: api,
-        type: 'PATCH',
-        data: $(this).serialize(),
-        beforeSend: function (xhr) {
-          xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
-        },
-        success: function (response) {
-          console.log(response);
-          utils.removeEventHandlers("validation");
-          utils.removeHTML('validation');
-          page.validation(authTokenVALUE, userID, date);
-        },
-        error: function (err) {
-          console.log(err);
-        }
-      });
+      if(!errors) {
+        console.log($(this).serialize());
+        const api = 'http://127.0.0.1:8000/event/multiple-update/' + eventID;
+        $.ajax({
+          url: api,
+          type: 'PATCH',
+          data: $(this).serialize(),
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+          },
+          success: function (response) {
+            console.log(response);
+            // TODO: disabled en css pour en pas supprimer les potentielles autres validation en cours
+
+            //utils.removeEventHandlers("validation");
+            //utils.removeHTML('validation');
+            //page.validation(authTokenVALUE, userID, date);
+          },
+          error: function (err) {
+            console.log(err);
+          }
+        });
+      }
     });
   },
 

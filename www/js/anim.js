@@ -106,29 +106,40 @@ var anim = {
       '<div class="validation-item__justification jsJustificationNo">' +
         '<ul class="action__list">' +
           '<li class="action__list__item textarea">' +
-            '<textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>' +
+            '<textarea name="justification"  class="justification small" cols="30" rows="10" placeholder="Justification"></textarea>' +
+            '<span class="error-msg error-msg--validation"></span>' +
           '</li>' +
         '</ul>' +
-      '</div>' +
-      '<span class="error-msg"></span>';
+      '</div>';
 
       let partialJustification = '' +
       '<div class="validation-item__justification jsJustificationStop">' +
         '<ul class="action__list">' +
           '<li class="action__list__item">' +
-            '<input type="datetime-local">' +
+            '<span>Date : </span>' +
+            '<input type="text" placeholder="JJ-MM-AAAA" class="actionDay">' +
+            '<span class="error-msg"></span>' +
           '</li>' +
           '<li class="action__list__item">' +
-            '<input type="time">' +
+            '<span>Heure de début : </span>' +
+            '<input type="text" placeholder="HH:MM" class="startAction">' +
+            '<span class="error-msg"></span>' +
+            '<input type="hidden" name="start" value="" class="start">' +
+          '</li>' +
+          '<li class="action__list__item">' +
+            '<span>Heure de fin : </span>' +
+            '<input type="text" placeholder="HH:MM" class="endAction">' +
+            '<span class="error-msg"></span>' +
+            '<input type="hidden" name="end" value="" class="end">' +
           '</li>' +
         '</ul>' +
         '<ul class="action__list">' +
           '<li class="action__list__item textarea">' +
-            '<textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>' +
+            '<textarea name="justification"  class="justification small" cols="30" rows="10" placeholder="Justification"></textarea>' +
+            '<span class="error-msg error-msg--validation"></span>' +
           '</li>' +
         '</ul>' +
-      '</div>' +
-      '<span class="error-msg"></span>';
+      '</div>';
 
       if (status == 'stop') {
         $(this).parents('.switch').prev().text('Partiellement');

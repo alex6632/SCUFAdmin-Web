@@ -42,6 +42,11 @@
         font-size: 12px;
         font-weight: 700;
 
+        &--validation {
+          position: relative;
+          bottom: 8px;
+        }
+
         &--top {
           display: block;
           margin-top: -30px; 
@@ -90,6 +95,11 @@
           border: 0;
           padding: 10px 20px;
           font-size: 14px;
+          resize: none;
+
+          &.small {
+            width: calc(100% - 200px);
+          }
         }
       }
 
