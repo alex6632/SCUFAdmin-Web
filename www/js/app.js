@@ -41,12 +41,6 @@ var me = {
       // OTHER EVENTS
       //anim.swipe('notification__list');
       anim.swipeDesktop('notification__list');
-      anim.switch('stop');
-      anim.switch('ok');
-      anim.switch('no');
-      anim.switch('label--stop');
-      anim.switch('label--ok');
-      anim.switch('label--no');
       anim.progressBar();
 
       // SHOW ADD FORM

@@ -422,14 +422,22 @@ var page = {
 
     // 3. Update page if user choose an other date
     $('#jsListDaysInProgress').on('change', function () {
-      date = $(this).val();
       utils.removeEventHandlers("validation");
       utils.removeHTML('validation');
+      
+      date = $(this).val();
+      anim.switch('stop', authTokenVALUE);
+      anim.switch('ok', authTokenVALUE);
+      anim.switch('no', authTokenVALUE);
+      anim.switch('label--stop', authTokenVALUE);
+      anim.switch('label--ok', authTokenVALUE);
+      anim.switch('label--no', authTokenVALUE);
       page.validation(authTokenVALUE, userID, date);
+      page.confirmValidation(authTokenVALUE);
     });
 
     // 4. Show tasks to validate
-    const api2 = 'http://127.0.0.1:8000/events/' + userID + '/3/' + date;
+    const api2 = 'http://127.0.0.1:8000/events/' + userID + '/' + date;
     $.ajax({
       url: api2,
       type: 'GET',
@@ -453,68 +461,146 @@ var page = {
           '';
 
         for (let i = 0; i < response.list.length; i++) {
+          let noChecked = "";
+          let okChecked = "";
+          let stopChecked = "";
+          let switchBtn = "";
+          let text = "";
+          let justification = "";
+          let submitButton = "";
+          let disabled = response.list[i].confirm == true ? 'disabled ' : '';
+
+          if(response.list[i].validation == 0) {
+            noChecked =  "checked";
+            switchBtn = "no";
+            text = "Non fait";
+            justification = '' +
+            '<div class="validation-item__justification jsJustificationNo">' +
+              '<ul class="action__list">' +
+                '<li class="action__list__item textarea">' +
+                  '<textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>' +
+                '</li>' +
+              '</ul>' +
+            '</div>' +
+            '<span class="error-msg"></span>';
+            submitButton = '<button type="submit" class="validationConfrim">Valider définitivement ce choix</button>';
+          }
+          if(response.list[i].validation == 1) {
+            okChecked =  "checked";
+            switchBtn = "ok";
+            text = "Fait";
+          }
+          if(response.list[i].validation == 2) {
+            stopChecked =  "checked";
+            switchBtn = "stop";
+            text = "Partiellement";
+            justification = '' +
+            '<div class="validation-item__justification jsJustificationStop">' +
+              '<ul class="action__list">' +
+                '<li class="action__list__item">' +
+                  '<input type="datetime-local">' +
+                '</li>' +
+                '<li class="action__list__item">' +
+                  '<input type="time">' +
+                '</li>' +
+              '</ul>' +
+              '<ul class="action__list">' +
+                '<li class="action__list__item textarea">' +
+                  '<textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>' +
+                '</li>' +
+              '</ul>' +
+            '</div>' +
+            '<span class="error-msg"></span>';
+          }
 
           html += '' +
-            '<div class="validation-item border-ok">' +
+            '<form class="' + disabled + 'jsFormValidation validation-item border-' + switchBtn + '" data-validation="' + switchBtn + '" data-id="' + response.list[i].id + '">' +
+              '<input type="hidden" name="user" value="' + response.list[i].userID + '">' +
               '<div class="validation-item__title">' + response.list[i].title + ', ' +
                 '<span>' + response.list[i].location + '</span>' +
               '</div>' +
               '<div class="validation-item__hours">' + response.list[i].startHours + ' - ' + response.list[i].endHours + '</div>' +
-              '<ul class="action__list">' +
+              '<ul class="action__list justification-next">' +
                 '<li class="action__list__item">' +
                 'Validation' +
-                '<span class="validation-item__status">Fait</span>' +
+                '<span class="validation-item__status">' + text + '</span>' +
                 '<div class="switch">' +
-                '<input type="radio" name="" class="stop">' +
+                '<input type="radio" value="2" name="validation" class="stop" ' + stopChecked + '>' +
                 '<label for="" class="label label--stop" data-status="stop"></label>' +
-                '<input type="radio" name="" class="ok" checked="checked">' +
+                '<input type="radio" value="1" name="validation" class="ok" ' + okChecked + '>' +
                 '<label for="" class="label label--ok" data-status="ok"></label>' +
-                '<input type="radio" name="" class="no">' +
+                '<input type="radio" value="0" name="validation" class="no" ' + noChecked + '>' +
                 '<label for="" class="label label--no" data-status="no"></label>' +
-                '<div class="switch__btn ok">' +
+                '<div class="switch__btn ' + switchBtn + '">' +
                 '<div class="switch__btn__bar"></div>' +
                 '<div class="switch__btn__bar"></div>' +
                 '<div class="switch__btn__bar"></div>' +
                 '</div>' +
                 '</div>' +
                 '</li>' +
-              '</ul>' +
-              '<div class="validation-item__justification jsJustificationNo">' +
-                '<ul class="action__list">' +
-                  '<li class="action__list__item textarea">' +
-                    '<textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>' +
-                  '</li>' +
-                '</ul>' +
-              '</div>' +
-              '<div class="validation-item__justification jsJustificationStop">' +
-                '<ul class="action__list">' +
-                  '<li class="action__list__item">' +
-                    '<input type="datetime-local">' +
-                  '</li>' +
-                  '<li class="action__list__item">' +
-                    '<input type="time">' +
-                  '</li>' +
-                '</ul>' +
-                '<ul class="action__list">' +
-                  '<li class="action__list__item textarea">' +
-                    '<textarea name="" cols="30" rows="10" placeholder="Justification"></textarea>' +
-                  '</li>' +
-                '</ul>' +
-              '</div>' +
-            '</div>';
+              '</ul>' + justification +
+              submitButton +
+            '</form>';
         }
-        html += '<input type="submit" class="button button--small button--mg" value="Soumettre">' +
-        '</div>'; // end of .routing__center
+        html += '</div>'; // end of .routing__center
 
         $('#validation').append(html);
+
+        // On load
+        let status = $('#validation .switch input[name=validation]:checked').next().attr('data-status');
+        let validationItem = $('#validation .switch input:checked').parents('.validation-item');
+        console.log("status", status);
       },
       error: function (err) {
         console.log(err);
       }
     });
-
-
-
-    // 2. 
   },
+
+  confirmValidation: function (authTokenVALUE) {
+    
+    $('#validation').on('submit', '.jsFormValidation', function (e) {
+      e.preventDefault();
+      const eventID = $(this).attr('data-id');
+      const eventVALIDATION = $(this).attr('data-validation');
+
+      if(eventVALIDATION == 'stop') {
+        let justification = $(this).find('.justification');
+        let actionDay = $(this).find('.actionDay');
+        let errorDay = utils.checkDate(actionDay);
+        let startAction = $(this).find('.startAction');
+        let endAction = $(this).find('.endAction');
+        let errorHours = utils.checkHours(startAction, endAction);
+
+        start = $(this).find('.start').val(actionDay.val() + ' ' + startAction.val());
+        end = $(this).find('.end').val(actionDay.val() + ' ' + endAction.val());
+
+        errorJustification = utils.checkJustification(justification);
+          if (errorDay || errorHours || errorJustification) {
+            error = true;
+          }
+      }
+
+      const api = 'http://127.0.0.1:8000/event/multiple-update/' + eventID;
+      $.ajax({
+        url: api,
+        type: 'PATCH',
+        data: $(this).serialize(),
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
+        },
+        success: function (response) {
+          console.log(response);
+          utils.removeEventHandlers("validation");
+          utils.removeHTML('validation');
+          page.validation(authTokenVALUE, userID, date);
+        },
+        error: function (err) {
+          console.log(err);
+        }
+      });
+    });
+  },
+
+
 };

@@ -36,8 +36,15 @@ var routing = {
             break;
           case "validation":
             utils.removeHTML('validation');
+            anim.switch('stop', authTokenVALUE);
+            anim.switch('ok', authTokenVALUE);
+            anim.switch('no', authTokenVALUE);
+            anim.switch('label--stop', authTokenVALUE);
+            anim.switch('label--ok', authTokenVALUE);
+            anim.switch('label--no', authTokenVALUE);
             let date = 'now'; // 2018-05-16
             page.validation(authTokenVALUE, userID, date);
+            page.confirmValidation(authTokenVALUE);
             break;
           case "actions":
     

@@ -103,7 +103,14 @@ var utils = {
         $('.calendar-view__button--day').off('click');
         break;
       case "validation":
+        $('#validation').off('submit', '.jsFormValidation');
         $('#jsListDaysInProgress').off('change');
+        $('#validation').off('click', '.stop');
+        $('#validation').off('click', '.ok');
+        $('#validation').off('click', '.no');
+        $('#validation').off('click', '.label--stop');
+        $('#validation').off('click', '.label--ok');
+        $('#validation').off('click', '.label--no');
         break;
     }
   },
