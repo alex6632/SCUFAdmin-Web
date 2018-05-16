@@ -36,6 +36,15 @@
       border-top: solid 1px color('gray', 'super-light');
       cursor: pointer;
 
+      input:invalid+span:after {
+        display: inline-block;
+        content: 'Vous ne pouvez pas dépasser le créneau horaire de base.';
+        color: color('validation', 'no');
+        margin-left: 15px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
       .error-msg {
         color: color('validation', 'no');
         margin-left: 15px;

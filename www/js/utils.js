@@ -315,6 +315,14 @@ var utils = {
     } else {
       endHour.next().text('');
     }
+
+    if (startHour.val() > endHour.val() ) {
+      error = true;
+      startHour.next().text('L\'heure de début doit être antérieure à l\'heure de fin.');
+    } else {
+      startHour.next().text('');
+    }
+
     return error;
   },
 

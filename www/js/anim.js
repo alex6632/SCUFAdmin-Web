@@ -101,6 +101,8 @@ var anim = {
       $(this).parents('.switch').find('.switch__btn').removeClass('ok');
       $(this).parents('.switch').find('.switch__btn').removeClass('no');
       $(this).parents('.switch').find('.switch__btn').addClass(status);
+      const startHours = $(this).parents('form').find('.validation-item__hours').attr('data-start');
+      const endHours = $(this).parents('form').find('.validation-item__hours').attr('data-end');
 
       let notJustification = '' +
       '<div class="validation-item__justification jsJustificationNo">' +
@@ -116,21 +118,16 @@ var anim = {
       '<div class="validation-item__justification jsJustificationStop">' +
         '<ul class="action__list">' +
           '<li class="action__list__item">' +
-            '<span>Date : </span>' +
-            '<input type="text" placeholder="JJ-MM-AAAA" class="actionDay">' +
-            '<span class="error-msg"></span>' +
-          '</li>' +
-          '<li class="action__list__item">' +
             '<span>Heure de début : </span>' +
-            '<input type="text" placeholder="HH:MM" class="startAction">' +
+            '<input type="time" min="' + startHours + '" max="' + endHours + '" class="startAction">' +
             '<span class="error-msg"></span>' +
-            '<input type="hidden" name="start" value="" class="start">' +
+            '<input type="hidden" name="partial_start" value="" class="partial_start">' +
           '</li>' +
           '<li class="action__list__item">' +
             '<span>Heure de fin : </span>' +
-            '<input type="text" placeholder="HH:MM" class="endAction">' +
+            '<input type="time" min="' + startHours + '" max="' + endHours + '" class="endAction">' +
             '<span class="error-msg"></span>' +
-            '<input type="hidden" name="end" value="" class="end">' +
+            '<input type="hidden" name="partial_end" value="" class="partial_end">' +
           '</li>' +
         '</ul>' +
         '<ul class="action__list">' +

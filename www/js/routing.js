@@ -36,6 +36,7 @@ var routing = {
             break;
           case "validation":
             utils.removeHTML('validation');
+            utils.removeEventHandlers('validation');
             anim.switch('stop', authTokenVALUE);
             anim.switch('ok', authTokenVALUE);
             anim.switch('no', authTokenVALUE);

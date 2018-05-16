@@ -253,7 +253,7 @@ var page = {
                 '<div>Demande d\'heures supplémentaires : ' + response.list[i].justification + '</div>' +
                 '<div>Lieu : ' + response.list[i].location + '</div>' +
                 '<div>Le ' + response.list[i].startDate + ' de ' + response.list[i].startHours + ' à ' + response.list[i].endHours + '</div>' +
-                '<div class="notification__motivation">Acceptez ! <br> Les heures supplémentaires vous seront bientôt récompensées par un repos compensatoire !</div>' +
+                '<div class="notification__motivation">Acceptez ! <br> Vous serez bientôt récompensé par un repos compensatoire !</div>' +
                 '<div class="options">' +
                 '<div class="options__inner options__inner--approve jsApproveAction">' +
                 '<span>Accepter</span>' +
@@ -416,6 +416,7 @@ var page = {
         }
       },
       error: function (err) {
+        $('#validation .loader').remove();
         console.log(err);
       }
     });
@@ -467,6 +468,7 @@ var page = {
           let switchBtn = "";
           let text = "";
           let justification = "";
+          let justificationContent = response.list[i].justification != null ? response.list[i].justification : "";
           let submitButton = "";
           let disabled = response.list[i].confirm == true ? 'disabled ' : '';
 
@@ -478,7 +480,7 @@ var page = {
             '<div class="validation-item__justification jsJustificationNo">' +
               '<ul class="action__list">' +
                 '<li class="action__list__item textarea">' +
-                '<textarea name="justification"  class="justification small" cols="30" rows="10" placeholder="Justification"></textarea>' +
+                '<textarea name="justification"  class="justification small" cols="30" rows="10" placeholder="Justification">' + justificationContent + '</textarea>' +
                 '<span class="error-msg error-msg--validation"></span>' +
                 '</li>' +
               '</ul>' +
@@ -499,20 +501,20 @@ var page = {
               '<ul class="action__list">' +
                 '<li class="action__list__item">' +
                   '<span>Heure de début : </span>' +
-                  '<input type="time" min="' + response.list[i].startHours + '" max="' + response.list[i].endHours + '" class="startAction">' +
+                  '<input type="time" value="' + response.list[i].partialStart + '" class="startAction">' +
                   '<span class="error-msg"></span>' +
-                  '<input type="hidden" name="partial_start" value="" class="start">' +
+                  '<input type="hidden" name="partial_start" value="" class="partial_start">' +
                 '</li>' +
                 '<li class="action__list__item">' +
                   '<span>Heure de fin : </span>' +
-                  '<input type="text" min="' + response.list[i].startHours + '" max="' + response.list[i].endHours + '" class="endAction">' +
+                  '<input type="time" value="' + response.list[i].partialEnd + '" class="endAction">' +
                   '<span class="error-msg"></span>' +
-                  '<input type="hidden" name="partial_end" value="" class="end">' +
+                  '<input type="hidden" name="partial_end" value="" class="partial_end">' +
                 '</li>' +
               '</ul>' +
               '<ul class="action__list">' +
                 '<li class="action__list__item textarea">' +
-                  '<textarea name="justification"  class="justification small" cols="30" rows="10" placeholder="Justification"></textarea>' +
+                  '<textarea name="justification"  class="justification small" cols="30" rows="10" placeholder="Justification">' + response.list[i].justification + '</textarea>' +
                   '<span class="error-msg error-msg--validation"></span>' +
                 '</li>' +
               '</ul>' +
@@ -521,22 +523,23 @@ var page = {
 
           html += '' +
             '<form class="' + disabled + 'jsFormValidation validation-item border-' + switchBtn + '" data-id="' + response.list[i].id + '" data-date="' + response.dateEN + '">' +
+              '<input type="hidden" name="validation" class="jsValidationVvalue" value="">' +
               '<input type="checkbox" name="confirm" value="" checked style="visibility: hidden;">' +
               '<input type="hidden" name="user" value="' + response.list[i].userID + '">' +
               '<div class="validation-item__title">' + response.list[i].title + ', ' +
                 '<span>' + response.list[i].location + '</span>' +
               '</div>' +
-              '<div class="validation-item__hours">' + response.list[i].startHours + ' - ' + response.list[i].endHours + '</div>' +
+              '<div class="validation-item__hours" data-start="' + response.list[i].startHours + '" data-end="' + response.list[i].endHours + '">' + response.list[i].startHours + ' - ' + response.list[i].endHours + '</div>' +
               '<ul class="action__list justification-next">' +
                 '<li class="action__list__item">' +
                 'Validation' +
                 '<span class="validation-item__status">' + text + '</span>' +
                 '<div class="switch">' +
-                '<input type="radio" value="2" name="validation" class="stop" ' + stopChecked + '>' +
+                '<input type="radio" value="2" class="stop" ' + stopChecked + '>' +
                 '<label for="" class="label label--stop" data-status="stop"></label>' +
-                '<input type="radio" value="1" name="validation" class="ok" ' + okChecked + '>' +
+                '<input type="radio" value="1" class="ok" ' + okChecked + '>' +
                 '<label for="" class="label label--ok" data-status="ok"></label>' +
-                '<input type="radio" value="0" name="validation" class="no" ' + noChecked + '>' +
+                '<input type="radio" value="0" class="no" ' + noChecked + '>' +
                 '<label for="" class="label label--no" data-status="no"></label>' +
                 '<div class="switch__btn ' + switchBtn + '">' +
                 '<div class="switch__btn__bar"></div>' +
@@ -554,11 +557,12 @@ var page = {
         $('#validation').append(html);
 
         // On load
-        let status = $('#validation .switch input[name=validation]:checked').next().attr('data-status');
-        let validationItem = $('#validation .switch input:checked').parents('.validation-item');
-        console.log("status", status);
+        //let status = $('#validation .switch input[name=validation]:checked').next().attr('data-status');
+        //let validationItem = $('#validation .switch input:checked').parents('.validation-item');
+        //console.log("status", status);
       },
       error: function (err) {
+        $('#validation .loader').remove();
         console.log(err);
       }
     });
@@ -568,31 +572,37 @@ var page = {
     
     $('#validation').on('submit', '.jsFormValidation', function (e) {
       e.preventDefault();
+      const form = $(this);
       const eventID = $(this).attr('data-id');
       const eventVALIDATION = $(this).find('.switch__btn');
+      const dateBase = $(this).attr('data-date');
       let justification;
       let errors = false;
+      let jsValidationVvalue = 0;
       console.log('confirm', eventVALIDATION);
 
       if(eventVALIDATION.hasClass('stop')) {
+        jsValidationVvalue = 2;
         justification = $(this).find('.justification');
-        let actionDay = $(this).find('.actionDay');
-        let errorDay = utils.checkDate(actionDay);
         let startAction = $(this).find('.startAction');
         let endAction = $(this).find('.endAction');
         let errorHours = utils.checkHours(startAction, endAction);
-
-        start = $(this).find('.start').val(actionDay.val() + ' ' + startAction.val());
-        end = $(this).find('.end').val(actionDay.val() + ' ' + endAction.val());
-
+        
+        $(this).find('.partial_start').val( dateBase + ' ' + startAction.val() + ':00' );
+        $(this).find('.partial_end').val( dateBase + ' ' + endAction.val() + ':00' );
+        
         errorJustification = utils.checkJustification(justification);
-          if (errorDay || errorHours || errorJustification) {
+          if (errorHours || errorJustification) {
             errors = true;
           }
       } else if(eventVALIDATION.hasClass('no')) {
+        jsValidationVvalue = 0;
         justification = $(this).find('.justification');
         errors = utils.checkJustification(justification);
+      } else {
+        jsValidationVvalue = 1;
       }
+      $(this).find('.jsValidationVvalue').val(jsValidationVvalue);
 
       if(!errors) {
         console.log($(this).serialize());
@@ -606,8 +616,14 @@ var page = {
           },
           success: function (response) {
             console.log(response);
-            // TODO: disabled en css pour en pas supprimer les potentielles autres validation en cours
 
+            form.addClass('disabled');
+            form.find('button[type=submit]').remove();
+
+            $('.msg-flash .alert').remove();
+            $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
+            
+            // TODO: Remove handlers
             //utils.removeEventHandlers("validation");
             //utils.removeHTML('validation');
             //page.validation(authTokenVALUE, userID, date);
