@@ -33,7 +33,7 @@ calendar = {
       selectable: true,
       editable: true,
       nowIndicator: true,
-      slotDuration: '00:30:00',
+      slotDuration: '00:15:00',
       minTime: '08:00:00',
       maxTime: '23:00:00',
       forceEventDuration: true,

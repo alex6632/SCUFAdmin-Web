@@ -119,13 +119,13 @@ var anim = {
         '<ul class="action__list">' +
           '<li class="action__list__item">' +
             '<span>Heure de début : </span>' +
-            '<input type="time" min="' + startHours + '" max="' + endHours + '" class="startAction">' +
+            '<input type="time" min="' + startHours + '" max="' + endHours + '" step="900" class="startAction">' +
             '<span class="error-msg"></span>' +
             '<input type="hidden" name="partial_start" value="" class="partial_start">' +
           '</li>' +
           '<li class="action__list__item">' +
             '<span>Heure de fin : </span>' +
-            '<input type="time" min="' + startHours + '" max="' + endHours + '" class="endAction">' +
+            '<input type="time" min="' + startHours + '" max="' + endHours + '" step="900" class="endAction">' +
             '<span class="error-msg"></span>' +
             '<input type="hidden" name="partial_end" value="" class="partial_end">' +
           '</li>' +

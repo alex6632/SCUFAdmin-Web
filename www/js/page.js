@@ -376,18 +376,6 @@ var page = {
   * ------------------------------------
   */
   validation: function (authTokenVALUE, userID, date) {
-    // $('#calendar').fullCalendar('clientEvents', function (event) {
-    //   console.log(event);
-    //   moment(event.start).format('YYYY-MM-DD HH:mm:ss');
-    //   console.log(event.start);
-    //   moment().format('dddd');
-    //   if (event.start) {
-
-    //   }
-    // });
-    //*********************************************************************************************************************
-
-
 
     // 1. Add loader
     $('#validation').append('<div class="loader"><div class="loader__gif"></div></div>');
@@ -438,7 +426,7 @@ var page = {
     });
 
     // 4. Show tasks to validate
-    const api2 = 'http://127.0.0.1:8000/events/' + userID + '/' + date;
+    const api2 = 'http://127.0.0.1:8000/user/' + userID + '/event/' + date;
     $.ajax({
       url: api2,
       type: 'GET',
@@ -606,7 +594,7 @@ var page = {
 
       if(!errors) {
         console.log($(this).serialize());
-        const api = 'http://127.0.0.1:8000/event/multiple-update/' + eventID;
+        const api = 'http://127.0.0.1:8000/event/' + eventID + '/confirm';
         $.ajax({
           url: api,
           type: 'PATCH',
