@@ -604,7 +604,7 @@ calendar = {
 
           // 0. Refresh notifications
           utils.removeHTML('notifications');
-          page.notifications(authTokenVALUE, userID);
+          page.notifications(authTokenVALUE, userConnectedID);
 
           // 1. Remove loader
           $('#jsNotifications .loader').remove();
@@ -626,6 +626,7 @@ calendar = {
         },
         error: function (err) {
           console.log(err);
+          $('#jsNotifications .loader').remove();
         }
       });
     });

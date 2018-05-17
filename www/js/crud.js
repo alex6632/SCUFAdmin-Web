@@ -56,6 +56,7 @@ var crud = {
         },
         error: function (response) {
           console.log(response);
+          $('#actions .loader').remove();
           $('.msg-flash').append('<div class="alert alert--error" role="alert">Erreur lors de l\'ajout</div>');
         }
       })
@@ -386,6 +387,7 @@ var crud = {
         }
       },
       error: function (response) {
+        $('#actions .loader').remove();
         $('.msg-flash .alert').remove();
         var error = response.responseJSON.code !== "" ? response.responseJSON.code + " : " + response.responseJSON.message : response.message;
         $('.msg-flash').append('<div class="alert alert--error" role="alert">' + error + '</div>');
@@ -484,6 +486,7 @@ var crud = {
         },
         error: function (response) {
           console.log(response);
+          $('#actions .loader').remove();
           $('.msg-flash .alert').remove();
           $('.msg-flash').append('<div class="alert alert--error" role="alert">Erreur lors de l\'édition</div>');
         }
@@ -549,6 +552,7 @@ var crud = {
         },
         error: function (response) {
           console.log(response);
+          $('#actions .loader').remove();
           $('.msg-flash .alert').remove();
           $('.msg-flash').append('<div class="alert alert--error" role="alert">Erreur lors de l\'édition</div>');
         }
@@ -636,6 +640,7 @@ var crud = {
           },
           error: function (response) {
             console.log(response);
+            $('#actions .loader').remove();
             $('.msg-flash .alert').remove();
             $('.msg-flash').append('<div class="alert alert--error" role="alert">Erreur lors de la suppression</div>');
           }
@@ -740,6 +745,7 @@ var crud = {
           },
           error: function (response) {
             console.log(response);
+            $('#actions .loader').remove();
             $('.msg-flash .alert').remove();
             $('.msg-flash').append('<div class="alert alert--error" role="alert">' + response.responseJSON.message + '</div>');
           }
@@ -774,6 +780,7 @@ var crud = {
         },
         error: function (err) {
           console.log(err);
+          $('#actions .loader').remove();
         }
       })
     });

@@ -10,6 +10,7 @@ var page = {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
       },
       success: function (response) {
+        console.log(response)
         $('#profile .loader').remove();
         var role = "";
         switch (response[0].role) {
@@ -29,11 +30,14 @@ var page = {
             role = "Aucun";
         }
         var hoursToPlanify = response[0].hoursTodo - response[0].hoursPlanified;
-        var percentageHoursTodo = (response[0].hoursDone / response[0].hoursTodo) * 100;
-        var percentageHoursPlanified = (response[0].hoursPlanifiedByMe / hoursToPlanify) * 100;
+        // TODO: remplacer "response[0].hoursDone" par la bonne valeur
+        var percentageHoursTodoThisWeek = ((response[0].hoursDone / response[2]) * 100).toFixed(2);
+
+        var percentageHoursTodo = ((response[0].hoursDone / response[0].hoursTodo) * 100).toFixed(2);
+        var percentageHoursPlanified = ((response[0].hoursPlanifiedByMe / hoursToPlanify) * 100).toFixed(2);
         var coeff = localStorage.getItem('settingCOEFF');
-        var restHours = Math.trunc((response[0].overtime * coeff) / 60);
-        var restMinutes = (response[0].overtime * coeff) % 60;
+        var restHours = Math.trunc(response[0].overtime * coeff);
+        var restMinutes = Math.floor((response[0].overtime * coeff).toFixed(2) * 60) % 60;
         var rest = restHours == 0 ? restMinutes + '<span>MIN</span>' : restHours + '<span>H</span>' + restMinutes;
         if (response[0].access.length > 0) {
           var listAccess = '';
@@ -55,7 +59,13 @@ var page = {
         $('#profile-superior').text(response[1]);
         $('#profile-access').text(listAccess);
 
-        //$('.profile-page__status').text(role);
+        // TODO: 1. Ajouter un champs en DB pour connaitre le nombre d'heures faite par semaine
+        // TODO: 2. remplacer "response[0].hoursDone" par la bonne valeur
+        // TODO: 3. Faire la différence entre le total à faire et les heures validées pour avoir les heures non validées
+        $('#jsHoursTodoThisWeek .progress-bar__ratio').html('<span class="ratio-ok">' + response[0].hoursDone + '</span>/' + response[2] + '<span>H</span>');
+        $('#jsHoursTodoThisWeek .progress-bar__bar__text, #jsHoursTodoThisWeek .progress-bar__bar__wip span').text(percentageHoursTodoThisWeek + '%');
+        $('#jsHoursTodoThisWeek .progress-bar__bar__wip').attr('style', 'width: ' + percentageHoursTodoThisWeek + '%;');
+
         $('#jsHoursTodo .progress-bar__ratio').html('<span class="ratio-ok">' + response[0].hoursDone + '</span>/' + response[0].hoursTodo + '<span>H</span>');
         $('#jsHoursTodo .progress-bar__bar__text, #jsHoursTodo .progress-bar__bar__wip span').text(percentageHoursTodo + '%');
         $('#jsHoursTodo .progress-bar__bar__wip').attr('style', 'width: ' + percentageHoursTodo + '%;');
@@ -366,6 +376,7 @@ var page = {
         },
         error: function (err) {
           console.log(err);
+          $('#jsNotifications .loader').remove();
         }
       });
     });
