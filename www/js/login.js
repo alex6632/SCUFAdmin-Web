@@ -67,6 +67,7 @@ var login = {
                 localStorage.setItem('authTokenID', response.authToken.id);
                 localStorage.setItem('authTokenVALUE', response.authToken.value);
                 localStorage.setItem('userID', response.authToken.user.id);
+                localStorage.setItem('ROLE', response.authToken.user.role);
                 localStorage.setItem('authTokenCREATED', response.createdTime);
                 localStorage.setItem('tokenValidityDuration', response.tokenValidityDuration);
                 login.loginPage();

@@ -17,8 +17,10 @@ var logout = {
                 localStorage.removeItem('authTokenID');
                 localStorage.removeItem('authTokenVALUE');
                 localStorage.removeItem('userID');
+                localStorage.removeItem('ROLE');
                 localStorage.removeItem('authTokenCREATED');
                 localStorage.removeItem('tokenValidityDuration');
+                localStorage.removeItem('settingCOEFF');
                 login.loginPage();
             },
             error: function (response) {

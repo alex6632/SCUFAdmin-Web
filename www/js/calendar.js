@@ -8,9 +8,15 @@ calendar = {
    */
   init: function (authTokenVALUE, userID, calendarID) {
 
+    let selectable = false;
+    let editable = false;
+
+
     if(calendarID == 'calendar-edit') {
       page.getEmployees(authTokenVALUE, userID, 'planning');
       userID = $('.selectUserToEditPlanning').val();
+      selectable = true;
+      editable = true;
 
       $('.selectUserToEditPlanning').on('change', function () {
         userID = $(this).val();
@@ -20,6 +26,8 @@ calendar = {
 
     } else {
       userID = localStorage.getItem('userID');
+      selectable = false;
+      editable = false;
     }
 
     const el = $('#' + calendarID);
@@ -30,8 +38,9 @@ calendar = {
     el.fullCalendar({
       defaultView: 'agendaWeek', // 'basicDay'
       weekends: false,
-      selectable: true,
-      editable: true,
+      selectable: selectable,
+      editable: editable,
+      //lazyFetching: false,
       nowIndicator: true,
       slotDuration: '00:15:00',
       minTime: '08:00:00',
@@ -74,6 +83,7 @@ calendar = {
        * -------------------
        */
       events: function (start, end, timezone, callback) {
+        //$('.fc-event').remove();
         var api = "http://127.0.0.1:8000/events/" + userID;
         $.ajax({
           url: api,
@@ -82,10 +92,13 @@ calendar = {
             xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
           },
           success: function (response) {
+            console.log('show');
+            //$('#calendar-edit').fullCalendar('refetchEvents');
             $('#planning .loader, #actions .loader').remove();
             callback(response);
           },
           error: function (err) {
+            $('#planning .loader, #actions .loader').remove();
             console.log(err);
           }
         });
@@ -130,6 +143,7 @@ calendar = {
             el.fullCalendar('refetchEvents');
           },
           error: function (err) {
+            $('#calendar .loader, #calendar-edit .loader').remove();
             console.log(err);
           }
         });
@@ -174,8 +188,8 @@ calendar = {
             el.fullCalendar('refetchEvents');
           },
           error: function (err) {
+            $('#calendar .loader, #calendar-edit .loader').remove();
             console.log(err);
-            revertFunc();
           }
         });
       },
@@ -281,6 +295,7 @@ calendar = {
                 el.parents('.generic-planning').off('click', '.jsConfirmDeleteEvent');
               },
               error: function (err) {
+                $('#calendar .loader, #calendar-edit .loader').remove();
                 console.log(err);
               }
             });
@@ -343,6 +358,7 @@ calendar = {
                 el.parents('.generic-planning').off('click', '.jsConfirmDeleteEvent');
               },
               error: function (err) {
+                $('#calendar .loader, #calendar-edit .loader').remove();
                 console.log(err);
               }
             });
@@ -469,6 +485,7 @@ calendar = {
                 el.parents('.generic-planning').off('click', '.jsConfirmAddEvent');
               },
               error: function (err) {
+                $('#calendar .loader, #calendar-edit .loader').remove();
                 console.log(err);
               }
             });
@@ -478,6 +495,7 @@ calendar = {
     })
     calendar.navigate(el);
     calendar.modal(el);
+    calendar.refresh(authTokenVALUE, userID);
   },
 
   modal: function (el) {
@@ -502,12 +520,12 @@ calendar = {
     // Go to previous day / week
     $('.calendar-navigation-prev').on('click', function () {
       $(this).parents('.generic-planning').find(el).fullCalendar('prev');
-      el.fullCalendar('refetchEvents');
+      //el.fullCalendar('refetchEvents');
     });
     // Go to next day / week
     $('.calendar-navigation-next').on('click', function () {
       $(this).parents('.generic-planning').find(el).fullCalendar('next');
-      el.fullCalendar('refetchEvents');
+      //el.fullCalendar('refetchEvents');
     });
     // Switch on week view
     $('.calendar-view__button--week').on('click', function () {
@@ -522,6 +540,14 @@ calendar = {
       $(this).parents('.generic-planning').find(el).fullCalendar('changeView', 'agendaDay');
     });
 
+  },
+
+  refresh: function (authTokenVALUE, userID) {
+    $('.jsRefreshPlanning').on('click', function () {
+      calendar.init(authTokenVALUE, userID, 'calendar');
+      $('#calendar').fullCalendar('refetchEvents');
+      $('#calendar').fullCalendar('refetchEventSources');
+    });
   },
  /*
   * ------------------------------------
@@ -625,41 +651,12 @@ calendar = {
           $('.notification__list').off('click', '.jsADeclineAction');
         },
         error: function (err) {
-          console.log(err);
           $('#jsNotifications .loader').remove();
+          console.log(err);
         }
       });
     });
   },
 
-  testFunction: function (el) {
-    // Go to a specific date
-    const date = moment().format();
-    el.fullCalendar('gotoDate', date);
-
-    // When click on 'planning' tab
-    el.fullCalendar('render');
-    el.fullCalendar('refetchEvents');
-
-    // Go to today
-    el.fullCalendar('today');
-
-    // Change view
-    el.fullCalendar('changeView', 'basicDay');
-    el.fullCalendar('changeView', 'basicWeek');
-
-    // To put a bg color to close day
-    $('#calendar').fullCalendar({
-      events: [
-        {
-          allDay: true,
-          start: '2014-11-10T10:00:00',
-          end: '2014-11-10T16:00:00',
-          rendering: 'background'
-        }
-      ]
-    });
-  },
-
-  // ...
+  // Other functions...
 };

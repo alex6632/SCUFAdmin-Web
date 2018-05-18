@@ -9,7 +9,8 @@ var me = {
 
       const authTokenID = localStorage.getItem('authTokenID'),
         authTokenVALUE = localStorage.getItem('authTokenVALUE'),
-        userID = localStorage.getItem('userID');
+        userID = localStorage.getItem('userID'),
+        ROLE = localStorage.getItem('ROLE');
 
       page.getSetting('coeff', authTokenVALUE);
 
@@ -20,6 +21,9 @@ var me = {
 
       // CHECK IF THERE ARE NOTIFICATIONS
       page.refreshNotifications(authTokenVALUE, userID);
+
+      // LOAD ACTIONS
+      page.actions(ROLE);
 
       // FIND ACTIVE PAGE
       //utils.reloadDefaultPageOnRefresh(authTokenVALUE, userID);

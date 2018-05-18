@@ -48,7 +48,6 @@ var routing = {
             page.confirmValidation(authTokenVALUE);
             break;
           case "actions":
-    
             break;
           case "profile":
             page.profile(authTokenVALUE, userID);

@@ -13,7 +13,7 @@ var page = {
         console.log(response)
         $('#profile .loader').remove();
         var role = "";
-        switch (response[0].role) {
+        switch (response.user.role) {
           case 1:
             role = 'Salarié';
             break;
@@ -29,52 +29,55 @@ var page = {
           default:
             role = "Aucun";
         }
-        var hoursToPlanify = response[0].hoursTodo - response[0].hoursPlanified;
-        // TODO: remplacer "response[0].hoursDone" par la bonne valeur
-        var percentageHoursTodoThisWeek = ((response[0].hoursDone / response[2]) * 100).toFixed(2);
+        let hoursToPlanify = response.user.hoursTodo - response.user.hoursPlanified;
+        
+        let percentageHoursTodoThisWeek = response.hoursTodoThisWeek == 0 ? (0).toFixed(2) : ((response.hours_done / response.hoursTodoThisWeek) * 100).toFixed(2);
+        let valided = response.user.hoursDone;
+        let notValided = response.hoursTodoThisWeek - response.user.hoursDone;
 
-        var percentageHoursTodo = ((response[0].hoursDone / response[0].hoursTodo) * 100).toFixed(2);
-        var percentageHoursPlanified = ((response[0].hoursPlanifiedByMe / hoursToPlanify) * 100).toFixed(2);
-        var coeff = localStorage.getItem('settingCOEFF');
-        var restHours = Math.trunc(response[0].overtime * coeff);
-        var restMinutes = Math.floor((response[0].overtime * coeff).toFixed(2) * 60) % 60;
-        var rest = restHours == 0 ? restMinutes + '<span>MIN</span>' : restHours + '<span>H</span>' + restMinutes;
-        if (response[0].access.length > 0) {
+        let percentageHoursTodo = ((response.user.hoursDone / response.user.hoursTodo) * 100).toFixed(2);
+        let percentageHoursPlanified = ((response.user.hoursPlanifiedByMe / hoursToPlanify) * 100).toFixed(2);
+        let coeff = localStorage.getItem('settingCOEFF');
+        let restHours = Math.trunc(response.user.overtime * coeff);
+        let restMinutes = Math.floor((response.user.overtime * coeff).toFixed(2) * 60) % 60;
+        let rest = restHours == 0 ? restMinutes + '<span>MIN</span>' : restHours + '<span>H</span>' + restMinutes;
+      
+        if (response.user.access.length > 0) {
           var listAccess = '';
-          for (var i = 0; i < response[0].access.length; i++) {
+          for (var i = 0; i < response.user.access.length; i++) {
             listAccess += '' +
               '<div>' +
               '<input type="checkbox" checked disabled>' +
-              '<label>' + response[0].access[i].title + '</label>' +
+              '<label>' + response.user.access[i].title + '</label>' +
               '</div>';
           }
         } else {
           listAccess = 'Aucun';
         }
 
-        $('#profile-firstname').text(response[0].firstname);
-        $('#profile-lastname').text(response[0].lastname);
-        $('#profile-username').text(response[0].username);
+        $('#profile-firstname').text(response.user.firstname);
+        $('#profile-lastname').text(response.user.lastname);
+        $('#profile-username').text(response.user.username);
         $('#profile-role').text(role);
-        $('#profile-superior').text(response[1]);
+        $('#profile-superior').text(response.superiorName);
         $('#profile-access').text(listAccess);
 
-        // TODO: 1. Ajouter un champs en DB pour connaitre le nombre d'heures faite par semaine
-        // TODO: 2. remplacer "response[0].hoursDone" par la bonne valeur
-        // TODO: 3. Faire la différence entre le total à faire et les heures validées pour avoir les heures non validées
-        $('#jsHoursTodoThisWeek .progress-bar__ratio').html('<span class="ratio-ok">' + response[0].hoursDone + '</span>/' + response[2] + '<span>H</span>');
+        $('#jsHoursTodoThisWeek .progress-bar__ratio').html('<span class="ratio-ok">' + response.user.hoursDone + '</span>/' + response.hoursTodoThisWeek + '<span>H</span>');
         $('#jsHoursTodoThisWeek .progress-bar__bar__text, #jsHoursTodoThisWeek .progress-bar__bar__wip span').text(percentageHoursTodoThisWeek + '%');
         $('#jsHoursTodoThisWeek .progress-bar__bar__wip').attr('style', 'width: ' + percentageHoursTodoThisWeek + '%;');
+        $('#validedHours').text(valided);
+        $('#notValidedHours').text(notValided);
 
-        $('#jsHoursTodo .progress-bar__ratio').html('<span class="ratio-ok">' + response[0].hoursDone + '</span>/' + response[0].hoursTodo + '<span>H</span>');
+        $('#jsHoursTodo .progress-bar__ratio').html('<span class="ratio-ok">' + response.user.hoursDone + '</span>/' + response.user.hoursTodo + '<span>H</span>');
         $('#jsHoursTodo .progress-bar__bar__text, #jsHoursTodo .progress-bar__bar__wip span').text(percentageHoursTodo + '%');
         $('#jsHoursTodo .progress-bar__bar__wip').attr('style', 'width: ' + percentageHoursTodo + '%;');
-        $('#jsHoursPlanified .progress-bar__ratio').html('<span class="ratio-ok">' + response[0].hoursPlanifiedByMe + '</span>/' + hoursToPlanify + '<span>H</span>');
+        $('#jsHoursPlanified .progress-bar__ratio').html('<span class="ratio-ok">' + response.user.hoursPlanifiedByMe + '</span>/' + hoursToPlanify + '<span>H</span>');
         $('#jsHoursPlanified .progress-bar__bar__text, #jsHoursPlanified .progress-bar__bar__wip span').text(percentageHoursPlanified + '%');
         $('#jsHoursPlanified .progress-bar__bar__wip').attr('style', 'width: ' + percentageHoursPlanified + '%;');
         $('.profile-page__info-hours__nb').html(rest);
       },
       error: function (response) {
+        $('#profile .loader').remove();
         console.log(response);
         var error = response.responseJSON.code + " : " + response.responseJSON.message;
         $('.msg-flash .alert').remove();
@@ -380,6 +383,75 @@ var page = {
         }
       });
     });
+  },
+  /*
+  * ------------------------------------
+  * VALIDATION PAGE
+  * ------------------------------------
+  */
+  actions: function (ROLE) {
+
+    // SALARIE
+    let role1 = '' +
+    '<ul class="action__list">' +
+      '<li class="action__list__item arrow jsGoLevel2" data-routing="rest">Repos compensatoire</li>' +
+      '<li class="action__list__item arrow jsGoLevel2" data-routing="leave">Congés</li>' +
+    '</ul>';
+
+    // MANAGER
+    let role2 = '';
+    role2 += role1 + '' +
+    '<ul class="action__list">' +
+      '<li class="action__list__item premium" data-routing="dashboard">Dashboard</li>' +
+      '<li class="action__list__item arrow jsGoLevel2" data-routing="editPlanning">Editer un planning</li>' +
+    '</ul>';
+
+    // SUPERVISEUR
+    let role3 = '';
+    role3 += role2 + '' +
+    '<ul class="action__list">' +
+      '<li class="action__list__item arrow jsGoLevel2" data-routing="hours">Heures supplémentaires</li>' +
+      '<li class="action__list__item arrow jsGoLevel2" data-routing="addUser">Utilisateurs</li>' +
+    '</ul>';
+
+    // ADMINISTRATEUR
+    let role4 = '';
+    role4 += role3 + '' +
+    '<ul class="action__list">' +
+      '<li class="action__list__item arrow jsGoLevel2" data-routing="addWeek">Semaines</li>' +
+      '<li class="action__list__item arrow jsGoLevel2" data-routing="addSection">Sections</li>' +
+    '</ul>';
+
+    // SUPER ADMINISTRATEUR (ROOT)
+    let role42 = '';
+    role42 += role4 + '' +
+    '<ul class="action__list">' +
+      '<li class="action__list__item arrow jsGoLevel2" data-routing="addAccess">Droits</li>' +
+      '<li class="action__list__item arrow jsGoLevel2" data-routing="addSetting">Réglages</li>' +
+    '</ul>';
+
+    let action = role1;
+
+    switch(ROLE) {
+      case '1':
+        action = role1;
+        break;
+      case '2':
+        action = role2;
+        break;
+      case '3' :
+        action = role3;
+        break;
+      case '4' :
+        action = role4;
+        break;
+      case '42' :
+        action = role42;
+      default :
+        action = role1;
+    }
+
+    $('#generateActionsByRole').append(action);
   },
   /*
   * ------------------------------------

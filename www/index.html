@@ -114,29 +114,7 @@
     </header>
 
     <div class="routing__center">
-      <div class="action level1">
-        <ul class="action__list">
-          <li class="action__list__item arrow jsGoLevel2" data-routing="rest">Repos compensatoire</li>
-          <li class="action__list__item arrow jsGoLevel2" data-routing="leave">Congés</li>
-          <!--<li class="action__list__item">Demande de remplacement</li>-->
-        </ul>
-
-
-        <ul class="action__list">
-          <li class="action__list__item arrow jsGoLevel2" data-routing="hours">Heures supplémentaires</li>
-          <li class="action__list__item arrow jsGoLevel2" data-routing="editPlanning">Editer un planning</li>
-        </ul>
-
-        <!-- SUPER ADMIN -->
-        <ul class="action__list">
-          <li class="action__list__item premium" data-routing="dashboard">Dashboard</li>
-          <li class="action__list__item arrow jsGoLevel2" data-routing="addUser">Utilisateurs</li>
-          <li class="action__list__item arrow jsGoLevel2" data-routing="addWeek">Semaines</li>
-          <li class="action__list__item arrow jsGoLevel2" data-routing="addSection">Sections</li>
-          <li class="action__list__item arrow jsGoLevel2" data-routing="addAccess">Droits</li>
-          <li class="action__list__item arrow jsGoLevel2" data-routing="addSetting">Réglages</li>
-        </ul>
-      </div>
+      <div class="action level1" id="generateActionsByRole"></div>
 
       <!-- Repos -->
       <div class="level2" id="rest">
@@ -312,7 +290,9 @@
       <!-- Edit planning -->
       <div class="level2 generic-planning" id="editPlanning">
         <div class="action">
-          <select class="selectUserToEditPlanning"></select>
+          <select class="selectUserToEditPlanning">
+            <option value="default">Liste des utilisateurs</option>
+          </select>
           <div class="calendar-navigation">
             <button class="calendar-navigation-prev">
               <span class="icon icon-left-arrow"></span>Précédent</button>
@@ -502,7 +482,7 @@
   <div class="routing" id="profile">
     <header class="header">
       <div class="header__link header__link--icon jsRefreshProfile">Rafraichir</div>
-      <h1 class="title">Votre profil</h1>
+      <h1 class="title">Mon profil</h1>
     </header>
 
     <div class="routing__center">
@@ -545,7 +525,7 @@
         </div>
       </div>
 
-      <h2 class="h2">Vos heures validées</h2>
+      <h2 class="h2">Mes heures validées</h2>
       <div class="progress-bar" id="jsHoursTodoThisWeek">
         <div class="progress-bar__top">
           <div class="progress-bar__title">Cette semaine</div>
@@ -561,13 +541,13 @@
 
       <div class="profile-page profile-page--dark">
         <div class="profile-page__col">
-          <div class="profile-page__col__nb profile-page__col__nb--ok">14</div>
+          <div class="profile-page__col__nb profile-page__col__nb--ok" id="validedHours"></div>
           <span>h</span>
           <div>validées</div>
         </div>
         <div class="profile-page__sep"></div>
         <div class="profile-page__col">
-          <div class="profile-page__col__nb profile-page__col__nb--no">11</div>
+          <div class="profile-page__col__nb profile-page__col__nb--no" id="notValidedHours"></div>
           <span>h</span>
           <div>en attente de validation</div>
         </div>
@@ -586,7 +566,7 @@
         </div>
       </div>
 
-      <h2 class="h2">Vos heures planifiées</h2>
+      <h2 class="h2">Mes heures planifiées</h2>
       <div class="progress-bar" id="jsHoursPlanified">
         <div class="progress-bar__top">
           <div class="progress-bar__title">Cette année</div>
@@ -604,8 +584,9 @@
                     <div class="profile-page__info-hours__title">Total H. supplémentaires</div>
                     <div class="profile-page__info-hours__nb">6<span>H</span></div>
                 </div> -->
+      <h2 class="h2">Mes heures supplémentaires récompensées</h2>
       <div class="profile-page__info-hours">
-        <div class="profile-page__info-hours__title">Repos compensatoire (h)</div>
+        <div class="profile-page__info-hours__title">Repos compensatoire obtenu</div>
         <div class="profile-page__info-hours__nb"></div>
       </div>
 
