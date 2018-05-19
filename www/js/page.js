@@ -39,8 +39,8 @@ var page = {
         let valided = response.hours_done;
         let notValided = response.hoursTodoThisWeek - response.hours_done;
 
-        let percentageHoursTodo = ((response.user.hoursDone / response.user.hoursTodo) * 100).toFixed(2);
-        let percentageHoursPlanified = ((response.user.hoursPlanifiedByMe / hoursToPlanify) * 100).toFixed(2);
+        let percentageHoursTodo = response.user.hoursTodo == 0 ? (0).toFixed(2) : ((response.user.hoursDone / response.user.hoursTodo) * 100).toFixed(2);
+        let percentageHoursPlanified = hoursToPlanify == 0 ? (0).toFixed(2) : ((response.user.hoursPlanifiedByMe / hoursToPlanify) * 100).toFixed(2);
         let coeff = localStorage.getItem('settingCOEFF');
         let restHours = Math.trunc(response.user.overtime * coeff);
         let restMinutes = Math.floor((response.user.overtime * coeff).toFixed(2) * 60) % 60;
