@@ -413,6 +413,7 @@ var utils = {
    * GET WEEKS TYPE
    */
   ajaxGetWeeksType: function (authTokenVALUE) {
+    // TODO: Add loader here and remove it on ajaxSimplePage just before re append it for list loading
     $.ajax({
       url: 'http://127.0.0.1:8000/setting/week',
       type: 'GET',

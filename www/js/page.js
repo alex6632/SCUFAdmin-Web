@@ -1,5 +1,9 @@
 var page = {
-
+  /*
+   * -------------------
+   * PROFILE PAGE
+   * -------------------
+   */
   profile: function (authTokenVALUE, userID) {
     $('#profile').append('<div class="loader"><div class="loader__gif"></div></div>');
     var api = "http://127.0.0.1:8000/user/" + userID;
@@ -135,7 +139,11 @@ var page = {
       }
     });
   },
-
+  /*
+   * ---------------------
+   * REFRESH PROFILE PAGE
+   * ---------------------
+   */
   refreshProfile: function (authTokenVALUE, userID) {
     $('.jsRefreshProfile').on('click', function () {
       // Reset all data
@@ -158,6 +166,11 @@ var page = {
     });
   },
 
+  /*
+   * ------------------------
+   * GET COEFF VALUE FROM DB
+   * ------------------------
+   */
   getSetting: function (element, authTokenVALUE) {
     var api = "http://127.0.0.1:8000/setting/main/" + element;
     $.ajax({
@@ -175,6 +188,11 @@ var page = {
     });
   },
 
+  /*
+   * -------------------------------
+   * GET EMPLOYEES LIST FOR A USER
+   * -------------------------------
+   */
   getEmployees: function (authTokenVALUE, userID, page) {
     var api = "http://127.0.0.1:8000/users/" + userID;
     $.ajax({
@@ -204,6 +222,11 @@ var page = {
     });
   },
 
+  /*
+   * -------------------
+   * NOTIFICATION PAGE
+   * -------------------
+   */
   notifications: function (authTokenVALUE, userID) {
     $('#jsNotifications').append('<div class="loader"><div class="loader__gif"></div></div>');
     var api = "http://127.0.0.1:8000/notifications/" + userID;
@@ -216,105 +239,117 @@ var page = {
       success: function (response) {
         console.log(response);
         $('#jsNotifications .loader').remove();
-        $('.notification__wait').text(response.count + ' en attente de traitement');
-        for (var i = 0; i < response.list.length; i++) {
-          let li = '';
-          let view = response.list[i].view == 0 ? "not-seen" : "";
-          let statusClass = "";
-          if (response.list[i].status != 2) {
-            statusClass = response.list[i].status == 0 ? "notification__status--refused" : "notification__status--accepted";
+        if(response.count > 0) {
+          $('.notification__wait').text(response.countInProgress + ' en attente de traitement');
+          for (var i = 0; i < response.list.length; i++) {
+            let li = '';
+            let view = response.list[i].view == 0 ? "not-seen" : "";
+            let statusClass = "";
+            if (response.list[i].status != 2) {
+              statusClass = response.list[i].status == 0 ? "notification__status--refused" : "notification__status--accepted";
+            }
+            switch (response.list[i].type) {
+              case 'rest':
+                li = '' +
+                  '<li class="notification__list__item ' + view + '">' +
+                  '<div class="notification__status ' + statusClass + '"></div>' +
+                  '<form>' +
+                  '<input type="hidden" class="notification-userID" value="' + response.list[i].userID + '">' +
+                  '<input type="hidden" class="notification-id" value="' + response.list[i].id + '">' +
+                  '<input type="hidden" class="notification-type" value="' + response.list[i].type + '">' +
+                  '<input type="hidden" class="notification-start" value="' + response.list[i].startUnformatted + '">' +
+                  '<input type="hidden" class="notification-end" value="' + response.list[i].endUnformatted + '">' +
+                  '<div class="notification__author">De ' + response.list[i].userFirstName + ' ' + response.list[i].userLastName + '</div>' +
+                  '<div>Demande de repos compensatoire</div>' +
+                  '<div>Le ' + response.list[i].startDate + ' de ' + response.list[i].startHours + ' à ' + response.list[i].endHours + '</div>' +
+                  '<div class="notification__justification">' + response.list[i].justification + '</div>' +
+                  '<div class="options">' +
+                  '<div class="options__inner options__inner--approve jsApproveAction">' +
+                  '<span>Accepter</span>' +
+                  '</div>' +
+                  '<div class="options__inner options__inner--decline jsADeclineAction">' +
+                  '<span>Décliner</span>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>' +
+                  '</form>' +
+                  '</li>';
+                break;
+              case 'hours':
+                li = '' +
+                  '<li class="notification__list__item ' + view + '">' +
+                  '<div class="notification__status ' + statusClass + '"></div>' +
+                  '<form>' +
+                  '<input type="hidden" class="notification-userID" value="' + response.list[i].userID + '">' +
+                  '<input type="hidden" class="notification-id" value="' + response.list[i].id + '">' +
+                  '<input type="hidden" class="notification-type" value="' + response.list[i].type + '">' +
+                  '<input type="hidden" class="notification-start" value="' + response.list[i].startUnformatted + '">' +
+                  '<input type="hidden" class="notification-end" value="' + response.list[i].endUnformatted + '">' +
+                  '<input type="hidden" class="notification-justification" value="' + response.list[i].justification + '">' +
+                  '<input type="hidden" class="notification-location" value="' + response.list[i].location + '">' +
+                  '<div class="notification__author">De ' + response.list[i].userFirstName + ' ' + response.list[i].userLastName + '</div>' +
+                  '<div>Demande d\'heures supplémentaires : ' + response.list[i].justification + '</div>' +
+                  '<div>Lieu : ' + response.list[i].location + '</div>' +
+                  '<div>Le ' + response.list[i].startDate + ' de ' + response.list[i].startHours + ' à ' + response.list[i].endHours + '</div>' +
+                  '<div class="notification__motivation">Acceptez ! <br> Vous serez bientôt récompensé par un repos compensatoire !</div>' +
+                  '<div class="options">' +
+                  '<div class="options__inner options__inner--approve jsApproveAction">' +
+                  '<span>Accepter</span>' +
+                  '</div>' +
+                  '<div class="options__inner options__inner--decline jsADeclineAction">' +
+                  '<span>Décliner</span>' +
+                  '</div>' +
+                  '</div>' +
+                  '</form>' +
+                  '</li>';
+                break;
+              case 'leave':
+                li = '' +
+                  '<li class="notification__list__item ' + view + '">' +
+                  '<div class="notification__status ' + statusClass + '"></div>' +
+                  '<form>' +
+                  '<input type="hidden" class="notification-userID" value="' + response.list[i].userID + '">' +
+                  '<input type="hidden" class="notification-id" value="' + response.list[i].id + '">' +
+                  '<input type="hidden" class="notification-type" value="' + response.list[i].type + '">' +
+                  '<input type="hidden" class="notification-start" value="' + response.list[i].startUnformatted + '">' +
+                  '<input type="hidden" class="notification-end" value="' + response.list[i].endUnformatted + '">' +
+                  '<div class="notification__author">De ' + response.list[i].userFirstName + ' ' + response.list[i].userLastName + '</div>' +
+                  '<div>Demande de congés</div>' +
+                  '<div>Du ' + response.list[i].startDate + ' au ' + response.list[i].endDate + '</div>' +
+                  '<div class="notification__justification">' + response.list[i].justification + '</div>' +
+                  '<div class="options">' +
+                  '<div class="options__inner options__inner--approve jsApproveAction">' +
+                  '<span>Accepter</span>' +
+                  '</div>' +
+                  '<div class="options__inner options__inner--decline jsADeclineAction">' +
+                  '<span>Décliner</span>' +
+                  '</div>' +
+                  '</div>' +
+                  '</form>' +
+                  '</li>' +
+                  '';
+                break;
+            }
+            $('.notification__list').append(li);
           }
-          switch (response.list[i].type) {
-            case 'rest':
-              li = '' +
-                '<li class="notification__list__item ' + view + '">' +
-                '<div class="notification__status ' + statusClass + '"></div>' +
-                '<form>' +
-                '<input type="hidden" class="notification-userID" value="' + response.list[i].userID + '">' +
-                '<input type="hidden" class="notification-id" value="' + response.list[i].id + '">' +
-                '<input type="hidden" class="notification-type" value="' + response.list[i].type + '">' +
-                '<input type="hidden" class="notification-start" value="' + response.list[i].startUnformatted + '">' +
-                '<input type="hidden" class="notification-end" value="' + response.list[i].endUnformatted + '">' +
-                '<div class="notification__author">De ' + response.list[i].userFirstName + ' ' + response.list[i].userLastName + '</div>' +
-                '<div>Demande de repos compensatoire</div>' +
-                '<div>Le ' + response.list[i].startDate + ' de ' + response.list[i].startHours + ' à ' + response.list[i].endHours + '</div>' +
-                '<div class="notification__justification">' + response.list[i].justification + '</div>' +
-                '<div class="options">' +
-                '<div class="options__inner options__inner--approve jsApproveAction">' +
-                '<span>Accepter</span>' +
-                '</div>' +
-                '<div class="options__inner options__inner--decline jsADeclineAction">' +
-                '<span>Décliner</span>' +
-                '</div>' +
-                '</div>' +
-                '</div>' +
-                '</form>' +
-                '</li>';
-              break;
-            case 'hours':
-              li = '' +
-                '<li class="notification__list__item ' + view + '">' +
-                '<div class="notification__status ' + statusClass + '"></div>' +
-                '<form>' +
-                '<input type="hidden" class="notification-userID" value="' + response.list[i].userID + '">' +
-                '<input type="hidden" class="notification-id" value="' + response.list[i].id + '">' +
-                '<input type="hidden" class="notification-type" value="' + response.list[i].type + '">' +
-                '<input type="hidden" class="notification-start" value="' + response.list[i].startUnformatted + '">' +
-                '<input type="hidden" class="notification-end" value="' + response.list[i].endUnformatted + '">' +
-                '<input type="hidden" class="notification-justification" value="' + response.list[i].justification + '">' +
-                '<input type="hidden" class="notification-location" value="' + response.list[i].location + '">' +
-                '<div class="notification__author">De ' + response.list[i].userFirstName + ' ' + response.list[i].userLastName + '</div>' +
-                '<div>Demande d\'heures supplémentaires : ' + response.list[i].justification + '</div>' +
-                '<div>Lieu : ' + response.list[i].location + '</div>' +
-                '<div>Le ' + response.list[i].startDate + ' de ' + response.list[i].startHours + ' à ' + response.list[i].endHours + '</div>' +
-                '<div class="notification__motivation">Acceptez ! <br> Vous serez bientôt récompensé par un repos compensatoire !</div>' +
-                '<div class="options">' +
-                '<div class="options__inner options__inner--approve jsApproveAction">' +
-                '<span>Accepter</span>' +
-                '</div>' +
-                '<div class="options__inner options__inner--decline jsADeclineAction">' +
-                '<span>Décliner</span>' +
-                '</div>' +
-                '</div>' +
-                '</form>' +
-                '</li>';
-              break;
-            case 'leave':
-              li = '' +
-                '<li class="notification__list__item ' + view + '">' +
-                '<div class="notification__status ' + statusClass + '"></div>' +
-                '<form>' +
-                '<input type="hidden" class="notification-userID" value="' + response.list[i].userID + '">' +
-                '<input type="hidden" class="notification-id" value="' + response.list[i].id + '">' +
-                '<input type="hidden" class="notification-type" value="' + response.list[i].type + '">' +
-                '<input type="hidden" class="notification-start" value="' + response.list[i].startUnformatted + '">' +
-                '<input type="hidden" class="notification-end" value="' + response.list[i].endUnformatted + '">' +
-                '<div class="notification__author">De ' + response.list[i].userFirstName + ' ' + response.list[i].userLastName + '</div>' +
-                '<div>Demande de congés</div>' +
-                '<div>Du ' + response.list[i].startDate + ' au ' + response.list[i].endDate + '</div>' +
-                '<div class="notification__justification">' + response.list[i].justification + '</div>' +
-                '<div class="options">' +
-                '<div class="options__inner options__inner--approve jsApproveAction">' +
-                '<span>Accepter</span>' +
-                '</div>' +
-                '<div class="options__inner options__inner--decline jsADeclineAction">' +
-                '<span>Décliner</span>' +
-                '</div>' +
-                '</div>' +
-                '</form>' +
-                '</li>' +
-                '';
-              break;
-          }
-          $('.notification__list').append(li);
+        } else {
+          $('.notification__wait').text(response + ' en attente de traitement');
+          $('#jsNotifications .success').remove();
+          $('#jsNotifications').append('<span class="success">Aucune notification pour le moment !</span>')
         }
       },
       error: function (response) {
+        $('#jsNotifications .loader').remove();
         console.log(response);
       }
     });
   },
 
+  /*
+   * ---------------------------
+   * REFRESH NOTIFICATION PAGE
+   * ---------------------------
+   */
   refreshNotifications: function (authTokenVALUE, userID) {
     var api = "http://127.0.0.1:8000/notifications/count/" + userID;
     $.ajax({
@@ -324,8 +359,8 @@ var page = {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
       },
       success: function (response) {
-        if (response[0].count > 0) {
-          $('.jsNotifications').find('#push').html('<div class="push">' + response[0].count + '</div>');
+        if (response > 0) {
+          $('.jsNotifications').find('#push').html('<div class="push">' + response + '</div>');
         }
       },
       error: function (response) {
