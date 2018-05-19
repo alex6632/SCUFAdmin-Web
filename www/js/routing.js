@@ -69,10 +69,11 @@ var routing = {
    * -- Réglages
    * -- Gestion des utilisateurs
    */
-  level2: function (authTokenVALUE, userID) {
+  level2: function (authTokenVALUE, userID, ROLE) {
     $('.jsGoLevel2').on('click', function () {
       var element = $(this).attr('data-routing');
       var jsGoLevel1 = $(this).parents('.routing').find('.jsGoLevel1');
+      $('.tab-bar__overlay').fadeIn();
       switch (element) {
         case "addAccess":
           jsGoLevel1.attr('id', 'level2Access');
@@ -105,10 +106,10 @@ var routing = {
           break;
         case "addUser":
           jsGoLevel1.attr('id', 'level2User');
-          crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user', authTokenVALUE);
-          crud.ajaxAdd('jsFormAddUser', 'user', authTokenVALUE);
+          crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
+          crud.ajaxAdd('jsFormAddUser', 'user', authTokenVALUE, ROLE);
           crud.ajaxRemove('.user-list', '.user-list #deleteUser', 'user', authTokenVALUE);
-          crud.ajaxEditForm('.user-list', 'user', authTokenVALUE);
+          crud.ajaxEditForm('.user-list', 'user', authTokenVALUE, ROLE);
           break;
         case "rest":
           jsGoLevel1.attr('id', 'level2Rest');
@@ -145,6 +146,7 @@ var routing = {
 
     // Back level 1
     $('.jsGoLevel1').on('click', function () {
+      $('.tab-bar__overlay').fadeOut();
       var id = $(this).attr('id');
       utils.removeHTML(id);
       utils.removeEventHandlers(id);

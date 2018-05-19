@@ -1,11 +1,22 @@
 var anim = {
-  showForm: function (element, authTokenVALUE) {
+  showForm: function (element, authTokenVALUE, ROLE) {
     var elt = $('.' + element);
     $('#' + element).on('click', function () {
       $(this).addClass('hide');
       $('#jsCloseFormAddUser').addClass('show');
       elt.slideDown();
-      utils.ajaxGet('access', 'all', authTokenVALUE);
+      
+      //utils.ajaxGet('access', 'all', authTokenVALUE);
+
+      let roleList = '' +
+      '<option value="2">Manager</option>' +
+      '<option value="1">Salarié</option>';
+
+      if(ROLE == 4) {
+        roleList += '<option value="4">Administrateur</option>' +
+        '<option value="3">Superviseur</option>';
+      }
+      $('#roleList').append(roleList);
     });
     $('#jsCloseFormAddUser').on('click', function () {
       $(this).removeClass('show');

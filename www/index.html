@@ -336,15 +336,10 @@
             <span class="action__info action__info--left">Rôle</span>
             <ul class="action__list">
               <li class="action__list__item">
-                <select name="role">
-                  <option value="4">Administrateur</option>
-                  <option value="3">Superviseur</option>
-                  <option value="2">Manager</option>
-                  <option value="1">Salarié</option>
-                </select>
+                <select name="role" id="roleList"></select>
               </li>
             </ul>
-            <span class="action__info action__info--left">Droits</span>
+            <!-- <span class="action__info action__info--left">Droits</span> -->
             <ul class="action__list">
               <li class="action__list__item list"></li>
             </ul>
@@ -367,7 +362,6 @@
               <th>Nom utilisateur</th>
               <th>Rôle</th>
               <th>Supérieur (Id)</th>
-              <th>Droits</th>
               <th>Heures planifiées</th>
               <th class="action">Action</th>
             </tr>
@@ -431,11 +425,11 @@
               <span></span>
               <li class="action__list__item">
                   <span>à la semaine</span>
-                  <input type="number" min="0" max="52" name="to" value="0">
+                  <input type="number" min="1" max="52" name="to">
                   <span>(incluse)</span>
               </li>
             </ul>
-            <span class="action__info">Si vous ne souhaitez rentrer qu'une seule semaine, laisser le 2e champs à 0</span>
+            <span class="action__info">Si vous ne souhaitez rentrer qu'une seule semaine, mettez le même numéro dans le 2e champs</span>
             <input type="submit" class="button button--small button--mg" value="Ajouter">
           </form>
         </div>

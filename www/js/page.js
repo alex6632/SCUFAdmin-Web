@@ -32,8 +32,8 @@ var page = {
         let hoursToPlanify = response.user.hoursTodo - response.user.hoursPlanified;
         
         let percentageHoursTodoThisWeek = response.hoursTodoThisWeek == 0 ? (0).toFixed(2) : ((response.hours_done / response.hoursTodoThisWeek) * 100).toFixed(2);
-        let valided = response.user.hoursDone;
-        let notValided = response.hoursTodoThisWeek - response.user.hoursDone;
+        let valided = response.hours_done;
+        let notValided = response.hoursTodoThisWeek - response.hours_done;
 
         let percentageHoursTodo = ((response.user.hoursDone / response.user.hoursTodo) * 100).toFixed(2);
         let percentageHoursPlanified = ((response.user.hoursPlanifiedByMe / hoursToPlanify) * 100).toFixed(2);
@@ -62,7 +62,7 @@ var page = {
         $('#profile-superior').text(response.superiorName);
         $('#profile-access').text(listAccess);
 
-        $('#jsHoursTodoThisWeek .progress-bar__ratio').html('<span class="ratio-ok">' + response.user.hoursDone + '</span>/' + response.hoursTodoThisWeek + '<span>H</span>');
+        $('#jsHoursTodoThisWeek .progress-bar__ratio').html('<span class="ratio-ok">' + valided + '</span>/' + response.hoursTodoThisWeek + '<span>H</span>');
         $('#jsHoursTodoThisWeek .progress-bar__bar__text, #jsHoursTodoThisWeek .progress-bar__bar__wip span').text(percentageHoursTodoThisWeek + '%');
         $('#jsHoursTodoThisWeek .progress-bar__bar__wip').attr('style', 'width: ' + percentageHoursTodoThisWeek + '%;');
         $('#validedHours').text(valided);
@@ -191,6 +191,7 @@ var page = {
             }
             break;
           case "planning":
+            $('.selectUserToEditPlanning option').remove();
             for (var i = 0; i < response.length; i++) {
               $('.selectUserToEditPlanning').append('<option value="' + response[i].id + '">' + response[i].firstname + ' ' + response[i].lastname + '</option>');
             }
@@ -474,15 +475,13 @@ var page = {
       success: function (response) {
         console.log(response);
         $('#jsListDaysInProgress option').remove();
+        $('#jsListDaysInProgress').append('<option value="0">Choisir une date</option>');
         for(let i=0; i<response.length; i++) {
           let selected = '';
-          if(date == 'now') {
-            // ON LOAD
-            selected = moment().format('YYYY-MM-DD') == response[i].dateEN ? " selected" : '';
-          } else {
-            // ON CHANGE
+          //selected = moment().format('YYYY-MM-DD') == response[i].dateEN ? " selected" : '';
+          if(date != 'now') {
             selected = response[i].dateEN == date ? " selected" : "";
-          }
+          } 
           $('#jsListDaysInProgress').append('<option value="' + response[i].dateEN + '"' + selected + '>' + response[i].date + '</option>');
         }
       },
@@ -642,11 +641,6 @@ var page = {
 
           $('#validation').append(html);
         }
-
-        // On load
-        //let status = $('#validation .switch input[name=validation]:checked').next().attr('data-status');
-        //let validationItem = $('#validation .switch input:checked').parents('.validation-item');
-        //console.log("status", status);
       },
       error: function (err) {
         $('#validation .loader').remove();
@@ -692,7 +686,6 @@ var page = {
       $(this).find('.jsValidationVvalue').val(jsValidationVvalue);
 
       if(!errors) {
-        console.log($(this).serialize());
         const api = 'http://127.0.0.1:8000/event/' + eventID + '/confirm';
         $.ajax({
           url: api,
@@ -709,11 +702,6 @@ var page = {
 
             $('.msg-flash .alert').remove();
             $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-            
-            // TODO: Remove handlers
-            //utils.removeEventHandlers("validation");
-            //utils.removeHTML('validation');
-            //page.validation(authTokenVALUE, userID, date);
           },
           error: function (err) {
             console.log(err);

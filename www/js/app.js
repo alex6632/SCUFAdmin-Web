@@ -36,7 +36,7 @@ var me = {
       routing.level1('validation', authTokenVALUE);
       routing.level1('actions', authTokenVALUE);
       routing.level1('profile', authTokenVALUE);
-      routing.level2(authTokenVALUE, userID);
+      routing.level2(authTokenVALUE, userID, ROLE);
 
       // SPECIAL PAGES
       anim.fadeInPage('jsNotifications', authTokenVALUE, userID);
@@ -48,7 +48,7 @@ var me = {
       anim.progressBar();
 
       // SHOW ADD FORM
-      anim.showForm('jsFormAddUser', authTokenVALUE);
+      anim.showForm('jsFormAddUser', authTokenVALUE, ROLE);
 
       // SEARCH USER - AUTOCOMPLETE -
       utils.ajaxSearchUser('jsSearchUser');

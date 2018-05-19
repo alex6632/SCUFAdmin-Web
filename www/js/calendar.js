@@ -90,7 +90,7 @@ calendar = {
             xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
           },
           success: function (response) {
-            console.log('show');
+            console.log('Calendar loaded successfully');
             $('#planning .loader, #actions .loader').remove();
             callback(response);
           },
@@ -99,6 +99,9 @@ calendar = {
             console.log(err);
           }
         });
+      },
+      eventRender: function(event, element) {
+        element.find('.fc-title').append(', <span class="event-location">' + event.location + '</span>');
       },
       /*
        * -------------------
@@ -197,6 +200,10 @@ calendar = {
        */
       eventClick: function (event, element) {
         console.log(event);
+
+        if(calendarID == 'calendar') {
+          return false;
+        }
 
         let redBgChecked = event.backgroundColor == "#ff0000" ? "checked" : "";
         let greenBgChecked = event.backgroundColor == "#7ec730" ? "checked" : "";
@@ -368,6 +375,14 @@ calendar = {
        */
       select: function (start, end) {
 
+        /*
+         * ----------
+         * LEGEND ---
+         * ----------
+         * basic_me = event created by user himself
+         * basic_ext = event created by superior of user
+         */
+        let whoiam = calendarID == "calendar" ? "basic_me" : "basic_ext";
         let isAllDay = !start.hasTime();
         let allDayChecked = isAllDay ? "checked" : "";
         let addModale = '' +
@@ -378,6 +393,7 @@ calendar = {
           '<input type="checkbox" name="all_day" value="" ' + allDayChecked + ' style="visibility: hidden;">' +
           '<input type="hidden" name="start" value="' + moment(start).format('YYYY-MM-DD HH:mm:ss') + '">' +
           '<input type="hidden" name="end" value="' + moment(end).format('YYYY-MM-DD HH:mm:ss') + '">' +
+          '<input type="hidden" name="type" value="' + whoiam + '">' +
           '<input type="text" name="title" class="calendar-modale__input" id="jsCalendarAddTitle" placeholder="Titre">' +
           '<input type="text" name="location" class="calendar-modale__input" id="jsCalendarAddLocation" placeholder="Lieu">' +
           '</div>' +

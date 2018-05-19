@@ -62,6 +62,7 @@ var login = {
         type: 'POST',
         success: function (response) {
           console.log(response);
+          location.reload();
           $('#jsShowConnectForm .loader').remove();
           $('.msg-flash .alert').remove();
           localStorage.setItem('authTokenID', response.authToken.id);
@@ -70,6 +71,7 @@ var login = {
           localStorage.setItem('ROLE', response.authToken.user.role);
           localStorage.setItem('authTokenCREATED', response.createdTime);
           localStorage.setItem('tokenValidityDuration', response.tokenValidityDuration);
+
           login.loginPage();
         },
         error: function (response) {
@@ -86,6 +88,7 @@ var login = {
   cleaLogin: function (authTokenVALUE, userID) {
     $('.loginTrigger .login').remove();
     $('.loginTrigger').addClass('hide');
+    //location.reload();
     utils.reloadDefaultPageOnRefresh(authTokenVALUE, userID);
   }
 };

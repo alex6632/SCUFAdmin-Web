@@ -2,7 +2,7 @@ var crud = {
   /**
    * ADD AN ELEMENT
    */
-  ajaxAdd: function (element, type, authTokenVALUE) {
+  ajaxAdd: function (element, type, authTokenVALUE, ROLE = null) {
     $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
     $('.' + element).on('submit', function (e) {
       e.preventDefault();
@@ -37,7 +37,7 @@ var crud = {
               $('form.' + element + ' button').prop("disabled", true);
               $('.msg-flash .alert').remove();
               $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-              crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user', authTokenVALUE);
+              crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
               utils.emptyForm('user');
               // Close form
               $('#jsCloseFormAddUser').removeClass('show');
@@ -66,7 +66,7 @@ var crud = {
   /**
    * SHOW SIMPLE LIST
    */
-  ajaxSimpleList: function (api, element, type, authTokenVALUE) {
+  ajaxSimpleList: function (api, element, type, authTokenVALUE, ROLE = null) {
     $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
     $.ajax({
       url: api,
@@ -82,7 +82,7 @@ var crud = {
               $(element).append(
                 '<li>' +
                 '<input type="text" name="title" value="' + response[i].title + '" disabled>' +
-                '<span class="link editEnabled">Editer</span>' +
+                '<span class="link editEnabled">Modifier</span>' +
                 '<span class="link edit" id="editAccess' + response[i].id + '">Valider</span>' +
                 '<span class="link editCanceled">Annuler</span>' +
                 '<span class="link delete" id="deleteAccess' + response[i].id + '">Supprimer</span>' +
@@ -95,7 +95,7 @@ var crud = {
               $(element).append(
                 '<li>' +
                 '<span class="">' + response[j].title + '</span> : <input type="text" name="value" value="' + response[j].value + '" disabled>' +
-                '<span class="link editEnabled">Editer</span>' +
+                '<span class="link editEnabled">Modifier</span>' +
                 '<span class="link edit" id="editSetting' + response[j].id + '">Valider</span>' +
                 '<span class="link editCanceled">Annuler</span>' +
                 '<span class="link delete" id="deleteSetting' + response[j].id + '">Supprimer</span>' +
@@ -109,7 +109,7 @@ var crud = {
                 $(element).append(
                   '<li>' +
                   '<input type="text" name="name" value="' + response.list[j].name + '" disabled>' +
-                  '<span class="link editEnabled">Editer</span>' +
+                  '<span class="link editEnabled">Modifier</span>' +
                   '<span class="link edit" id="editSection' + response.list[j].id + '">Valider</span>' +
                   '<span class="link editCanceled">Annuler</span>' +
                   '<span class="link delete" id="deleteSection' + response.list[j].id + '">Supprimer</span>' +
@@ -135,7 +135,7 @@ var crud = {
                 types += '</select>';
 
                 action = '' +
-                  '<span class="link-table editEnabled">Editer</span>' +
+                  '<span class="link-table editEnabled">Modifier</span>' +
                   '<span class="link-table edit" id="editWeek' + response.list[i].id + '">Valider</span>' +
                   '<span class="link-table editCanceled">Annuler</span>' +
                   '<span class="link-table delete" id="deleteWeek' + response.list[i].id + '">Supprimer</span>';
@@ -154,12 +154,13 @@ var crud = {
             }
             break;
           case "user":
+            console.log(response)
             for (var i = 0; i < response.length; i++) {
               var superior = "",
                 role = '',
                 access = [];
               if (response[i].superior !== null) {
-                superior = response[i].superior.id;
+                superior = response[i].superior;
               } else {
                 superior = "Aucun";
               }
@@ -203,19 +204,14 @@ var crud = {
                 default:
                   role = "Aucun";
               }
-              //console.log('access 2 ', Access); 
-              if (response[i].access.length > 0) {
-                var listAccess = '';
-                for (var j = 0; j < response[i].access.length; j++) {
-
-                  listAccess += '' +
-                    '<div>' +
-                    '<input type="checkbox" name="access[]" value="' + response[i].access[j].id + '" id="' + response[i].access[j].slug + '" checked disabled>' +
-                    '<label for="' + response[i].access[j].slug + '">' + response[i].access[j].title + '</label>' +
-                    '</div>';
-                }
-              } else {
-                listAccess = "Aucun"
+              let action = 'Non modifiable';
+              if( (ROLE == 3 && (response[i].role == 1 || response[i].role == 2)) || ROLE == 4 || ROLE == 42 ) {
+                action = '' +
+                '<span class="link-table editEnabled">Modifier</span>' +
+                '<span class="link-table edit" id="editUser' + response[i].id + '">Valider</span>' +
+                '<span class="link-table editCanceled">Annuler</span>' +
+                '<span class="link-table delete" id="deleteUser' + response[i].id + '">Supprimer</span>' +
+                '';
               }
               $(element).append(
                 '<form action="" id="formUser' + response[i].id + '" class="tr">' +
@@ -224,15 +220,10 @@ var crud = {
                 '<div class="td"><input type="text" name="lastname" value="' + response[i].lastname + '" disabled></div>' +
                 '<div class="td"><input type="text" name="username" value="' + response[i].username + '" disabled></div>' +
                 '<div class="td">' + role + '</div>' +
-                '<div class="td"><input type="text" name="superior" value="' + superior + '" disabled></div>' +
-                '<div class="td user-access-list">' + listAccess + '</div>' +
+                '<div class="td"><input type="text" name="superior" class="editSuperior" value="' + superior + '" disabled></div>' +
+                // '<div class="td user-access-list">' + listAccess + '</div>' +
                 '<div class="td"><input type="text" name="hours_todo" value="' + response[i].hoursTodo + '" disabled></div>' +
-                '<div class="td">' +
-                '<span class="link-table editEnabled">Editer</span>' +
-                '<span class="link-table edit" id="editUser' + response[i].id + '">Valider</span>' +
-                '<span class="link-table editCanceled">Annuler</span>' +
-                '<span class="link-table delete" id="deleteUser' + response[i].id + '">Supprimer</span>' +
-                '</div>' +
+                '<div class="td">' + action + '</div>' +
                 '</form>'
               );
             }
@@ -262,9 +253,9 @@ var crud = {
                 }
                 if (response.list[i].status == 2) {
                   action = '' +
-                    '<span class="link-table editEnabled">Editer</span>' +
-                    '<span class="link-table edit" id="editLeave' + response.list[i].id + '">Valider</span>' +
-                    '<span class="link-table editCanceled">Annuler</span>' +
+                    // '<span class="link-table editEnabled">Modifier</span>' +
+                    // '<span class="link-table edit" id="editLeave' + response.list[i].id + '">Valider</span>' +
+                    // '<span class="link-table editCanceled">Annuler</span>' +
                     '<span class="link-table delete" id="deleteLeave' + response.list[i].id + '">Supprimer</span>';
                 } else {
                   action = 'La demande n\'est plus modifiable';
@@ -310,9 +301,9 @@ var crud = {
                 }
                 if (response.list[i].status == 2) {
                   action = '' +
-                    '<span class="link-table editEnabled">Editer</span>' +
-                    '<span class="link-table edit" id="editRest' + response.list[i].id + '">Valider</span>' +
-                    '<span class="link-table editCanceled">Annuler</span>' +
+                    // '<span class="link-table editEnabled">Modifier</span>' +
+                    // '<span class="link-table edit" id="editRest' + response.list[i].id + '">Valider</span>' +
+                    // '<span class="link-table editCanceled">Annuler</span>' +
                     '<span class="link-table delete" id="deleteRest' + response.list[i].id + '">Supprimer</span>';
                 } else {
                   action = 'La demande n\'est plus modifiable';
@@ -359,9 +350,9 @@ var crud = {
                 }
                 if (response.list[i].status == 2) {
                   action = '' +
-                    '<span class="link-table editEnabled">Editer</span>' +
-                    '<span class="link-table edit" id="editHours' + response.list[i].id + '">Valider</span>' +
-                    '<span class="link-table editCanceled">Annuler</span>' +
+                    // '<span class="link-table editEnabled">Modifier</span>' +
+                    // '<span class="link-table edit" id="editHours' + response.list[i].id + '">Valider</span>' +
+                    // '<span class="link-table editCanceled">Annuler</span>' +
                     '<span class="link-table delete" id="deleteHours' + response.list[i].id + '">Supprimer</span>';
                 } else {
                   action = 'La demande n\'est plus modifiable';
@@ -496,20 +487,26 @@ var crud = {
   /**
    * EDIT USER & WEEK (SPECIFIC)
    */
-  ajaxEditForm: function (element, type, authTokenVALUE) {
+  ajaxEditForm: function (element, type, authTokenVALUE, ROLE = null) {
     $(element).on('click', 'form .editEnabled', function () {
-      $(this).parents('form').find('input').prop('disabled', false);
-      $(this).parents('form').find('select').prop('disabled', false);
+      if(ROLE == "4" || ROLE == "42") {
+        $(this).parents('form').find('input').prop('disabled', false);
+      } else {
+        $(this).parents('form').find('input').not('.editSuperior').prop('disabled', false);
+      }
+      if(type != 'user' || ROLE == "4" || ROLE == "42") $(this).parents('form').find('select').prop('disabled', false);
       $(this).addClass('hide');
       $(this).parents('form').find('.editCanceled').addClass('show');
       $(this).parents('form').find('.edit').addClass('show');
+      $(this).parent().find('.delete').addClass('hide');
     });
     $(element).on('click', 'form .editCanceled', function () {
       $(this).parents('form').find('input').prop('disabled', true);
-      $(this).parents('form').find('select').prop('disabled', true);
+      if(type != 'user' || ROLE == "4" || ROLE == "42") $(this).parents('form').find('select').prop('disabled', true);
       $(this).removeClass('show');
       $(this).parents('form').find('.edit').removeClass('show');
       $(this).parents('form').find('.editEnabled').removeClass('hide');
+      $(this).parent().find('.delete').removeClass('hide');
     });
     $(element).on('click', 'form .edit', function () {
       $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
@@ -534,7 +531,7 @@ var crud = {
                 utils.removeHTML("level2User");
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user', authTokenVALUE);
+                crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
                 break;
               case "week":
                 utils.removeHTML("level2Week");

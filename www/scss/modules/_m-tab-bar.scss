@@ -89,6 +89,7 @@
     &.current {
       background-color: color('gray','extra-light');
       @include transition();
+      z-index: 9;
 
       .icon,
       .tab-bar__item__text {
