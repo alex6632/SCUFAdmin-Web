@@ -523,6 +523,7 @@ calendar = {
 
       // Remove handlers event
       utils.removeEventHandlers(calendarID);
+      userID = localStorage.getItem('userID');
       calendar.init(authTokenVALUE, userID, calendarID);
       el.fullCalendar('refetchEvents');
       el.fullCalendar('refetchEventSources');

@@ -210,6 +210,7 @@ var page = {
             break;
           case "planning":
             $('.selectUserToEditPlanning option').remove();
+            $('.selectUserToEditPlanning').append('<option value="default">Liste des utilisateurs</option>');
             for (var i = 0; i < response.length; i++) {
               $('.selectUserToEditPlanning').append('<option value="' + response[i].id + '">' + response[i].firstname + ' ' + response[i].lastname + '</option>');
             }

@@ -326,6 +326,7 @@ var crud = {
             }
             break;
           case "hours":
+          console.log(response);
             if (response.success) {
               var status = 'En attente';
               var css = 'progress';

@@ -133,7 +133,6 @@ var routing = {
         case "editPlanning":
           jsGoLevel1.attr('id', 'level2Edit');
           calendar.init(authTokenVALUE, userID, 'calendar-edit');
-          $('#calendar-edit').fullCalendar('refetchEvents');
           break;
       }
       var content = $(this).text();
