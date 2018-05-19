@@ -6,7 +6,7 @@ var page = {
    */
   profile: function (authTokenVALUE, userID) {
     $('#profile').append('<div class="loader"><div class="loader__gif"></div></div>');
-    var api = "http://127.0.0.1:8000/user/" + userID;
+    var api = "http://api.scufrh.ovh/user/" + userID;
     $.ajax({
       url: api,
       type: 'GET',
@@ -105,7 +105,7 @@ var page = {
       confirmPassword = $('#confirm_new_password').val();
 
       if (previousPassword.length != "" && plainPassword.length != "" && confirmPassword.length != "") {
-        var api = "http://127.0.0.1:8000/user/update/" + userID;
+        var api = "http://api.scufrh.ovh/user/update/" + userID;
         var data = {
           previous_password: previousPassword,
           plain_password: plainPassword,
@@ -172,7 +172,7 @@ var page = {
    * ------------------------
    */
   getSetting: function (element, authTokenVALUE) {
-    var api = "http://127.0.0.1:8000/setting/main/" + element;
+    var api = "http://api.scufrh.ovh/setting/main/" + element;
     $.ajax({
       url: api,
       type: 'GET',
@@ -194,7 +194,7 @@ var page = {
    * -------------------------------
    */
   getEmployees: function (authTokenVALUE, userID, page) {
-    var api = "http://127.0.0.1:8000/users/" + userID;
+    var api = "http://api.scufrh.ovh/users/" + userID;
     $.ajax({
       url: api,
       type: 'GET',
@@ -230,7 +230,7 @@ var page = {
    */
   notifications: function (authTokenVALUE, userID) {
     $('#jsNotifications').append('<div class="loader"><div class="loader__gif"></div></div>');
-    var api = "http://127.0.0.1:8000/notifications/" + userID;
+    var api = "http://api.scufrh.ovh/notifications/" + userID;
     $.ajax({
       url: api,
       type: 'GET',
@@ -352,7 +352,7 @@ var page = {
    * ---------------------------
    */
   refreshNotifications: function (authTokenVALUE, userID) {
-    var api = "http://127.0.0.1:8000/notifications/count/" + userID;
+    var api = "http://api.scufrh.ovh/notifications/count/" + userID;
     $.ajax({
       url: api,
       type: 'GET',
@@ -386,7 +386,7 @@ var page = {
       let actionID = item.find('.notification-id').val();
 
       // 2. Update data into DB
-      var api = "http://127.0.0.1:8000/action/update/" + actionID;
+      var api = "http://api.scufrh.ovh/action/update/" + actionID;
       $.ajax({
         url: api,
         type: 'PATCH',
@@ -501,7 +501,7 @@ var page = {
     $('#validation').append('<div class="loader"><div class="loader__gif"></div></div>');
 
     // 2. Refresh list of days in progress
-    const api1 = 'http://127.0.0.1:8000/events/in-progress/' + userID;
+    const api1 = 'http://api.scufrh.ovh/events/in-progress/' + userID;
     $.ajax({
       url: api1,
       type: 'GET',
@@ -544,7 +544,7 @@ var page = {
     });
 
     // 4. Show tasks to validate
-    const api2 = 'http://127.0.0.1:8000/user/' + userID + '/event/' + date;
+    const api2 = 'http://api.scufrh.ovh/user/' + userID + '/event/' + date;
     $.ajax({
       url: api2,
       type: 'GET',
@@ -722,7 +722,7 @@ var page = {
       $(this).find('.jsValidationVvalue').val(jsValidationVvalue);
 
       if(!errors) {
-        const api = 'http://127.0.0.1:8000/event/' + eventID + '/confirm';
+        const api = 'http://api.scufrh.ovh/event/' + eventID + '/confirm';
         $.ajax({
           url: api,
           type: 'PATCH',

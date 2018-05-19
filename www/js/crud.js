@@ -7,7 +7,7 @@ var crud = {
     $('.' + element).on('submit', function (e) {
       e.preventDefault();
       $('form.' + element + ' button').prop("disabled", true);
-      var api = "http://127.0.0.1:8000/" + type + "/create";
+      var api = "http://api.scufrh.ovh/" + type + "/create";
       $.ajax({
         url: api,
         type: 'POST',
@@ -24,7 +24,7 @@ var crud = {
                 $('form.' + element + ' button').prop("disabled", true);
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                crud.ajaxSimpleList('http://127.0.0.1:8000/access', $('.access-list'), 'access', authTokenVALUE);
+                crud.ajaxSimpleList('http://api.scufrh.ovh/access', $('.access-list'), 'access', authTokenVALUE);
                 utils.emptyForm('access');
               } else {
                 console.log(response);
@@ -37,7 +37,7 @@ var crud = {
               $('form.' + element + ' button').prop("disabled", true);
               $('.msg-flash .alert').remove();
               $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-              crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
+              crud.ajaxSimpleList('http://api.scufrh.ovh/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
               utils.emptyForm('user');
               // Close form
               $('#jsCloseFormAddUser').removeClass('show');
@@ -49,7 +49,7 @@ var crud = {
               utils.removeHTML("level2Section");
               $('.msg-flash .alert').remove();
               $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-              crud.ajaxSimpleList('http://127.0.0.1:8000/sections', $('.section-list'), 'section', authTokenVALUE);
+              crud.ajaxSimpleList('http://api.scufrh.ovh/sections', $('.section-list'), 'section', authTokenVALUE);
               utils.emptyForm('section');
               break;
           }
@@ -407,7 +407,7 @@ var crud = {
       var idStr = $(this).attr('id');
       var reg = /([0-9]+)/.exec(idStr);
       var id = RegExp.$1;
-      var api = "http://127.0.0.1:8000/" + type + "/update/" + id;
+      var api = "http://api.scufrh.ovh/" + type + "/update/" + id;
       var value = '';
       var data = {};
       if (type == 'access') {
@@ -514,7 +514,7 @@ var crud = {
       var idStr = $(this).attr('id');
       var reg = /([0-9]+)/.exec(idStr);
       var id = RegExp.$1;
-      var api = "http://127.0.0.1:8000/" + type + "/update/" + id;
+      var api = "http://api.scufrh.ovh/" + type + "/update/" + id;
       form = $(this).parents('form');
       console.log(form);
       $.ajax({
@@ -532,14 +532,14 @@ var crud = {
                 utils.removeHTML("level2User");
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                crud.ajaxSimpleList('http://127.0.0.1:8000/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
+                crud.ajaxSimpleList('http://api.scufrh.ovh/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
                 break;
               case "week":
                 utils.removeHTML("level2Week");
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
                 const selectUserID = $('.jsUsersList').val();
-                crud.ajaxSimpleList('http://127.0.0.1:8000/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+                crud.ajaxSimpleList('http://api.scufrh.ovh/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
                 break;
             }
           } else {
@@ -567,7 +567,7 @@ var crud = {
         var idStr = $(this).attr('id');
         var reg = /([0-9]+)/.exec(idStr);
         var id = RegExp.$1;
-        var api = "http://127.0.0.1:8000/" + type + "/delete/" + id;
+        var api = "http://api.scufrh.ovh/" + type + "/delete/" + id;
         $.ajax({
           url: api,
           type: 'DELETE',
@@ -707,7 +707,7 @@ var crud = {
 
       if (!error) {
         $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
-        const api = "http://127.0.0.1:8000/action/create/" + type + "/" + userID;
+        const api = "http://api.scufrh.ovh/action/create/" + type + "/" + userID;
         $.ajax({
           url: api,
           type: 'POST',
@@ -722,21 +722,21 @@ var crud = {
                 utils.removeHTML("level2Leave");
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                crud.ajaxSimpleList('http://127.0.0.1:8000/actions/leave/' + userID, $('.leave-list tbody'), 'leave', authTokenVALUE);
+                crud.ajaxSimpleList('http://api.scufrh.ovh/actions/leave/' + userID, $('.leave-list tbody'), 'leave', authTokenVALUE);
                 utils.emptyForm('leave');
                 break;
               case "rest":
                 utils.removeHTML("level2Rest");
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                crud.ajaxSimpleList('http://127.0.0.1:8000/actions/rest/' + userID, $('.rest-list tbody'), 'rest', authTokenVALUE);
+                crud.ajaxSimpleList('http://api.scufrh.ovh/actions/rest/' + userID, $('.rest-list tbody'), 'rest', authTokenVALUE);
                 utils.emptyForm('rest');
                 break;
               case "hours":
                 utils.removeHTML("level2Hours");
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                crud.ajaxSimpleList('http://127.0.0.1:8000/actions/hours/' + userID, $('.hours-list tbody'), 'hours', authTokenVALUE);
+                crud.ajaxSimpleList('http://api.scufrh.ovh/actions/hours/' + userID, $('.hours-list tbody'), 'hours', authTokenVALUE);
                 utils.emptyForm('hours');
                 break;
             }
@@ -758,7 +758,7 @@ var crud = {
     $('.jsFormAddWeek').on('submit', function (e) {
       e.preventDefault();
       $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
-      const api = "http://127.0.0.1:8000/week/create";
+      const api = "http://api.scufrh.ovh/week/create";
       $.ajax({
         url: api,
         type: 'POST',
@@ -773,7 +773,7 @@ var crud = {
           $('.msg-flash .alert').remove();
           $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
           const selectUserID = $('.jsUsersList').val();
-          crud.ajaxSimpleList('http://127.0.0.1:8000/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+          crud.ajaxSimpleList('http://api.scufrh.ovh/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
           utils.emptyForm('hours');
         },
         error: function (err) {

@@ -82,7 +82,7 @@ calendar = {
        * -------------------
        */
       events: function (start, end, timezone, callback) {
-        var api = "http://127.0.0.1:8000/events/" + userID;
+        var api = "http://api.scufrh.ovh/events/" + userID;
         $.ajax({
           url: api,
           type: 'GET',
@@ -121,7 +121,7 @@ calendar = {
         event.end = updatedEnd;
 
         // 3. Save data into DB
-        var api = "http://127.0.0.1:8000/event/update/" + event.id;
+        var api = "http://api.scufrh.ovh/event/update/" + event.id;
         $.ajax({
           url: api,
           type: 'PATCH',
@@ -166,7 +166,7 @@ calendar = {
         event.end = updatedEnd;
 
         // 3. Save data into DB
-        var api = "http://127.0.0.1:8000/event/update/" + event.id;
+        var api = "http://api.scufrh.ovh/event/update/" + event.id;
         $.ajax({
           url: api,
           type: 'PATCH',
@@ -276,7 +276,7 @@ calendar = {
             $(this).parents('.calendar-modale').remove();
 
             // 3. Delete data into DB
-            var api = "http://127.0.0.1:8000/event/delete/" + event.id;
+            var api = "http://api.scufrh.ovh/event/delete/" + event.id;
             $.ajax({
               url: api,
               type: 'DELETE',
@@ -338,7 +338,7 @@ calendar = {
             $(this).parents('.calendar-modale').remove();
 
             // 5. Save data into DB
-            var api = "http://127.0.0.1:8000/event/update/" + event.id;
+            var api = "http://api.scufrh.ovh/event/update/" + event.id;
             $.ajax({
               url: api,
               type: 'PATCH',
@@ -471,7 +471,7 @@ calendar = {
             };
 
             // 5. Save data into DB
-            var api = "http://127.0.0.1:8000/event/create/" + userID;
+            var api = "http://api.scufrh.ovh/event/create/" + userID;
             $.ajax({
               url: api,
               type: 'POST',
@@ -588,21 +588,21 @@ calendar = {
           eventBorder = '#1e1e1e';
           eventTitle = item.find('.notification-justification').val();
           eventLocation = item.find('.notification-location').val();
-          api = "http://127.0.0.1:8000/event/createFromNotification/" + userConnectedID + "/" + actionID;
+          api = "http://api.scufrh.ovh/event/createFromNotification/" + userConnectedID + "/" + actionID;
           break;
         case 'leave':
           eventBg = '#b0b0b0';
           eventBorder = '#b0b0b0';
           eventTitle = 'Congés';
           eventLocation = 'Aucun';
-          api = "http://127.0.0.1:8000/event/createFromNotification/" + userNotificationID + "/" + actionID;
+          api = "http://api.scufrh.ovh/event/createFromNotification/" + userNotificationID + "/" + actionID;
           break;
         case 'rest':
           eventBg = '#b0b0b0';
           eventBorder = '#b0b0b0';
           eventTitle = 'Repos';
           eventLocation = 'Aucun';
-          api = "http://127.0.0.1:8000/event/createFromNotification/" + userNotificationID + "/" + actionID;
+          api = "http://api.scufrh.ovh/event/createFromNotification/" + userNotificationID + "/" + actionID;
           break;
       }
 
