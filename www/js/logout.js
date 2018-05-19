@@ -15,8 +15,8 @@ var logout = {
           },
           success: function () {
             location.reload();
-            //document.location.href="/";
-            document.location.href="http://localhost/_SCUFAdmin/web/www/index.html";
+            document.location.href="/";
+            //document.location.href="http://localhost/_SCUFAdmin/web/www/index.html";
             $('.routing.show .loader').remove();
             localStorage.removeItem('authTokenID');
             localStorage.removeItem('authTokenVALUE');
