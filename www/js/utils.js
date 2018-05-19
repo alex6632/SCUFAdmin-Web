@@ -97,10 +97,21 @@ var utils = {
         break;
       case "calendar":
         $('.generic-planning').off('click', '.jsCloseModalCalendar');
+        $('.generic-planning').off('click', '.jsConfirmAddEvent');
+        $('.generic-planning').off('click', '.jsConfirmEditEvent');
+        $('.generic-planning').off('click', '.jsConfirmDeleteEvent');
         $('.calendar-navigation-prev').off('click');
         $('.calendar-navigation-next').off('click');
         $('.calendar-view__button--week').off('click');
         $('.calendar-view__button--day').off('click');
+        break;
+      case "calendar-edit":
+        $('.generic-planning').off('click', '.jsCloseModalCalendar');
+        $('.generic-planning').off('click', '.jsConfirmAddEvent');
+        $('.generic-planning').off('click', '.jsConfirmEditEvent');
+        $('.generic-planning').off('click', '.jsConfirmDeleteEvent');
+        $('.calendar-navigation-prev').off('click');
+        $('.calendar-navigation-next').off('click');
         break;
       case "validation":
         $('#validation').off('submit', '.jsFormValidation');

@@ -20,7 +20,7 @@ var routing = {
         var current = $(this).attr('data-routing');
         $('.routing#' + current).addClass('show');
 
-        if(current != "planning") {
+        if(current != "planning" || current != "editPlanning") {
           utils.removeEventHandlers('calendar');
         }
 
@@ -32,7 +32,6 @@ var routing = {
           case "planning":
             calendar.init(authTokenVALUE, userID, 'calendar');
             $('#calendar').fullCalendar('refetchEvents');
-            $('#calendar').fullCalendar('refetchEventSources');
             break;
           case "validation":
             utils.removeHTML('validation');

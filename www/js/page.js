@@ -386,7 +386,7 @@ var page = {
   },
   /*
   * ------------------------------------
-  * VALIDATION PAGE
+  * ACTION PAGE
   * ------------------------------------
   */
   actions: function (ROLE) {
@@ -520,112 +520,128 @@ var page = {
         console.log(response);
         $('#validation .loader').remove();
 
-        let html = '' +
+        if(response.list.length == 0) {
+
+          let html = '' +
           '<header class="header">' +
             '<h1 class="title">Validation</h1>' +
           '</header>' +
-
           '<h2 class="header-lvl2">' +
             '<span>semaine ' + response.week + '</span>' + response.date +
           '</h2>' +
+          '<div class="routing__center"><span class="success">Tout a correctement été validé pour cette journée !</span></div>';
+          $('#validation').append(html);
 
-          '<div class="routing__center">' +
-          '';
+        } else {
 
-        for (let i = 0; i < response.list.length; i++) {
-          let noChecked = "";
-          let okChecked = "";
-          let stopChecked = "";
-          let switchBtn = "";
-          let text = "";
-          let justification = "";
-          let justificationContent = response.list[i].justification != null ? response.list[i].justification : "";
-          let submitButton = "";
-          let disabled = response.list[i].confirm == true ? 'disabled ' : '';
+          let html = '' +
+            '<header class="header">' +
+              '<h1 class="title">Validation</h1>' +
+            '</header>' +
 
-          if(response.list[i].validation == 0) {
-            noChecked =  "checked";
-            switchBtn = "no";
-            text = "Non fait";
-            justification = '' +
-            '<div class="validation-item__justification jsJustificationNo">' +
-              '<ul class="action__list">' +
-                '<li class="action__list__item textarea">' +
-                '<textarea name="justification"  class="justification small" cols="30" rows="10" placeholder="Justification">' + justificationContent + '</textarea>' +
-                '<span class="error-msg error-msg--validation"></span>' +
-                '</li>' +
-              '</ul>' +
-            '</div>';
-            submitButton = response.list[i].confirm == true ? '' : '<button type="submit" class="validationConfrim">Valider définitivement ce choix</button>';
-          }
-          if(response.list[i].validation == 1) {
-            okChecked =  "checked";
-            switchBtn = "ok";
-            text = "Fait";
-          }
-          if(response.list[i].validation == 2) {
-            stopChecked =  "checked";
-            switchBtn = "stop";
-            text = "Partiellement";
-            justification = '' +
-            '<div class="validation-item__justification jsJustificationStop">' +
-              '<ul class="action__list">' +
-                '<li class="action__list__item">' +
-                  '<span>Heure de début : </span>' +
-                  '<input type="time" value="' + response.list[i].partialStart + '" class="startAction">' +
-                  '<span class="error-msg"></span>' +
-                  '<input type="hidden" name="partial_start" value="" class="partial_start">' +
-                '</li>' +
-                '<li class="action__list__item">' +
-                  '<span>Heure de fin : </span>' +
-                  '<input type="time" value="' + response.list[i].partialEnd + '" class="endAction">' +
-                  '<span class="error-msg"></span>' +
-                  '<input type="hidden" name="partial_end" value="" class="partial_end">' +
-                '</li>' +
-              '</ul>' +
-              '<ul class="action__list">' +
-                '<li class="action__list__item textarea">' +
-                  '<textarea name="justification"  class="justification small" cols="30" rows="10" placeholder="Justification">' + response.list[i].justification + '</textarea>' +
+            '<h2 class="header-lvl2">' +
+              '<span>semaine ' + response.week + '</span>' + response.date +
+            '</h2>' +
+
+            '<div class="routing__center">' +
+            '';
+
+          for (let i = 0; i < response.list.length; i++) {
+            let noChecked = "";
+            let okChecked = "";
+            let stopChecked = "";
+            let switchBtn = "";
+            let text = "";
+            let justification = "";
+            let justificationContent = response.list[i].justification != null ? response.list[i].justification : "";
+            let submitButton = "";
+            let disabled = response.list[i].confirm == true ? 'disabled ' : '';
+
+            if(response.list[i].validation == 0) {
+              noChecked =  "checked";
+              switchBtn = "no";
+              text = "Non fait";
+              justification = '' +
+              '<div class="validation-item__justification jsJustificationNo">' +
+                '<ul class="action__list">' +
+                  '<li class="action__list__item textarea">' +
+                  '<textarea name="justification"  class="justification small" cols="30" rows="10" placeholder="Justification">' + justificationContent + '</textarea>' +
                   '<span class="error-msg error-msg--validation"></span>' +
-                '</li>' +
-              '</ul>' +
-            '</div>';
+                  '</li>' +
+                '</ul>' +
+              '</div>';
+              submitButton = response.list[i].confirm == true ? '' : '<button type="submit" class="validationConfrim">Valider définitivement ce choix</button>';
+            }
+            if(response.list[i].validation == 1) {
+              okChecked =  "checked";
+              switchBtn = "ok";
+              text = "Fait";
+            }
+            if(response.list[i].validation == 2) {
+              stopChecked =  "checked";
+              switchBtn = "stop";
+              text = "Partiellement";
+              justification = '' +
+              '<div class="validation-item__justification jsJustificationStop">' +
+                '<ul class="action__list">' +
+                  '<li class="action__list__item">' +
+                    '<span>Heure de début : </span>' +
+                    '<input type="time" value="' + response.list[i].partialStart + '" class="startAction">' +
+                    '<span class="error-msg"></span>' +
+                    '<input type="hidden" name="partial_start" value="" class="partial_start">' +
+                  '</li>' +
+                  '<li class="action__list__item">' +
+                    '<span>Heure de fin : </span>' +
+                    '<input type="time" value="' + response.list[i].partialEnd + '" class="endAction">' +
+                    '<span class="error-msg"></span>' +
+                    '<input type="hidden" name="partial_end" value="" class="partial_end">' +
+                  '</li>' +
+                '</ul>' +
+                '<ul class="action__list">' +
+                  '<li class="action__list__item textarea">' +
+                    '<textarea name="justification"  class="justification small" cols="30" rows="10" placeholder="Justification">' + response.list[i].justification + '</textarea>' +
+                    '<span class="error-msg error-msg--validation"></span>' +
+                  '</li>' +
+                '</ul>' +
+              '</div>';
+            }
+
+            html += '' +
+              '<form class="' + disabled + 'jsFormValidation validation-item border-' + switchBtn + '" data-id="' + response.list[i].id + '" data-date="' + response.dateEN + '">' +
+                '<input type="hidden" name="validation" class="jsValidationVvalue" value="">' +
+                '<input type="checkbox" name="confirm" value="" checked style="visibility: hidden;">' +
+                '<input type="hidden" name="type" value="' + response.list[i].type + '">' +
+                '<input type="hidden" name="user" value="' + response.list[i].userID + '">' +
+                '<div class="validation-item__title">' + response.list[i].title + ', ' +
+                  '<span>' + response.list[i].location + '</span>' +
+                '</div>' +
+                '<div class="validation-item__hours" data-start="' + response.list[i].startHours + '" data-end="' + response.list[i].endHours + '">' + response.list[i].startHours + ' - ' + response.list[i].endHours + '</div>' +
+                '<ul class="action__list justification-next">' +
+                  '<li class="action__list__item">' +
+                  'Validation' +
+                  '<span class="validation-item__status">' + text + '</span>' +
+                  '<div class="switch">' +
+                  '<input type="radio" value="2" class="stop" ' + stopChecked + '>' +
+                  '<label for="" class="label label--stop" data-status="stop"></label>' +
+                  '<input type="radio" value="1" class="ok" ' + okChecked + '>' +
+                  '<label for="" class="label label--ok" data-status="ok"></label>' +
+                  '<input type="radio" value="0" class="no" ' + noChecked + '>' +
+                  '<label for="" class="label label--no" data-status="no"></label>' +
+                  '<div class="switch__btn ' + switchBtn + '">' +
+                  '<div class="switch__btn__bar"></div>' +
+                  '<div class="switch__btn__bar"></div>' +
+                  '<div class="switch__btn__bar"></div>' +
+                  '</div>' +
+                  '</div>' +
+                  '</li>' +
+                '</ul>' + justification +
+                submitButton +
+              '</form>';
           }
+          html += '</div>'; // end of .routing__center
 
-          html += '' +
-            '<form class="' + disabled + 'jsFormValidation validation-item border-' + switchBtn + '" data-id="' + response.list[i].id + '" data-date="' + response.dateEN + '">' +
-              '<input type="hidden" name="validation" class="jsValidationVvalue" value="">' +
-              '<input type="checkbox" name="confirm" value="" checked style="visibility: hidden;">' +
-              '<input type="hidden" name="user" value="' + response.list[i].userID + '">' +
-              '<div class="validation-item__title">' + response.list[i].title + ', ' +
-                '<span>' + response.list[i].location + '</span>' +
-              '</div>' +
-              '<div class="validation-item__hours" data-start="' + response.list[i].startHours + '" data-end="' + response.list[i].endHours + '">' + response.list[i].startHours + ' - ' + response.list[i].endHours + '</div>' +
-              '<ul class="action__list justification-next">' +
-                '<li class="action__list__item">' +
-                'Validation' +
-                '<span class="validation-item__status">' + text + '</span>' +
-                '<div class="switch">' +
-                '<input type="radio" value="2" class="stop" ' + stopChecked + '>' +
-                '<label for="" class="label label--stop" data-status="stop"></label>' +
-                '<input type="radio" value="1" class="ok" ' + okChecked + '>' +
-                '<label for="" class="label label--ok" data-status="ok"></label>' +
-                '<input type="radio" value="0" class="no" ' + noChecked + '>' +
-                '<label for="" class="label label--no" data-status="no"></label>' +
-                '<div class="switch__btn ' + switchBtn + '">' +
-                '<div class="switch__btn__bar"></div>' +
-                '<div class="switch__btn__bar"></div>' +
-                '<div class="switch__btn__bar"></div>' +
-                '</div>' +
-                '</div>' +
-                '</li>' +
-              '</ul>' + justification +
-              submitButton +
-            '</form>';
+          $('#validation').append(html);
         }
-        html += '</div>'; // end of .routing__center
-
-        $('#validation').append(html);
 
         // On load
         //let status = $('#validation .switch input[name=validation]:checked').next().attr('data-status');

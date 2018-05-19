@@ -24,7 +24,8 @@ var logout = {
                 login.loginPage();
             },
             error: function (response) {
-            console.log(response);
+              $('.routing.show .loader').remove();
+              console.log(response);
             //var error = response.responseJSON.code + " : " + response.responseJSON.message;
             //$('.msg-flash .alert').remove();
             //$('.msg-flash').append('<div class="alert alert--error" role="alert">' + error + '</div>');

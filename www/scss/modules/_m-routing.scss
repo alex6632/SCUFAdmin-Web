@@ -17,6 +17,13 @@
     position: relative;
     width: 90%;
     margin: 50px auto;
+
+    .success {
+      display: block;
+      margin: auto;
+      font-size: 22px;
+      text-align: center;
+    }
   }
 
   &__inner {

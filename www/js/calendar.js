@@ -6,9 +6,9 @@ calendar = {
    * Doc : https://fullcalendar.io/docs/
    * --------------------------------------
    */
-  init: function (authTokenVALUE, userID, calendarID) {
+  init: function (authTokenVALUE, userID, calendarID, ROLE) {
 
-    let selectable = false;
+    let selectable = true;
     let editable = false;
 
 
@@ -26,10 +26,9 @@ calendar = {
 
     } else {
       userID = localStorage.getItem('userID');
-      selectable = false;
+      selectable = true;
       editable = false;
     }
-
     const el = $('#' + calendarID);
 
     // The first time, show GIF during loading
@@ -83,7 +82,6 @@ calendar = {
        * -------------------
        */
       events: function (start, end, timezone, callback) {
-        //$('.fc-event').remove();
         var api = "http://127.0.0.1:8000/events/" + userID;
         $.ajax({
           url: api,
@@ -93,7 +91,6 @@ calendar = {
           },
           success: function (response) {
             console.log('show');
-            //$('#calendar-edit').fullCalendar('refetchEvents');
             $('#planning .loader, #actions .loader').remove();
             callback(response);
           },
@@ -216,7 +213,6 @@ calendar = {
         let editModale = '' +
           '<form class="calendar-modale" id="jsUpdateEventForm">' +
           '<div class="calendar-modale__inner">' +
-          '<span class="icon icon-close jsCloseModalCalendar"></span>' +
           '<div class="calendar-modale__title">Modifier un événement</div>' +
           '<div class="calendar-modale__input-container">' +
           '<input type="text" name="title" class="calendar-modale__input" id="jsCalendarAddTitle" placeholder="Titre" value="' + event.title + '">' +
@@ -257,8 +253,8 @@ calendar = {
           '</div>' +
           '</form>';
 
-          el.parents('.generic-planning').find('.calendar-edit').append(editModale);
-
+        el.parents('.generic-planning').find('.calendar-edit').append(editModale);
+        
         /* 
          * ----------------------
          * DELETE EVENT
@@ -377,7 +373,6 @@ calendar = {
         let addModale = '' +
           '<form class="calendar-modale" id="jsAddEventForm">' +
           '<div class="calendar-modale__inner">' +
-          '<span class="icon icon-close jsCloseModalCalendar"></span>' +
           '<div class="calendar-modale__title">Ajouter un événement</div>' +
           '<div class="calendar-modale__input-container">' +
           '<input type="checkbox" name="all_day" value="" ' + allDayChecked + ' style="visibility: hidden;">' +
@@ -420,7 +415,7 @@ calendar = {
           '</div>' +
           '</form>';
 
-        el.parents('.generic-planning').find('.calendar-edit').append(addModale);
+        el.parents('.generic-planning').find('.calendar-add').append(addModale); 
 
         el.parents('.generic-planning').on('click', '.jsConfirmAddEvent', function (e) {
           e.preventDefault();
@@ -477,12 +472,12 @@ calendar = {
                 $('#calendar .loader, #calendar-edit .loader').remove();
 
                 // 3. Render new event on calendar
-                el.fullCalendar('renderEvent', eventData, true);
-                el.fullCalendar('refetchEvents');
+                el.fullCalendar('renderEvent', eventData, false);
 
                 // 4. Remove handlers event
                 el.fullCalendar('unselect');
                 el.parents('.generic-planning').off('click', '.jsConfirmAddEvent');
+                el.fullCalendar('refetchEvents'); // You must refetch to get real ID of event
               },
               error: function (err) {
                 $('#calendar .loader, #calendar-edit .loader').remove();
@@ -494,25 +489,27 @@ calendar = {
       },
     })
     calendar.navigate(el);
-    calendar.modal(el);
+    calendar.modal(el, authTokenVALUE, userID, calendarID);
     calendar.refresh(authTokenVALUE, userID);
   },
 
-  modal: function (el) {
+  modal: function (el, authTokenVALUE, userID, calendarID) {
     $('.generic-planning').on('click', '.jsCloseModalCalendar', function () {
+      
       // Remove modale & error
       $(this).parents('.calendar-modale').remove();
       $(this).parents('.calendar-modale').find('.calendar-modale-error').text('');
-
-      // Remove handlers event
-      $(this).parents('.generic-planning').off('click', '.jsConfirmAddEvent');
-      $(this).parents('.generic-planning').off('click', '.jsConfirmEditEvent');
-      $(this).parents('.generic-planning').off('click', '.jsConfirmDeleteEvent');
 
       // Remove previous selection
       $(this).parents('.generic-planning').find('.calendar-add input:text').val('');
       $(this).parents('.generic-planning').find('.calendar-add input:radio').prop('checked', false);
       $(this).parents('.generic-planning').find('.calendar-add #bg-dark').prop('checked', true);
+
+      // Remove handlers event
+      utils.removeEventHandlers(calendarID);
+      calendar.init(authTokenVALUE, userID, calendarID);
+      el.fullCalendar('refetchEvents');
+      el.fullCalendar('refetchEventSources');
     });
   },
 
@@ -520,12 +517,10 @@ calendar = {
     // Go to previous day / week
     $('.calendar-navigation-prev').on('click', function () {
       $(this).parents('.generic-planning').find(el).fullCalendar('prev');
-      //el.fullCalendar('refetchEvents');
     });
     // Go to next day / week
     $('.calendar-navigation-next').on('click', function () {
       $(this).parents('.generic-planning').find(el).fullCalendar('next');
-      //el.fullCalendar('refetchEvents');
     });
     // Switch on week view
     $('.calendar-view__button--week').on('click', function () {
