@@ -82,7 +82,7 @@ calendar = {
        * -------------------
        */
       events: function (start, end, timezone, callback) {
-        var api = "http://api.scufrh.ovh/events/" + userID;
+        var api = localStorage.getItem('ENV') + "/events/" + userID;
         $.ajax({
           url: api,
           type: 'GET',
@@ -121,13 +121,14 @@ calendar = {
         event.end = updatedEnd;
 
         // 3. Save data into DB
-        var api = "http://api.scufrh.ovh/event/update/" + event.id;
+        var api = localStorage.getItem('ENV') + "/event/update/" + event.id;
         $.ajax({
           url: api,
           type: 'PATCH',
           data: {
             start: updatedStart,
-            end: updatedEnd
+            end: updatedEnd,
+            type: 'basic_ext',
           },
           beforeSend: function (xhr) {
             xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
@@ -166,13 +167,14 @@ calendar = {
         event.end = updatedEnd;
 
         // 3. Save data into DB
-        var api = "http://api.scufrh.ovh/event/update/" + event.id;
+        var api = localStorage.getItem('ENV') + "/event/update/" + event.id;
         $.ajax({
           url: api,
           type: 'PATCH',
           data: {
             start: updatedStart,
-            end: updatedEnd
+            end: updatedEnd,
+            type: 'basic_ext',
           },
           beforeSend: function (xhr) {
             xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
@@ -217,11 +219,16 @@ calendar = {
         let blueBorderChecked = event.borderColor == "#2f67f5" ? "checked" : "";
         let darkBorderChecked = event.borderColor == "#1e1e1e" ? "checked" : "";
 
+        let whoiam = calendarID == "calendar" ? "basic_me" : "basic_ext";
+
         let editModale = '' +
           '<form class="calendar-modale" id="jsUpdateEventForm">' +
           '<div class="calendar-modale__inner">' +
           '<div class="calendar-modale__title">Modifier un événement</div>' +
           '<div class="calendar-modale__input-container">' +
+          '<input type="hidden" name="start" value="' + moment(event.start).format('YYYY-MM-DD HH:mm:ss') + '">' +
+          '<input type="hidden" name="end" value="' + moment(event.end).format('YYYY-MM-DD HH:mm:ss') + '">' +
+          '<input type="hidden" name="type" value="' + whoiam + '">' +
           '<input type="text" name="title" class="calendar-modale__input" id="jsCalendarAddTitle" placeholder="Titre" value="' + event.title + '">' +
           '<input type="text" name="location" class="calendar-modale__input" id="jsCalendarAddLocation" placeholder="Lieu" value="' + event.location + '">' +
           '</div>' +
@@ -276,7 +283,7 @@ calendar = {
             $(this).parents('.calendar-modale').remove();
 
             // 3. Delete data into DB
-            var api = "http://api.scufrh.ovh/event/delete/" + event.id;
+            var api = localStorage.getItem('ENV') + "/event/delete/" + event.id;
             $.ajax({
               url: api,
               type: 'DELETE',
@@ -338,7 +345,7 @@ calendar = {
             $(this).parents('.calendar-modale').remove();
 
             // 5. Save data into DB
-            var api = "http://api.scufrh.ovh/event/update/" + event.id;
+            var api = localStorage.getItem('ENV') + "/event/update/" + event.id;
             $.ajax({
               url: api,
               type: 'PATCH',
@@ -471,7 +478,7 @@ calendar = {
             };
 
             // 5. Save data into DB
-            var api = "http://api.scufrh.ovh/event/create/" + userID;
+            var api = localStorage.getItem('ENV') + "/event/create/" + userID;
             $.ajax({
               url: api,
               type: 'POST',
@@ -588,21 +595,21 @@ calendar = {
           eventBorder = '#1e1e1e';
           eventTitle = item.find('.notification-justification').val();
           eventLocation = item.find('.notification-location').val();
-          api = "http://api.scufrh.ovh/event/createFromNotification/" + userConnectedID + "/" + actionID;
+          api = localStorage.getItem('ENV') + "/event/createFromNotification/" + userConnectedID + "/" + actionID;
           break;
         case 'leave':
           eventBg = '#b0b0b0';
           eventBorder = '#b0b0b0';
           eventTitle = 'Congés';
           eventLocation = 'Aucun';
-          api = "http://api.scufrh.ovh/event/createFromNotification/" + userNotificationID + "/" + actionID;
+          api = localStorage.getItem('ENV') + "/event/createFromNotification/" + userNotificationID + "/" + actionID;
           break;
         case 'rest':
           eventBg = '#b0b0b0';
           eventBorder = '#b0b0b0';
           eventTitle = 'Repos';
           eventLocation = 'Aucun';
-          api = "http://api.scufrh.ovh/event/createFromNotification/" + userNotificationID + "/" + actionID;
+          api = localStorage.getItem('ENV') + "/event/createFromNotification/" + userNotificationID + "/" + actionID;
           break;
       }
 

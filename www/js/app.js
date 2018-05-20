@@ -3,7 +3,7 @@ var me = {
   init: function () {
 
     // CHECK IF TOKEN IS VALID ?
-    var isConnected = utils.isValidToken();
+    let isConnected = utils.isValidToken();
 
     if (isConnected) {
 
@@ -61,8 +61,22 @@ var me = {
 
   },
 
+  config: function () {
+    // If ENV exist, remove it
+    if(localStorage.getItem('ENV') !== null) {
+      localStorage.removeItem('ENV');
+    }
+    // Define new ENV
+    if (window.location.href.indexOf("localhost") > -1) {
+      localStorage.setItem('ENV', 'http://127.0.0.1:8000');
+    } else {
+      localStorage.setItem('ENV', 'http://api.scufrh.ovh');
+    }
+  },
+
 };
 
 $(document).ready(function () {
+  me.config();
   me.init();
 });

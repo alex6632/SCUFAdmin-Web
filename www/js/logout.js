@@ -6,7 +6,7 @@ var logout = {
     $('.jsLogout').on('click', function () {
       if (confirm("Êtes vous certain de vouloir vous déconnecter ?")) {
         $('.routing.show').append('<div class="loader"><div class="loader__gif"></div></div>');
-        var api = "http://api.scufrh.ovh/auth-tokens/" + authTokenID;
+        var api = localStorage.getItem('ENV') + "/auth-tokens/" + authTokenID;
         $.ajax({
           url: api,
           type: 'DELETE',

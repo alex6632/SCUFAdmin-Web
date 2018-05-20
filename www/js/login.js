@@ -55,7 +55,7 @@ var login = {
     $('.loginTrigger').on('submit', '.login__form', function (e) {
       e.preventDefault();
       $('#jsShowConnectForm').append('<div class="loader"><div class="loader__gif"></div></div>');
-      var api = "http://api.scufrh.ovh/auth-tokens";
+      var api = localStorage.getItem('ENV') + "/auth-tokens";
       $.ajax({
         url: api,
         data: $(this).serialize(),

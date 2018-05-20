@@ -7,7 +7,7 @@ var crud = {
     $('.' + element).on('submit', function (e) {
       e.preventDefault();
       $('form.' + element + ' button').prop("disabled", true);
-      var api = "http://api.scufrh.ovh/" + type + "/create";
+      var api = localStorage.getItem('ENV') + "/" + type + "/create";
       $.ajax({
         url: api,
         type: 'POST',
@@ -24,7 +24,7 @@ var crud = {
                 $('form.' + element + ' button').prop("disabled", true);
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                crud.ajaxSimpleList('http://api.scufrh.ovh/access', $('.access-list'), 'access', authTokenVALUE);
+                crud.ajaxSimpleList(localStorage.getItem('ENV') + '/access', $('.access-list'), 'access', authTokenVALUE);
                 utils.emptyForm('access');
               } else {
                 console.log(response);
@@ -37,7 +37,7 @@ var crud = {
               $('form.' + element + ' button').prop("disabled", true);
               $('.msg-flash .alert').remove();
               $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-              crud.ajaxSimpleList('http://api.scufrh.ovh/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
+              crud.ajaxSimpleList(localStorage.getItem('ENV') + '/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
               utils.emptyForm('user');
               // Close form
               $('#jsCloseFormAddUser').removeClass('show');
@@ -49,7 +49,7 @@ var crud = {
               utils.removeHTML("level2Section");
               $('.msg-flash .alert').remove();
               $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-              crud.ajaxSimpleList('http://api.scufrh.ovh/sections', $('.section-list'), 'section', authTokenVALUE);
+              crud.ajaxSimpleList(localStorage.getItem('ENV') + '/sections', $('.section-list'), 'section', authTokenVALUE);
               utils.emptyForm('section');
               break;
           }
@@ -105,6 +105,7 @@ var crud = {
             break;
           case "section":
             if (response.success) {
+              $('#addSection .no-result').text('');
               for (let j = 0; j < response.list.length; j++) {
                 $(element).append(
                   '<li>' +
@@ -117,14 +118,14 @@ var crud = {
                 );
               }
             } else {
-              $('.no-result').text('');
+              $('#addSection .no-result').text('');
               $('.section-list').next().append(response.message);
             }
             break;
           case "week":
             if (response.success) {
               console.log(response);
-              $('.no-result').text('');
+              $('#addWeek .no-result').text('');
               let action = "";
               for (let i = 0; i < response.list.length; i++) {
                 let types = '<select name="setting" disabled>';
@@ -149,7 +150,7 @@ var crud = {
                 );
               }
             } else {
-              $('.no-result').text('');
+              $('#addWeek .no-result').text('');
               $('.week-list').next().append(response.message);
             }
             break;
@@ -230,6 +231,7 @@ var crud = {
             break;
           case "leave":
             if (response.success) {
+              $('#leave .no-result').text('');
               var status = 'En attente';
               var css = 'progress';
               var action = '';
@@ -273,11 +275,13 @@ var crud = {
                 );
               }
             } else {
+              $('#leave .no-result').text('');
               $('.leave-list').next().append(response.message);
             }
             break;
           case "rest":
             if (response.success) {
+              $('#rest .no-result').text('');
               var status = 'En attente';
               var css = 'progress';
               var action = '';
@@ -322,12 +326,14 @@ var crud = {
                 );
               }
             } else {
+              $('#rest .no-result').text('');
               $('.rest-list').next().append(response.message);
             }
             break;
           case "hours":
-          console.log(response);
+            console.log(response);
             if (response.success) {
+              $('#hours .no-result').text('');
               var status = 'En attente';
               var css = 'progress';
               var action = '';
@@ -372,7 +378,7 @@ var crud = {
                 );
               }
             } else {
-              $('.no-result').text('');
+              $('#hours .no-result').text('');
               $('.hours-list').next().append(response.message);
             }
             break;
@@ -407,7 +413,7 @@ var crud = {
       var idStr = $(this).attr('id');
       var reg = /([0-9]+)/.exec(idStr);
       var id = RegExp.$1;
-      var api = "http://api.scufrh.ovh/" + type + "/update/" + id;
+      var api = localStorage.getItem('ENV') + "/" + type + "/update/" + id;
       var value = '';
       var data = {};
       if (type == 'access') {
@@ -514,7 +520,7 @@ var crud = {
       var idStr = $(this).attr('id');
       var reg = /([0-9]+)/.exec(idStr);
       var id = RegExp.$1;
-      var api = "http://api.scufrh.ovh/" + type + "/update/" + id;
+      var api = localStorage.getItem('ENV') + "/" + type + "/update/" + id;
       form = $(this).parents('form');
       console.log(form);
       $.ajax({
@@ -532,14 +538,14 @@ var crud = {
                 utils.removeHTML("level2User");
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                crud.ajaxSimpleList('http://api.scufrh.ovh/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
+                crud.ajaxSimpleList(localStorage.getItem('ENV') + '/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
                 break;
               case "week":
                 utils.removeHTML("level2Week");
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
                 const selectUserID = $('.jsUsersList').val();
-                crud.ajaxSimpleList('http://api.scufrh.ovh/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+                crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
                 break;
             }
           } else {
@@ -567,7 +573,7 @@ var crud = {
         var idStr = $(this).attr('id');
         var reg = /([0-9]+)/.exec(idStr);
         var id = RegExp.$1;
-        var api = "http://api.scufrh.ovh/" + type + "/delete/" + id;
+        var api = localStorage.getItem('ENV') + "/" + type + "/delete/" + id;
         $.ajax({
           url: api,
           type: 'DELETE',
@@ -707,7 +713,7 @@ var crud = {
 
       if (!error) {
         $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
-        const api = "http://api.scufrh.ovh/action/create/" + type + "/" + userID;
+        const api = localStorage.getItem('ENV') + "/action/create/" + type + "/" + userID;
         $.ajax({
           url: api,
           type: 'POST',
@@ -722,21 +728,21 @@ var crud = {
                 utils.removeHTML("level2Leave");
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                crud.ajaxSimpleList('http://api.scufrh.ovh/actions/leave/' + userID, $('.leave-list tbody'), 'leave', authTokenVALUE);
+                crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/leave/' + userID, $('.leave-list tbody'), 'leave', authTokenVALUE);
                 utils.emptyForm('leave');
                 break;
               case "rest":
                 utils.removeHTML("level2Rest");
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                crud.ajaxSimpleList('http://api.scufrh.ovh/actions/rest/' + userID, $('.rest-list tbody'), 'rest', authTokenVALUE);
+                crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/rest/' + userID, $('.rest-list tbody'), 'rest', authTokenVALUE);
                 utils.emptyForm('rest');
                 break;
               case "hours":
                 utils.removeHTML("level2Hours");
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                crud.ajaxSimpleList('http://api.scufrh.ovh/actions/hours/' + userID, $('.hours-list tbody'), 'hours', authTokenVALUE);
+                crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/hours/' + userID, $('.hours-list tbody'), 'hours', authTokenVALUE);
                 utils.emptyForm('hours');
                 break;
             }
@@ -758,7 +764,7 @@ var crud = {
     $('.jsFormAddWeek').on('submit', function (e) {
       e.preventDefault();
       $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
-      const api = "http://api.scufrh.ovh/week/create";
+      const api = localStorage.getItem('ENV') + "/week/create";
       $.ajax({
         url: api,
         type: 'POST',
@@ -773,7 +779,7 @@ var crud = {
           $('.msg-flash .alert').remove();
           $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
           const selectUserID = $('.jsUsersList').val();
-          crud.ajaxSimpleList('http://api.scufrh.ovh/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+          crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
           utils.emptyForm('hours');
         },
         error: function (err) {

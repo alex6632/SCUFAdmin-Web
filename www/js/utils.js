@@ -222,7 +222,7 @@ var utils = {
   },
 
   ajaxGet: function (element, type, authTokenVALUE) {
-    var api = "http://api.scufrh.ovh/" + element;
+    var api = localStorage.getItem('ENV') + "/" + element;
     $.ajax({
       url: api,
       type: 'GET',
@@ -390,7 +390,7 @@ var utils = {
    */
   ajaxGetUsers: function (authTokenVALUE) {
     $.ajax({
-      url: 'http://api.scufrh.ovh/users',
+      url: localStorage.getItem('ENV') + '/users',
       type: 'GET',
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
@@ -401,7 +401,7 @@ var utils = {
           $('.jsUsersList').append('<option value="' + response[i].id + '">' + response[i].firstname + ' ' + response[i].lastname + '</option>');
         }
         let selectUserID = $('.jsUsersList').val();
-        crud.ajaxSimpleList('http://api.scufrh.ovh/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+        crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
       },
       error: function (err) {
         console.log(err);
@@ -415,7 +415,7 @@ var utils = {
   ajaxGetWeeksType: function (authTokenVALUE) {
     // TODO: Add loader here and remove it on ajaxSimplePage just before re append it for list loading
     $.ajax({
-      url: 'http://api.scufrh.ovh/setting/week',
+      url: localStorage.getItem('ENV') + '/setting/week',
       type: 'GET',
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
@@ -441,7 +441,7 @@ var utils = {
       const selected = $(this).find('option:selected').val();
       $('.jsUsersList option[value="' + selected + '"]').prop('selected', true);
       selectUserID = $(this).val();
-      crud.ajaxSimpleList('http://api.scufrh.ovh/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+      crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
       console.log("Change for user " + selectUserID);
     });
   },
