@@ -16,6 +16,7 @@ var anim = {
         roleList += '<option value="4">Administrateur</option>' +
         '<option value="3">Superviseur</option>';
       }
+      $('#roleList option').remove();
       $('#roleList').append(roleList);
     });
     $('#jsCloseFormAddUser').on('click', function () {

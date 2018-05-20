@@ -1,7 +1,7 @@
 var utils = {
 
-  removeAlert: function() {
-    $('.msg-flash').click(function() {
+  removeAlert: function () {
+    $('.msg-flash').click(function () {
       $('.msg-flash .alert').remove();
     });
   },
@@ -105,7 +105,8 @@ var utils = {
         $('.calendar-view__button--week').off('click');
         $('.calendar-view__button--day').off('click');
         break;
-      case "calendar-edit":
+      case "level2Edit":
+        $('.selectUserToEditPlanning').off('change');
         $('.generic-planning').off('click', '.jsCloseModalCalendar');
         $('.generic-planning').off('click', '.jsConfirmAddEvent');
         $('.generic-planning').off('click', '.jsConfirmEditEvent');
@@ -327,7 +328,7 @@ var utils = {
       endHour.next().text('');
     }
 
-    if (startHour.val() > endHour.val() ) {
+    if (startHour.val() > endHour.val()) {
       error = true;
       startHour.next().text('L\'heure de début doit être antérieure à l\'heure de fin.');
     } else {

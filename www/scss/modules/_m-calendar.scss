@@ -187,7 +187,7 @@
   right: 25px;
   top: 107px;
 
-  #editPlanning & {
+  #edit & {
     top: 86px;
   }
 
@@ -276,6 +276,14 @@
   background-color: rgba(color('background', 'invert'), .8);
   z-index: 10;
   @include transition();
+
+  &__info {
+    color: color('validation', 'no');
+    margin: 10px 0;
+    font-weight: 500;
+    font-size: 12px;
+    text-align: center;
+  }
 
   &__inner {
     @include center-v(fixed);

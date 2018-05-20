@@ -15,6 +15,7 @@ calendar = {
     if(calendarID == 'calendar-edit') {
       page.getEmployees(authTokenVALUE, userID, 'planning');
       userID = $('.selectUserToEditPlanning').val();
+      $('#calendar-edit').fullCalendar('refetchEvents');
       selectable = true;
       editable = true;
 
@@ -397,6 +398,7 @@ calendar = {
           '<div class="calendar-modale__inner">' +
           '<div class="calendar-modale__title">Ajouter un événement</div>' +
           '<div class="calendar-modale__input-container">' +
+          '<div class="calendar-modale__info">Attention, l\'événement ne pourra pas être modifié.</div>' +
           '<input type="checkbox" name="all_day" value="" ' + allDayChecked + ' style="visibility: hidden;">' +
           '<input type="hidden" name="start" value="' + moment(start).format('YYYY-MM-DD HH:mm:ss') + '">' +
           '<input type="hidden" name="end" value="' + moment(end).format('YYYY-MM-DD HH:mm:ss') + '">' +
@@ -662,7 +664,7 @@ calendar = {
           $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
 
           // 4. Render new event on calendar
-          $('#calendar').fullCalendar('renderEvent', eventData, true);
+          $('#calendar').fullCalendar('renderEvent', eventData, false);
 
           // 5. Remove handlers event
           $('#calendar').fullCalendar('unselect');

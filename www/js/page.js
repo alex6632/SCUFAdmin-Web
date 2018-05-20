@@ -440,7 +440,7 @@ var page = {
     role2 += role1 + '' +
     '<ul class="action__list">' +
       '<li class="action__list__item premium" data-routing="dashboard">Dashboard</li>' +
-      '<li class="action__list__item arrow jsGoLevel2" data-routing="editPlanning">Editer un planning</li>' +
+      '<li class="action__list__item arrow jsGoLevel2" data-routing="edit">Editer un planning</li>' +
     '</ul>';
 
     // SUPERVISEUR

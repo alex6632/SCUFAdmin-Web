@@ -130,7 +130,7 @@ var routing = {
           crud.ajaxAddAction('hours', authTokenVALUE, userID);
           crud.ajaxRemove('.hours-list', '.hours-list #deleteHours', 'action', authTokenVALUE, 'hours');
           break;
-        case "editPlanning":
+        case "edit":
           jsGoLevel1.attr('id', 'level2Edit');
           calendar.init(authTokenVALUE, userID, 'calendar-edit');
           break;
