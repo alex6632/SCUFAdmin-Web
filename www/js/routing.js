@@ -97,7 +97,7 @@ var routing = {
           break;
         case "addWeek":
           jsGoLevel1.attr('id', 'level2Week');
-          utils.ajaxGetWeeksType(authTokenVALUE);
+          //utils.ajaxGetWeeksType(authTokenVALUE);
           utils.ajaxGetUsers(authTokenVALUE);
           utils.loadWeeksOnChange(authTokenVALUE);
           crud.ajaxAddWeek(authTokenVALUE);
@@ -106,33 +106,33 @@ var routing = {
           break;
         case "addUser":
           jsGoLevel1.attr('id', 'level2User');
-          crud.ajaxSimpleList(localStorage.getItem('ENV') + '/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
+          crud.ajaxSimpleList(localStorage.getItem('ENV') + '/users', $('.user-list .tbody'), 'user', authTokenVALUE, ROLE);
           crud.ajaxAdd('jsFormAddUser', 'user', authTokenVALUE, ROLE);
           crud.ajaxRemove('.user-list', '.user-list #deleteUser', 'user', authTokenVALUE);
           crud.ajaxEditForm('.user-list', 'user', authTokenVALUE, ROLE);
           break;
         case "rest":
           jsGoLevel1.attr('id', 'level2Rest');
-          crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/rest/' + userID, $('.rest-list tbody'), 'rest', authTokenVALUE);
+          crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/rest/' + userID, $('.rest-list .tbody'), 'rest', authTokenVALUE);
           crud.ajaxAddAction('rest', authTokenVALUE, userID);
           crud.ajaxRemove('.rest-list', '.rest-list #deleteRest', 'action', authTokenVALUE, 'rest');
           break;
         case "leave":
           jsGoLevel1.attr('id', 'level2Leave');
-          crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/leave/' + userID, $('.leave-list tbody'), 'leave', authTokenVALUE);
+          crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/leave/' + userID, $('.leave-list .tbody'), 'leave', authTokenVALUE);
           crud.ajaxAddAction('leave', authTokenVALUE, userID);
           crud.ajaxRemove('.leave-list', '.leave-list #deleteLeave', 'action', authTokenVALUE, 'leave');
           break;
         case "hours":
           jsGoLevel1.attr('id', 'level2Hours');
           page.getEmployees(authTokenVALUE, userID, 'hours');
-          crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/hours/' + userID, $('.hours-list tbody'), 'hours', authTokenVALUE);
+          crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/hours/' + userID, $('.hours-list .tbody'), 'hours', authTokenVALUE);
           crud.ajaxAddAction('hours', authTokenVALUE, userID);
           crud.ajaxRemove('.hours-list', '.hours-list #deleteHours', 'action', authTokenVALUE, 'hours');
           break;
         case "edit":
           jsGoLevel1.attr('id', 'level2Edit');
-          calendar.init(authTokenVALUE, userID, 'calendar-edit');
+          calendar.init(authTokenVALUE, userID, 'calendar-edit', ROLE);
           break;
       }
       var content = $(this).text();

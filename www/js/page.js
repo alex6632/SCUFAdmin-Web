@@ -14,7 +14,7 @@ var page = {
         xhr.setRequestHeader('X-Auth-Token', authTokenVALUE);
       },
       success: function (response) {
-        console.log(response)
+        console.log("RESPONSE",response);
         $('#profile .loader').remove();
         var role = "";
         switch (response.user.role) {
@@ -29,6 +29,9 @@ var page = {
             break;
           case 4:
             role = 'Administrateur';
+            break;
+          case 42:
+            role = 'Super Administrateur';
             break;
           default:
             role = "Aucun";
@@ -59,25 +62,34 @@ var page = {
           listAccess = 'Aucun';
         }
 
+        // Profile
         $('#profile-firstname').text(response.user.firstname);
         $('#profile-lastname').text(response.user.lastname);
         $('#profile-username').text(response.user.username);
-        $('#profile-role').text(role);
+        $('#profile-role').text(role); 
         $('#profile-superior').text(response.superiorName);
         $('#profile-access').text(listAccess);
 
+        // Mes heures VALIDÉES cette semaine
         $('#jsHoursTodoThisWeek .progress-bar__ratio').html('<span class="ratio-ok">' + valided + '</span>/' + response.hoursTodoThisWeek + '<span>H</span>');
         $('#jsHoursTodoThisWeek .progress-bar__bar__text, #jsHoursTodoThisWeek .progress-bar__bar__wip span').text(percentageHoursTodoThisWeek + '%');
         $('#jsHoursTodoThisWeek .progress-bar__bar__wip').attr('style', 'width: ' + percentageHoursTodoThisWeek + '%;');
+        
+        // Mes heures Validés / En attente de validation
         $('#validedHours').text(valided);
         $('#notValidedHours').text(notValided);
 
+        // Mes heures VALIDÉES cette année...
         $('#jsHoursTodo .progress-bar__ratio').html('<span class="ratio-ok">' + response.user.hoursDone + '</span>/' + response.user.hoursTodo + '<span>H</span>');
         $('#jsHoursTodo .progress-bar__bar__text, #jsHoursTodo .progress-bar__bar__wip span').text(percentageHoursTodo + '%');
         $('#jsHoursTodo .progress-bar__bar__wip').attr('style', 'width: ' + percentageHoursTodo + '%;');
+        
+        // Mes heures PLANIFIÉS cette année
         $('#jsHoursPlanified .progress-bar__ratio').html('<span class="ratio-ok">' + response.user.hoursPlanifiedByMe + '</span>/' + hoursToPlanify + '<span>H</span>');
         $('#jsHoursPlanified .progress-bar__bar__text, #jsHoursPlanified .progress-bar__bar__wip span').text(percentageHoursPlanified + '%');
         $('#jsHoursPlanified .progress-bar__bar__wip').attr('style', 'width: ' + percentageHoursPlanified + '%;');
+        
+        // Mes heures supplémentaires récompensées
         $('.profile-page__info-hours__nb').html(rest);
       },
       error: function (response) {
@@ -193,8 +205,8 @@ var page = {
    * GET EMPLOYEES LIST FOR A USER
    * -------------------------------
    */
-  getEmployees: function (authTokenVALUE, userID, page) {
-    var api = localStorage.getItem('ENV') + "/users/" + userID;
+  getEmployees: function (authTokenVALUE, userID, page, SU = false, selectedID = null) {
+    let api = SU ? localStorage.getItem('ENV') + "/users" : localStorage.getItem('ENV') + "/users/" + userID;
     $.ajax({
       url: api,
       type: 'GET',
@@ -211,8 +223,15 @@ var page = {
           case "planning":
             $('.selectUserToEditPlanning option').remove();
             $('.selectUserToEditPlanning').append('<option value="default">Liste des utilisateurs</option>');
+            let selected = '';
             for (var i = 0; i < response.length; i++) {
-              $('.selectUserToEditPlanning').append('<option value="' + response[i].id + '">' + response[i].firstname + ' ' + response[i].lastname + '</option>');
+              let fullName = response[i].firstname + ' ' + response[i].lastname;
+              if (selectedID !== null && parseInt(selectedID) === response[i].id) {
+                selected = 'selected';
+              } else {
+                selected = '';
+              }
+              $('.selectUserToEditPlanning').append('<option value="' + response[i].id + '" data-name="'+ fullName +'" ' + selected + '>' + response[i].firstname + ' ' + response[i].lastname + '</option>');
             }
             break;
         }
@@ -484,6 +503,7 @@ var page = {
         break;
       case '42' :
         action = role42;
+        break;
       default :
         action = role1;
     }

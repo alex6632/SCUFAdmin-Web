@@ -61,7 +61,6 @@ var login = {
         data: $(this).serialize(),
         type: 'POST',
         success: function (response) {
-          console.log(response);
           location.reload();
           $('#jsShowConnectForm .loader').remove();
           $('.msg-flash .alert').remove();
@@ -71,6 +70,7 @@ var login = {
           localStorage.setItem('ROLE', response.authToken.user.role);
           localStorage.setItem('authTokenCREATED', response.createdTime);
           localStorage.setItem('tokenValidityDuration', response.tokenValidityDuration);
+          localStorage.setItem('hoursTodo', response.authToken.user.hoursTodo);
 
           login.loginPage();
         },

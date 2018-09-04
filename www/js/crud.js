@@ -37,7 +37,7 @@ var crud = {
               $('form.' + element + ' button').prop("disabled", true);
               $('.msg-flash .alert').remove();
               $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-              crud.ajaxSimpleList(localStorage.getItem('ENV') + '/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
+              crud.ajaxSimpleList(localStorage.getItem('ENV') + '/users', $('.user-list .tbody'), 'user', authTokenVALUE, ROLE);
               utils.emptyForm('user');
               // Close form
               $('#jsCloseFormAddUser').removeClass('show');
@@ -67,6 +67,7 @@ var crud = {
    * SHOW SIMPLE LIST
    */
   ajaxSimpleList: function (api, element, type, authTokenVALUE, ROLE = null) {
+    console.log("type", type);
     $('#actions').append('<div class="loader"><div class="loader__gif"></div></div>');
     $.ajax({
       url: api,
@@ -91,6 +92,7 @@ var crud = {
             }
             break;
           case "setting":
+          console.log('setting here')
             for (let j = 0; j < response.length; j++) {
               $(element).append(
                 '<li>' +
@@ -124,17 +126,8 @@ var crud = {
             break;
           case "week":
             if (response.success) {
-              console.log(response);
-              $('#addWeek .no-result').text('');
               let action = "";
               for (let i = 0; i < response.list.length; i++) {
-                let types = '<select name="setting" disabled>';
-                for(let j = 0; j < response.types.length; j++) {
-                  let selected = response.list[i].setting.slug == response.types[j].slug ? "selected" : "";
-                  types += '<option value="' + response.types[j].id + '" ' + selected + '>' + response.types[j].title + ' (' + response.types[j].value + 'h)</option>'
-                }
-                types += '</select>';
-
                 action = '' +
                   '<span class="link-table editEnabled">Modifier</span>' +
                   '<span class="link-table edit" id="editWeek' + response.list[i].id + '">Valider</span>' +
@@ -144,7 +137,7 @@ var crud = {
                 $(element).append(
                   '<form action="" id="formWeek' + response.list[i].id + '" class="tr">' +
                   '<div class="td">' + response.list[i].number + '</div>' +
-                  '<div class="td">' + types + '</div>' +
+                  '<div class="td"><input type="number" name="hours" value="' + response.list[i].hours + '" disabled /></div>' +
                   '<div class="td">' + action + '</div>' +
                   '</form>'
                 );
@@ -223,7 +216,7 @@ var crud = {
                 '<div class="td">' + role + '</div>' +
                 '<div class="td"><input type="text" name="superior" class="editSuperior" value="' + superior + '" disabled></div>' +
                 // '<div class="td user-access-list">' + listAccess + '</div>' +
-                '<div class="td"><input type="text" name="hours_todo" value="' + response[i].hoursTodo + '" disabled></div>' +
+                '<div class="td">' + response[i].hoursTodo + '</div>' +
                 '<div class="td">' + action + '</div>' +
                 '</form>'
               );
@@ -456,6 +449,7 @@ var crud = {
               break;
             case "setting":
               if (response.type == 'success') {
+                localStorage.setItem('settingCOEFF', response.value);
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
                 $(element + '' + response.id).parents('li').html(
@@ -516,10 +510,10 @@ var crud = {
       $(this).parent().find('.delete').removeClass('hide');
       if(type == 'user') {
         utils.removeHTML("level2User");
-        crud.ajaxSimpleList(localStorage.getItem('ENV') + '/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
+        crud.ajaxSimpleList(localStorage.getItem('ENV') + '/users', $('.user-list .tbody'), 'user', authTokenVALUE, ROLE);
       } else {
         utils.removeHTML("level2Week");
-        crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+        crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + $('.jsUsersList').val(), $('.week-list .tbody'), 'week', authTokenVALUE);
       }
     });
     $(element).on('click', 'form .edit', function () {
@@ -545,14 +539,15 @@ var crud = {
                 utils.removeHTML("level2User");
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                crud.ajaxSimpleList(localStorage.getItem('ENV') + '/users', $('.user-list tbody'), 'user', authTokenVALUE, ROLE);
+                crud.ajaxSimpleList(localStorage.getItem('ENV') + '/users', $('.user-list .tbody'), 'user', authTokenVALUE, ROLE);
                 break;
               case "week":
                 utils.removeHTML("level2Week");
                 $('.msg-flash .alert').remove();
                 $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
                 const selectUserID = $('.jsUsersList').val();
-                crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+                utils.ajaxGetUsers(authTokenVALUE, selectUserID);
+                //crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
                 break;
             }
           } else {
@@ -739,21 +734,21 @@ var crud = {
                   utils.removeHTML("level2Leave");
                   $('.msg-flash .alert').remove();
                   $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                  crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/leave/' + userID, $('.leave-list tbody'), 'leave', authTokenVALUE);
+                  crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/leave/' + userID, $('.leave-list .tbody'), 'leave', authTokenVALUE);
                   utils.emptyForm('leave');
                   break;
                 case "rest":
                   utils.removeHTML("level2Rest");
                   $('.msg-flash .alert').remove();
                   $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                  crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/rest/' + userID, $('.rest-list tbody'), 'rest', authTokenVALUE);
+                  crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/rest/' + userID, $('.rest-list .tbody'), 'rest', authTokenVALUE);
                   utils.emptyForm('rest');
                   break;
                 case "hours":
                   utils.removeHTML("level2Hours");
                   $('.msg-flash .alert').remove();
                   $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
-                  crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/hours/' + userID, $('.hours-list tbody'), 'hours', authTokenVALUE);
+                  crud.ajaxSimpleList(localStorage.getItem('ENV') + '/actions/hours/' + userID, $('.hours-list .tbody'), 'hours', authTokenVALUE);
                   utils.emptyForm('hours');
                   break;
               }
@@ -794,7 +789,8 @@ var crud = {
           $('.msg-flash .alert').remove();
           $('.msg-flash').append('<div class="alert alert--success" role="alert">' + response.message + '</div>');
           const selectUserID = $('.jsUsersList').val();
-          crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+          utils.ajaxGetUsers(authTokenVALUE, selectUserID);
+          //crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
           utils.emptyForm('hours');
         },
         error: function (err) {

@@ -50,8 +50,8 @@
       <select id="jsListDaysInProgress"></select>
     </div>
   </div>
-    
-    <!--
+
+  <!--
     <div class="routing__center"></div>
       
       <div class="validation-item border-ok">
@@ -154,21 +154,22 @@
           </form>
         </div>
         <div class="title">Historique des demandes</div>
-        <table class="table list rest-list">
-          <thead>
-            <tr>
-              <th>Date soumission</th>
-              <th>M à j</th>
-              <th>Date</th>
-              <th>Début</th>
-              <th>Fin</th>
-              <th>Justification</th>
-              <th>Statut</th>
-              <th class="action">Action</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+        <div class="table list rest-list">
+          <div class="thead">
+            <div class="tr">
+              <div class="th">Date soumission</div>
+              <div class="th">M à j</div>
+              <div class="th">Date</div>
+              <div class="th">Début</div>
+              <div class="th">Fin</div>
+              <div class="th">Justification</div>
+              <div class="th">Statut</div>
+              <div class="th action">Action</div>
+            </div>
+          </div>
+          <div class="tbody"></div>
+        </div>
+
         <div class="no-result"></div>
       </div>
 
@@ -191,7 +192,8 @@
                 <input type="hidden" name="end" class="end">
               </li>
             </ul>
-            <span class="action__info">Veuillez respecter le bon format. Par exemple pour le 1er Juillet 2018 à 09 heures : 01-01-2018 09:00</span>
+            <span class="action__info">Veuillez respecter le bon format. Par exemple pour le 1er Juillet 2018 à 09 heures
+              : 01-01-2018 09:00</span>
             <ul class="action__list">
               <li class="action__list__item textarea">
                 <textarea name="justification" cols="30" rows="10" placeholder="Justification" class="justification"></textarea>
@@ -203,20 +205,20 @@
           </form>
         </div>
         <div class="title">Historique des demandes</div>
-        <table class="table list leave-list">
-          <thead>
-            <tr>
-              <th>Date soumission</th>
-              <th>M à j</th>
-              <th>Date de début</th>
-              <th>Date de fin</th>
-              <th>Justification</th>
-              <th>Statut</th>
-              <th class="action">Action</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+        <div class="table list leave-list">
+          <div class="thead">
+            <div class="tr">
+              <div class="th">Date soumission</div>
+              <div class="th">M à j</div>
+              <div class="th">Date de début</div>
+              <div class="th">Date de fin</div>
+              <div class="th">Justification</div>
+              <div class="th">Statut</div>
+              <div class="th action">Action</div>
+            </div>
+          </div>
+          <div class="tbody"></div>
+        </div>
         <div class="no-result"></div>
       </div>
 
@@ -269,409 +271,416 @@
           </form>
         </div>
         <div class="title">Historique des demandes</div>
-        <table class="table list hours-list">
-          <thead>
-            <tr>
-              <th>Date soumission</th>
-              <th>M à j</th>
-              <th>Date</th>
-              <th>Début</th>
-              <th>Fin</th>
-              <th>Assigné</th>
-              <th>Statut</th>
-              <th class="action">Action</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <div class="no-result"></div>
-      </div>
-
-      <!-- Edit planning -->
-      <div class="level2 generic-planning" id="edit">
-        <div class="action">
-          <select class="selectUserToEditPlanning"></select>
-          <div class="calendar-navigation">
-            <button class="calendar-navigation-prev">
-              <span class="icon icon-left-arrow"></span>Précédent</button>
-            <button class="calendar-navigation-next">Suivant
-              <span class="icon icon-right-arrow"></span>
-            </button>
+        <div class="table list hours-list">
+          <div class="thead">
+            <div class="tr">
+              <div class="th">Date soumission</div>
+              <div class="th">M à j</div>
+              <div class="th">Date</div>
+              <div class="th">Début</div>
+              <div class="th">Fin</div>
+              <div class="th">Assigné</div>
+              <div class="th">Statut</div>
+              <div class="th action">Action</div>
+            </div>
           </div>
-          <div class="calendar-edit"></div>
-          <div class="calendar-add"></div>
-          <div id="calendar-edit"></div>
+          <div class="tbody"></div>
         </div>
-      </div>
-
-      <!-- User -->
-      <div class="level2" id="addUser">
-        <div class="action">
-          <div class="button button--add" id="jsFormAddUser">+ Ajouter</div>
-          <div class="button button--add" id="jsCloseFormAddUser">- Fermer</div>
-          <form action="" class="form form--add jsFormAddUser">
-            <span class="action__info action__info--left">Général</span>
-            <ul class="action__list">
-              <li class="action__list__item input">
-                <input type="text" name="firstname" class="input-text" placeholder="Prénom">
-              </li>
-              <li class="action__list__item input">
-                <input type="text" name="lastname" class="input-text" placeholder="Nom">
-              </li>
-              <li class="action__list__item input">
-                <input type="text" name="username" class="input-text" placeholder="Nom d'utilisateur">
-              </li>
-              <li class="action__list__item input">
-                <input type="password" name="plain_password" class="input-text" placeholder="Mot de passe">
-              </li>
-              <li class="action__list__item input">
-                <input type="password" name="confirm_password" class="input-text" placeholder="Confirmer le mot de passe">
-              </li>
-              <li class="action__list__item input">
-                <input type="text" name="hours_todo" class="input-text" placeholder="Nombre d'heures à faire (total annuel)">
-              </li>
-            </ul>
-            <span class="action__info action__info--left">Rôle</span>
-            <ul class="action__list">
-              <li class="action__list__item">
-                <select name="role" id="roleList"></select>
-              </li>
-            </ul>
-            <!-- <span class="action__info action__info--left">Droits</span> -->
-            <ul class="action__list">
-              <li class="action__list__item list"></li>
-            </ul>
-            <span class="action__info action__info--left">Supérieur en charge</span>
-            <ul class="action__list">
-              <li class="action__list__item input">
-                <input type="text" name="superior" class="input-text" placeholder="Entrer l'identifiant de l'utilisateur">
-              </li>
-            </ul>
-            <input type="submit" class="button button--small button--mg" value="Ajouter">
-          </form>
-        </div>
-        <div class="title">Liste des utilisateurs</div>
-        <table class="table list user-list">
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Prénom</th>
-              <th>Nom</th>
-              <th>Nom utilisateur</th>
-              <th>Rôle</th>
-              <th>Supérieur (Id)</th>
-              <th>Heures planifiées</th>
-              <th class="action">Action</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-
-      <!-- Access -->
-      <div class="level2" id="addAccess">
-        <div class="action">
-          <form action="" class="jsFormAddAccess">
-            <ul class="action__list">
-              <li class="action__list__item input">
-                <input type="text" name="title" class="input-text" placeholder="Nouveau droit">
-              </li>
-              <li class="action__list__item input">
-                <input type="text" name="slug" class="input-text" placeholder="Identifiant, en minuscuse, sans accent et sans espaces">
-              </li>
-            </ul>
-            <span class="action__info">Attention : l'identifiant est unique et ne pourra pas être modifié !</span>
-            <input type="submit" class="button button--small button--mg" value="Ajouter">
-          </form>
-        </div>
-        <div class="title">Liste des droits</div>
-        <ul class="list access-list"></ul>
-      </div>
-
-      <!-- Section -->
-      <div class="level2" id="addSection">
-        <div class="action">
-          <form action="" class="jsFormAddSection">
-            <ul class="action__list">
-              <li class="action__list__item input">
-                <input type="text" name="name" class="input-text" placeholder="Nouvelle section">
-              </li>
-            </ul>
-            <input type="submit" class="button button--small button--mg" value="Ajouter">
-          </form>
-        </div>
-        <div class="title">Liste des sections</div>
-        <ul class="list section-list"></ul>
         <div class="no-result"></div>
-      </div>
+        </div>
 
-      <!-- Semaine -->
-      <div class="level2" id="addWeek">
-        <div class="action">
-          <form action="" class="jsFormAddWeek">
-            <ul class="action__list">
-              <li class="action__list__item">
+        <!-- Edit planning -->
+        <div class="level2 generic-planning" id="edit">
+          <div class="action">
+            Choisissez un employé afin d'accéder à son planning :
+            <select class="selectUserToEditPlanning"></select>
+            <h3 id="userPlanning"></h3>
+            <div class="calendar-navigation">
+              <button class="calendar-navigation-prev">
+                <span class="icon icon-left-arrow"></span>Précédent</button>
+              <button class="calendar-navigation-next">Suivant
+                <span class="icon icon-right-arrow"></span>
+              </button>
+            </div>
+            <div class="calendar-edit"></div>
+            <div class="calendar-add"></div>
+            <div id="calendar-edit"></div>
+          </div>
+        </div>
+
+        <!-- User -->
+        <div class="level2" id="addUser">
+          <div class="action">
+            <div class="button button--add" id="jsFormAddUser">+ Ajouter</div>
+            <div class="button button--add" id="jsCloseFormAddUser">- Fermer</div>
+            <form action="" class="form form--add jsFormAddUser">
+              <span class="action__info action__info--left">Général</span>
+              <ul class="action__list">
+                <li class="action__list__item input">
+                  <input type="text" name="firstname" class="input-text" placeholder="Prénom">
+                </li>
+                <li class="action__list__item input">
+                  <input type="text" name="lastname" class="input-text" placeholder="Nom">
+                </li>
+                <li class="action__list__item input">
+                  <input type="text" name="username" class="input-text" placeholder="Nom d'utilisateur">
+                </li>
+                <li class="action__list__item input">
+                  <input type="password" name="plain_password" class="input-text" placeholder="Mot de passe">
+                </li>
+                <li class="action__list__item input">
+                  <input type="password" name="confirm_password" class="input-text" placeholder="Confirmer le mot de passe">
+                </li>
+                <!-- <li class="action__list__item input">
+                <input type="text" name="hours_todo" class="input-text" placeholder="Nombre d'heures à faire (total annuel)">
+              </li> -->
+              </ul>
+              <span class="action__info action__info--left">Rôle</span>
+              <ul class="action__list">
+                <li class="action__list__item">
+                  <select name="role" id="roleList"></select>
+                </li>
+              </ul>
+              <!-- <span class="action__info action__info--left">Droits</span> -->
+              <ul class="action__list">
+                <li class="action__list__item list"></li>
+              </ul>
+              <span class="action__info action__info--left">Supérieur en charge</span>
+              <ul class="action__list">
+                <li class="action__list__item input">
+                  <input type="text" name="superior" class="input-text" placeholder="Entrer l'identifiant de l'utilisateur">
+                </li>
+              </ul>
+              <input type="submit" class="button button--small button--mg" value="Ajouter">
+            </form>
+          </div>
+          <div class="title">Liste des utilisateurs</div>
+          <div class="table list user-list">
+            <div class="thead">
+              <div class="tr">
+                <div class="th">Id</div>
+                <div class="th">Prénom</div>
+                <div class="th">Nom</div>
+                <div class="th">Nom utilisateur</div>
+                <div class="th">Rôle</div>
+                <div class="th">Supérieur (Id)</div>
+                <div class="th">Heures planifiées</div>
+                <div class="th action">Action</div>
+              </div>
+            </div>
+            <div class="tbody"></div>
+          </div>
+        </div>
+
+        <!-- Access -->
+        <div class="level2" id="addAccess">
+          <div class="action">
+            <form action="" class="jsFormAddAccess">
+              <ul class="action__list">
+                <li class="action__list__item input">
+                  <input type="text" name="title" class="input-text" placeholder="Nouveau droit">
+                </li>
+                <li class="action__list__item input">
+                  <input type="text" name="slug" class="input-text" placeholder="Identifiant, en minuscuse, sans accent et sans espaces">
+                </li>
+              </ul>
+              <span class="action__info">Attention : l'identifiant est unique et ne pourra pas être modifié !</span>
+              <input type="submit" class="button button--small button--mg" value="Ajouter">
+            </form>
+          </div>
+          <div class="title">Liste des droits</div>
+          <ul class="list access-list"></ul>
+        </div>
+
+        <!-- Section -->
+        <div class="level2" id="addSection">
+          <div class="action">
+            <form action="" class="jsFormAddSection">
+              <ul class="action__list">
+                <li class="action__list__item input">
+                  <input type="text" name="name" class="input-text" placeholder="Nouvelle section">
+                </li>
+              </ul>
+              <input type="submit" class="button button--small button--mg" value="Ajouter">
+            </form>
+          </div>
+          <div class="title">Liste des sections</div>
+          <ul class="list section-list"></ul>
+          <div class="no-result"></div>
+        </div>
+
+        <!-- Semaine -->
+        <div class="level2" id="addWeek">
+          <div class="action">
+            <form action="" class="jsFormAddWeek">
+              <ul class="action__list">
+                <li class="action__list__item">
                   <span>Pour le salarié</span><select class="jsUsersList" id="selectUserIDForAdd" name="user"></select>
-              </li>
-              <li class="action__list__item">
-                  <span>Attribuer le type</span><select class="jsWeeksTypeList" name="setting"></select>
-              </li>
-              <li class="action__list__item">
+                </li>
+                <li class="action__list__item">
+                  <span>Indiquer le nombre d'heure (par semaine)</span>
+                  <input type="number" min="1" max="50" name="hours">
+                  <!-- <select class="jsWeeksTypeList" name="setting"></select> -->
+                </li>
+                <li class="action__list__item">
                   <span>Répéter de la semaine</span>
                   <input type="number" min="1" max="52" name="from">
-              </li>
-              <span></span>
-              <li class="action__list__item">
+                </li>
+                <span></span>
+                <li class="action__list__item">
                   <span>à la semaine</span>
                   <input type="number" min="1" max="52" name="to">
                   <span>(incluse)</span>
-              </li>
-            </ul>
-            <span class="action__info">Si vous ne souhaitez rentrer qu'une seule semaine, mettez le même numéro dans le 2e champs</span>
-            <input type="submit" class="button button--small button--mg" value="Ajouter">
-          </form>
+                </li>
+              </ul>
+              <span class="action__info">Si vous ne souhaitez rentrer qu'une seule semaine, mettez le même numéro dans le
+                2e champs
+              </span>
+              <input type="submit" class="button button--small button--mg" value="Ajouter">
+            </form>
+          </div>
+          <div class="title">Répartition des semaines<select class="jsUsersList" id="selectUserIDForShow"></select></div>
+          <div class="total totalHours">Total planifié<span class="total__nb"></span></div>
+          <div class="table list week-list">
+            <div class="thead">
+              <div class="tr">
+                <div class="th">Numéro de la semaine</div>
+                <div class="th">Heures attribuées</div>
+                <div class="th action">Action</div>
+              </div>
+            </div>
+            <div class="tbody"></div>
+          </div>
+          <div class="no-result"></div>
         </div>
-        <div class="title">Répartition des semaines<select class="jsUsersList" id="selectUserIDForShow"></select></div>
-        <table class="table list week-list">
-          <thead>
-            <tr>
-              <th>Numéro de la semaine</th>
-              <th>Type de semaine</th>
-              <th class="action">Action</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <div class="no-result"></div>
-      </div>
 
-      <!-- Setting -->
-      <div class="level2" id="addSetting">
-        <div class="action">
-          <!--<form action="" class="jsFormAddSetting">-->
-          <!--<ul class="action__list">-->
-          <!--<li class="action__list__item input">-->
-          <!--<input type="text" class="input-text" placeholder="Nom du réglage">-->
-          <!--</li>-->
-          <!--<li class="action__list__item input">-->
-          <!--<input type="text" class="input-text" placeholder="Valeur du réglage">-->
-          <!--</li>-->
-          <!--<li class="action__list__item">-->
-          <!--<input type="checkbox" id="is_int" value="nb"><label for="is_int">Cocher si la valeur est un nombre</label>-->
-          <!--</li>-->
-          <!--</ul>-->
-          <!--<input type="submit" class="button button&#45;&#45;small button&#45;&#45;mg" value="Ajouter">-->
-          <!--</form>-->
+        <!-- Setting -->
+        <div class="level2" id="addSetting">
+          <div class="action">
+            <!--<form action="" class="jsFormAddSetting">-->
+            <!--<ul class="action__list">-->
+            <!--<li class="action__list__item input">-->
+            <!--<input type="text" class="input-text" placeholder="Nom du réglage">-->
+            <!--</li>-->
+            <!--<li class="action__list__item input">-->
+            <!--<input type="text" class="input-text" placeholder="Valeur du réglage">-->
+            <!--</li>-->
+            <!--<li class="action__list__item">-->
+            <!--<input type="checkbox" id="is_int" value="nb"><label for="is_int">Cocher si la valeur est un nombre</label>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <!--<input type="submit" class="button button&#45;&#45;small button&#45;&#45;mg" value="Ajouter">-->
+            <!--</form>-->
+          </div>
+          <div class="title">Liste des réglages</div>
+          <ul class="list setting-list"></ul>
         </div>
-        <div class="title">Liste des réglages</div>
-        <ul class="list setting-list"></ul>
       </div>
     </div>
-  </div>
-  <!-- /Page actions -->
+    <!-- /Page actions -->
 
-  <!-- Page profil -->
-  <div class="routing" id="profile">
-    <header class="header">
-      <div class="header__link header__link--icon jsRefreshProfile">Rafraîchir</div>
-      <h1 class="title">Mon profil</h1>
-    </header>
+    <!-- Page profil -->
+    <div class="routing" id="profile">
+      <header class="header">
+        <div class="header__link header__link--icon jsRefreshProfile">Rafraîchir</div>
+        <h1 class="title">Mon profil</h1>
+      </header>
 
-    <div class="routing__center">
+      <div class="routing__center">
 
-      <div class="profile-page profile-page--recap">
-        <span class="icon icon-profile"></span>
-        <div class="profile-page__edit__text">
-          <span class="profile-page__edit__span">Prénom: </span>
-          <span id="profile-firstname"></span>
-        </div>
-        <div class="profile-page__edit__text">
-          <span class="profile-page__edit__span">Nom: </span>
-          <span id="profile-lastname"></span>
-        </div>
-        <div class="profile-page__edit__text">
-          <span class="profile-page__edit__span">Identifiant: </span>
-          <span id="profile-username"></span>
-        </div>
-        <div class="profile-page__edit__text">
-          <span class="profile-page__edit__span">Rôle: </span>
-          <span id="profile-role"></span>
-        </div>
-        <div class="profile-page__edit__text">
-          <span class="profile-page__edit__span">Supérieur: </span>
-          <span id="profile-superior"></span>
-        </div>
-        <div class="profile-page__edit__text">
-          <span class="profile-page__edit__span">Liste des accès: </span>
-          <span id="profile-access"></span>
-        </div>
-        <div class="profile-page__edit__text profile-page__edit__text--update-pwd">
-          <span class="profile-page__edit__span" id="profile-update-password">Modifier mon mot de passe</span>
-          <span class="profile-page__edit__span" id="profile-cancel-password">Annuler</span>
-          <div class="container-update-pwd">
-            <input type="password" name="previous_password" id="previous_password" placeholder="Ancien mot de passe">
-            <input type="password" name="plain_password" id="new_password" placeholder="Nouveau mot de passe">
-            <input type="password" name="confirm_password" id="confirm_new_password" placeholder="Confirmer nouveau mot de passe">
-            <div class="button button--small button--mg" id="jsUpdatePassword">Confirmer</div>
+        <div class="profile-page profile-page--recap">
+          <span class="icon icon-profile"></span>
+          <div class="profile-page__edit__text">
+            <span class="profile-page__edit__span">Prénom: </span>
+            <span id="profile-firstname"></span>
+          </div>
+          <div class="profile-page__edit__text">
+            <span class="profile-page__edit__span">Nom: </span>
+            <span id="profile-lastname"></span>
+          </div>
+          <div class="profile-page__edit__text">
+            <span class="profile-page__edit__span">Identifiant: </span>
+            <span id="profile-username"></span>
+          </div>
+          <div class="profile-page__edit__text">
+            <span class="profile-page__edit__span">Rôle: </span>
+            <span id="profile-role"></span>
+          </div>
+          <div class="profile-page__edit__text">
+            <span class="profile-page__edit__span">Supérieur: </span>
+            <span id="profile-superior"></span>
+          </div>
+          <div class="profile-page__edit__text">
+            <span class="profile-page__edit__span">Liste des accès: </span>
+            <span id="profile-access"></span>
+          </div>
+          <div class="profile-page__edit__text profile-page__edit__text--update-pwd">
+            <span class="profile-page__edit__span" id="profile-update-password">Modifier mon mot de passe</span>
+            <span class="profile-page__edit__span" id="profile-cancel-password">Annuler</span>
+            <div class="container-update-pwd">
+              <input type="password" name="previous_password" id="previous_password" placeholder="Ancien mot de passe">
+              <input type="password" name="plain_password" id="new_password" placeholder="Nouveau mot de passe">
+              <input type="password" name="confirm_password" id="confirm_new_password" placeholder="Confirmer nouveau mot de passe">
+              <div class="button button--small button--mg" id="jsUpdatePassword">Confirmer</div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <h2 class="h2">Mes heures validées</h2>
-      <div class="progress-bar" id="jsHoursTodoThisWeek">
-        <div class="progress-bar__top">
-          <div class="progress-bar__title">Cette semaine</div>
-          <div class="progress-bar__ratio"></div>
-        </div>
-        <div class="progress-bar__bar">
-          <div class="progress-bar__bar__text"></div>
-          <div class="progress-bar__bar__wip" style="width: 0;">
-            <span></span>
+        <h2 class="h2">Mes heures validées</h2>
+        <div class="progress-bar" id="jsHoursTodoThisWeek">
+          <div class="progress-bar__top">
+            <div class="progress-bar__title">Cette semaine</div>
+            <div class="progress-bar__ratio"></div>
+          </div>
+          <div class="progress-bar__bar">
+            <div class="progress-bar__bar__text"></div>
+            <div class="progress-bar__bar__wip" style="width: 0;">
+              <span></span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="profile-page profile-page--dark">
-        <div class="profile-page__col">
-          <div class="profile-page__col__nb profile-page__col__nb--ok" id="validedHours"></div>
-          <span>h</span>
-          <div>validées</div>
-        </div>
-        <div class="profile-page__sep"></div>
-        <div class="profile-page__col">
-          <div class="profile-page__col__nb profile-page__col__nb--no" id="notValidedHours"></div>
-          <span>h</span>
-          <div>en attente de validation</div>
-        </div>
-      </div>
-
-      <div class="progress-bar progress-bar--mg" id="jsHoursTodo">
-        <div class="progress-bar__top">
-          <div class="progress-bar__title">Cette année</div>
-          <div class="progress-bar__ratio"></div>
-        </div>
-        <div class="progress-bar__bar">
-          <div class="progress-bar__bar__text"></div>
-          <div class="progress-bar__bar__wip" style="width: 0;">
-            <span></span>
+        <div class="profile-page profile-page--dark">
+          <div class="profile-page__col">
+            <div class="profile-page__col__nb profile-page__col__nb--ok" id="validedHours"></div>
+            <span>h</span>
+            <div>validées</div>
+          </div>
+          <div class="profile-page__sep"></div>
+          <div class="profile-page__col">
+            <div class="profile-page__col__nb profile-page__col__nb--no" id="notValidedHours"></div>
+            <span>h</span>
+            <div>en attente de validation</div>
           </div>
         </div>
-      </div>
 
-      <h2 class="h2">Mes heures planifiées</h2>
-      <div class="progress-bar" id="jsHoursPlanified">
-        <div class="progress-bar__top">
-          <div class="progress-bar__title">Cette année</div>
-          <div class="progress-bar__ratio"></div>
-        </div>
-        <div class="progress-bar__bar">
-          <div class="progress-bar__bar__text"></div>
-          <div class="progress-bar__bar__wip" style="width: 0;">
-            <span></span>
+        <div class="progress-bar progress-bar--mg" id="jsHoursTodo">
+          <div class="progress-bar__top">
+            <div class="progress-bar__title">Cette année</div>
+            <div class="progress-bar__ratio"></div>
+          </div>
+          <div class="progress-bar__bar">
+            <div class="progress-bar__bar__text"></div>
+            <div class="progress-bar__bar__wip" style="width: 0;">
+              <span></span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- <div class="profile-page__info-hours profile-page__info-hours--mg">
+        <h2 class="h2">Mes heures planifiées</h2>
+        <div class="progress-bar" id="jsHoursPlanified">
+          <div class="progress-bar__top">
+            <div class="progress-bar__title">Cette année</div>
+            <div class="progress-bar__ratio"></div>
+          </div>
+          <div class="progress-bar__bar">
+            <div class="progress-bar__bar__text"></div>
+            <div class="progress-bar__bar__wip" style="width: 0;">
+              <span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="profile-page__info-hours profile-page__info-hours--mg">
                     <div class="profile-page__info-hours__title">Total H. supplémentaires</div>
                     <div class="profile-page__info-hours__nb">6<span>H</span></div>
                 </div> -->
-      <h2 class="h2">Mes heures supplémentaires récompensées</h2>
-      <div class="profile-page__info-hours">
-        <div class="profile-page__info-hours__title">Repos compensatoire obtenu</div>
-        <div class="profile-page__info-hours__nb"></div>
+        <h2 class="h2">Mes heures supplémentaires récompensées</h2>
+        <div class="profile-page__info-hours">
+          <div class="profile-page__info-hours__title">Repos compensatoire obtenu</div>
+          <div class="profile-page__info-hours__nb"></div>
+        </div>
+
       </div>
 
+      <!--<div class="button button&#45;&#45;small button&#45;&#45;icon button&#45;&#45;red button&#45;&#45;mg jsLogout"><span class="icon icon-logout"></span>Se déconnecter</div>-->
+
     </div>
+    <!-- /Page profil -->
 
-    <!--<div class="button button&#45;&#45;small button&#45;&#45;icon button&#45;&#45;red button&#45;&#45;mg jsLogout"><span class="icon icon-logout"></span>Se déconnecter</div>-->
-
-  </div>
-  <!-- /Page profil -->
-
-  <!-- Page recherche -->
-  <div class="search" id="jsSearch">
-    <header class="header">
-      <h1 class="title">Rechercher un salarié</h1>
-    </header>
-    <div class="action">
-      <ul class="action__list">
-        <li class="action__list__item input">
-          <!-- <form method="GET" action="http://127.0.0.1:8000/search" id="searchForm"> -->
-          <form>
-            <input type="text" class="input-text" id="jsSearchUser" name="search" placeholder="Rechercher un utilisateur" autocomplete="off">
-          </form>
-        </li>
-      </ul>
-    </div>
-    <!-- <ul class="search__list">
+    <!-- Page recherche -->
+    <div class="search" id="jsSearch">
+      <header class="header">
+        <h1 class="title">Rechercher un salarié</h1>
+      </header>
+      <div class="action">
+        <ul class="action__list">
+          <li class="action__list__item input">
+            <!-- <form method="GET" action="http://127.0.0.1:8000/search" id="searchForm"> -->
+            <form>
+              <input type="text" class="input-text" id="jsSearchUser" name="search" placeholder="Rechercher un utilisateur" autocomplete="off">
+            </form>
+          </li>
+        </ul>
+      </div>
+      <!-- <ul class="search__list">
                 <li class="search__list__item">Jonathan Guillemot</li>
                 <li class="search__list__item">Jordan Martin</li>
             </ul> -->
-  </div>
-  <!-- /Page recherche -->
+    </div>
+    <!-- /Page recherche -->
 
-  <!-- Page notification -->
-  <div class="notification" id="jsNotifications">
-    <div class="notification__wait"></div>
-    <ul class="notification__list"></ul>
-  </div>
-  <!-- /Page notification -->
+    <!-- Page notification -->
+    <div class="notification" id="jsNotifications">
+      <div class="notification__wait"></div>
+      <ul class="notification__list"></ul>
+    </div>
+    <!-- /Page notification -->
 
-  <div class="tab-bar">
-    <div class="tab-bar__overlay"></div>
-    <div class="tab-bar__item logout jsLogout">
-      <div>
-        <div class="icon icon-logout"></div>
-        <div class="tab-bar__item__text">Déconnexion</div>
+    <div class="tab-bar">
+      <div class="tab-bar__overlay"></div>
+      <div class="tab-bar__item logout jsLogout">
+        <div>
+          <div class="icon icon-logout"></div>
+          <div class="tab-bar__item__text">Déconnexion</div>
+        </div>
+      </div>
+      <div class="tab-bar__item jsNotifications">
+        <div>
+          <div class="icon icon-notification"></div>
+          <div id="push"></div>
+          <div class="tab-bar__item__text">Notifications</div>
+        </div>
+      </div>
+      <div class="tab-bar__item planning current" data-routing="planning">
+        <div>
+          <div class="icon icon-calendar"></div>
+          <div class="tab-bar__item__text">Planning</div>
+        </div>
+      </div>
+      <div class="tab-bar__item validation" data-routing="validation">
+        <div>
+          <div class="icon icon-list"></div>
+          <div class="tab-bar__item__text">Validations</div>
+        </div>
+      </div>
+      <div class="tab-bar__item actions" data-routing="actions">
+        <div>
+          <div class="icon icon-flash"></div>
+          <div class="tab-bar__item__text">Actions</div>
+        </div>
+      </div>
+      <div class="tab-bar__item profile" data-routing="profile">
+        <div>
+          <div class="icon icon-profile"></div>
+          <div class="tab-bar__item__text">Profil</div>
+        </div>
+      </div>
+      <div class="tab-bar__item jsSearch">
+        <div>
+          <div class="icon icon-magnify"></div>
+          <div class="tab-bar__item__text">Recherche</div>
+        </div>
       </div>
     </div>
-    <div class="tab-bar__item jsNotifications">
-      <div>
-        <div class="icon icon-notification"></div>
-        <div id="push"></div>
-        <div class="tab-bar__item__text">Notifications</div>
-      </div>
-    </div>
-    <div class="tab-bar__item planning current" data-routing="planning">
-      <div>
-        <div class="icon icon-calendar"></div>
-        <div class="tab-bar__item__text">Planning</div>
-      </div>
-    </div>
-    <div class="tab-bar__item validation" data-routing="validation">
-      <div>
-        <div class="icon icon-list"></div>
-        <div class="tab-bar__item__text">Validations</div>
-      </div>
-    </div>
-    <div class="tab-bar__item actions" data-routing="actions">
-      <div>
-        <div class="icon icon-flash"></div>
-        <div class="tab-bar__item__text">Actions</div>
-      </div>
-    </div>
-    <div class="tab-bar__item profile" data-routing="profile">
-      <div>
-        <div class="icon icon-profile"></div>
-        <div class="tab-bar__item__text">Profil</div>
-      </div>
-    </div>
-    <div class="tab-bar__item jsSearch">
-      <div>
-        <div class="icon icon-magnify"></div>
-        <div class="tab-bar__item__text">Recherche</div>
-      </div>
-    </div>
-  </div>
 
-  <!--<script type="text/javascript" src="cordova.js"></script>-->
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-    crossorigin="anonymous"></script>
-  <script type="text/javascript" src="dist/js/externals/moment.min.js"></script>
-  <script type="text/javascript" src="dist/js/externals/fullcalendar.min.js"></script>
-  <script type="text/javascript" src="dist/js/externals/fr.js"></script>
-  <script type="text/javascript" src="dist/js/app.js"></script>
+    <!--<script type="text/javascript" src="cordova.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+    <script type="text/javascript" src="dist/js/externals/moment.min.js"></script>
+    <script type="text/javascript" src="dist/js/externals/fullcalendar.min.js"></script>
+    <script type="text/javascript" src="dist/js/externals/fr.js"></script>
+    <script type="text/javascript" src="dist/js/app.js"></script>
 </body>
 
 </html>

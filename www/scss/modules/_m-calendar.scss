@@ -322,6 +322,7 @@
     border: 0;
     padding: 10px;
     border-bottom: solid 2px color('gray', 'light');
+    background: transparent;
     color: color('gray');
     margin: 5px 0;
     width: 100%;
@@ -336,10 +337,44 @@
     }
   }
 
-  span {
+  .repeat-block {
+    background-color: color('background', 'invert');
+    margin: 0 -35px 30px -35px;
+    padding: 35px 35px 1px 35px;
+    overflow: hidden;
+    max-height: 80px;
+    @include transition();
+
+    &.open {
+      max-height: initial;
+      @include transition();
+    }
+
+    .calendar-modale__input {
+      &:focus {
+        border-bottom: solid 2px color('background');
+        color: color('foreground', 'invert');
+        @include transition();
+      }
+    }
+  }
+
+  span,
+  .modal-title {
     display: block;
-    font-size: 14px;
+    font-size: 16px;
     color: color('gray');
+  }
+  .modal-title {
+    margin-right: 10px;
+    display: inline-block;
+  }
+  span {
+    i {
+      display: block;
+      font-size: 11px;
+      font-style: italic;
+    }
   }
 
   &__button {

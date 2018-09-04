@@ -18,17 +18,17 @@ var utils = {
         break;
       case "level2User":
         $('.action__list__item.list div').remove();
-        $('.user-list tbody form').remove();
+        $('.user-list .tbody form').remove();
         break;
       case "level2Leave":
-        $('.leave-list tbody form').remove();
+        $('.leave-list .tbody form').remove();
         break;
       case "level2Rest":
-        $('.rest-list tbody form').remove();
+        $('.rest-list .tbody form').remove();
         break;
       case "level2Hours":
         $('#jsEmployeesList option').remove();
-        $('.hours-list tbody form').remove();
+        $('.hours-list .tbody form').remove();
         break;
       case "notifications":
         $('.notification__list li').remove();
@@ -37,7 +37,8 @@ var utils = {
         $('.section-list li').remove();
         break;
       case "level2Week":
-        $('.week-list tbody form').remove();
+        $('.week-list .tbody form').remove();
+        $('.totalHours span').html('');
         break;
       case "validation":
         $('#validation .header').remove();
@@ -94,12 +95,14 @@ var utils = {
         $('.week-list').off('click', 'form .editEnabled');
         $('.week-list').off('click', 'form .editCanceled');
         $('.week-list').off('click', 'form .edit');
+        $('.jsUsersList').off('change');
         break;
       case "calendar":
         $('.generic-planning').off('click', '.jsCloseModalCalendar');
         $('.generic-planning').off('click', '.jsConfirmAddEvent');
         $('.generic-planning').off('click', '.jsConfirmEditEvent');
         $('.generic-planning').off('click', '.jsConfirmDeleteEvent');
+        $('.generic-planning').off('click', '#repeats');
         $('.calendar-navigation-prev').off('click');
         $('.calendar-navigation-next').off('click');
         $('.calendar-view__button--week').off('click');
@@ -111,8 +114,12 @@ var utils = {
         $('.generic-planning').off('click', '.jsConfirmAddEvent');
         $('.generic-planning').off('click', '.jsConfirmEditEvent');
         $('.generic-planning').off('click', '.jsConfirmDeleteEvent');
+        $('.generic-planning').off('click', '#repeats');
         $('.calendar-navigation-prev').off('click');
         $('.calendar-navigation-next').off('click');
+        $('#calendar-edit').fullCalendar('destroy');
+        $('.selectUserToEditPlanning option[value="default"]').prop('selected', true);
+        $('#userPlanning').text('');
         break;
       case "validation":
         $('#validation').off('submit', '.jsFormValidation');
@@ -389,7 +396,7 @@ var utils = {
   /**
    * GET USERS
    */
-  ajaxGetUsers: function (authTokenVALUE) {
+  ajaxGetUsers: function (authTokenVALUE, selectUserID = null) {
     $.ajax({
       url: localStorage.getItem('ENV') + '/users',
       type: 'GET',
@@ -398,11 +405,19 @@ var utils = {
       },
       success: function (response) {
         $('.jsUsersList option').remove();
+        let selected;
         for (var i = 0; i < response.length; i++) {
-          $('.jsUsersList').append('<option value="' + response[i].id + '">' + response[i].firstname + ' ' + response[i].lastname + '</option>');
+          if (selectUserID !== null && selectUserID == response[i].id) {
+            selected = 'selected';
+          } else {
+            selected = "";
+          }
+          $('.jsUsersList').append('<option value="' + response[i].id + '" data-hours="' + response[i].hoursTodo + '" ' + selected + '>' + response[i].firstname + ' ' + response[i].lastname + '</option>');
         }
-        let selectUserID = $('.jsUsersList').val();
-        crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+        const totalHours = $('.jsUsersList').find(':selected').data('hours');
+        if (selectUserID === null) selectUserID = $('.jsUsersList').val();
+        $('.totalHours span').html(totalHours + '<sup>H</sup>');
+        crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + selectUserID, $('.week-list .tbody'), 'week', authTokenVALUE);
       },
       error: function (err) {
         console.log(err);
@@ -438,11 +453,17 @@ var utils = {
    */
   loadWeeksOnChange: function (authTokenVALUE) {
     $('.jsUsersList').on('change', function () {
+      const _ = $(this);
       utils.removeHTML('level2Week');
-      const selected = $(this).find('option:selected').val();
+      const selected = _.find('option:selected').val();
+
+      $('#addWeek .no-result').text('');
+      const totalHours = _.find(':selected').data('hours');
+      $('.totalHours span').html(totalHours + '<sup>H</sup>');
+
       $('.jsUsersList option[value="' + selected + '"]').prop('selected', true);
-      selectUserID = $(this).val();
-      crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + selectUserID, $('.week-list tbody'), 'week', authTokenVALUE);
+      selectUserID = _.val();
+      crud.ajaxSimpleList(localStorage.getItem('ENV') + '/weeks/' + selectUserID, $('.week-list .tbody'), 'week', authTokenVALUE);
       console.log("Change for user " + selectUserID);
     });
   },

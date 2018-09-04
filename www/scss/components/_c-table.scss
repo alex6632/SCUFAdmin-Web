@@ -1,13 +1,19 @@
 // _c-table.scss
 
 .table {
+  display: table;
   width: 100%;
 
-  thead {
+  thead, .thead {
+    display: table-header-group;
     background-color: color('background', 'invert');
     color: color('foreground', 'invert');
-    tr {
-      th {
+    
+    tr, .tr {
+      display: table-row;
+
+      th, .th {
+        display: table-cell;
         text-align: left;
         padding: 5px 10px;
         font-weight: 300;
@@ -18,7 +24,9 @@
       }
     }
   }
-  tbody {
+  tbody, .tbody {
+    display: table-row-group;
+    
     .tr {
       display: table-row;
     }

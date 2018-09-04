@@ -1,0 +1,25 @@
+// _c-total.scss
+
+.total {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 16px;
+  color: color('foreground', 'invert');
+  background-color: color('background', 'invert');
+  padding: 10px;
+  float: right;
+  margin-top: -80px;
+  margin-right: 2px;
+  
+  &__nb {
+    display: block;
+    color: color('primary');
+    font-size: 25px;
+    font-weight: 700;
+  }
+  sup {
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 3px;
+  }
+}
